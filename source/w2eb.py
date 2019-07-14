@@ -1273,18 +1273,6 @@ def FindSectHref(opts, url_hfile, sect_label_href_list):
     return None
 
 
-def FindFootDict(foot_title, foot_dict_list):
-    """
-    @summary: Look up foot_title in a list of foot dictionaries.
-    
-    @return: None if not found, o.w. a footnote dictionary
-    """
-
-    for foot_dict in foot_dict_list:
-        if foot_dict['foot_title'] == foot_title:
-            return foot_dict
-    
-    return None
 
 def LabelDelWhite(label_in):
     """
@@ -1319,7 +1307,7 @@ def LabelAnchSuff(label_in):
 
     return ret_suff
 
-def Foot2ReduceSimilarAnchors(opts, bl, url):
+def AddReduceSimilarAnchors(opts, bl, url):
     """
     @summary: Find all references to URL and make them local, preserving anchors
     
@@ -1366,8 +1354,7 @@ def Foot2ReduceSimilarAnchors(opts, bl, url):
         del tag_href['href']
 
 
-
-def Foot2ReduceHtmlRefs2Anchors(opts, bl, final_section_list):
+def AddReduceHtmlRefs2Anchors(opts, bl, final_section_list):
     """
     @summary: Find all references to html files and convert them to anchors
     
@@ -1444,7 +1431,7 @@ def Foot2ReduceHtmlRefs2Anchors(opts, bl, final_section_list):
                 tag_href['href'] = '#' + new_id
         
 
-def Foot2ReduceHtmlRefs2AnchorsFinal(opts, bl):
+def AddReduceHtmlRefs2AnchorsFinal(opts, bl):
     """
     @summary: Find all references to html files and convert them to anchors or remove them
     
@@ -1509,210 +1496,6 @@ def Foot2ReduceHtmlRefs2AnchorsFinal(opts, bl):
             tag_href.name = 'i'
 
             uPlogExtra(opts, "Missing referenat. Dropping %s" % href, 2)
-
-
-def Foot2RecursiveCall(opts, bl, url, ret_anch,
-                err, footnote, foot_title, foot_dict_list):
-    """
-    @summary: Fetches footnotes and subarticles by calling main function
-    
-    @return (err - any errors encountered as a string,
-             foot_dict - footnote data stored in a dictionary)
-             
-     @note:
-     Subsections are returned implicitly by collecting data in bodir.
-     Notice that we make a new 'bodir' for this invocation that is
-     the current bodir / basename(url)
-     
-     For footnotes, turning on the footnote flag causes us to write
-     output in the current directories "footnote" directory. We also
-     return the same data in a dictionary structure from main. 
-    
-    """
-        
-    foot_dict = {}
-
-    if footnote and opts['parent'] == '':
-        logfile = opts['bodir'] + '/' + 'wiki_log.txt'
-    else:
-        logfile = opts['logfile']
-
-    opt2 = {'url':url,
-        'base_url': opts['base_url'],       # base_url + '/' + booknm == url
-        'base_bodir': opts['base_bodir'],
-        'booknm': opts['booknm'],
-        'stype': opts['stype'],
-        'footsect_name': opts['footsect_name'],
-        'clean_html': opts['clean_html'], 
-        'clean_book': opts['clean_book'], 
-        'clean_cache': False, # only the root should clean the whole cache
-        'depth': opts['depth'] - 1, 
-        'footnote': footnote, 
-        'bodir': opts['bodir'] + '/' + os.path.basename(url), 
-        'dcdir': opts['dcdir'] + '/' + os.path.basename(url), 
-        'no_images': footnote,
-        'bw_images': opts['bw_images'],
-        'svg2png': opts['svg2png'],
-        'svgfigs': opts['svgfigs'],
-        'ret_anch': ret_anch, 
-        'parent': opts['section_bname'],
-        'parent_log': logfile,            # future expansion?
-        'parent_fpc': 0, 
-        'parent_sketch': opts['my_sketch'], 
-        'logfile': logfile, 
-        'chits': 0,
-        'wgets': 0,
-        'footi': opts['footi'],
-        'export': False,
-        'wikidown': opts['wikidown'],
-        'debug': opts['debug']}
-
-    if footnote:
-        opt2['footsect_name'] = foot_title 
-
-    # only the top level parent allows children to write to sys.stdout
-
-    if opts['parent']:
-        opt2['parent_fp'] = None
-
-    if opts['debug'] > 0: # we want to stop if debugging is on 
-        [err, foot_dict_list2, sect_label_href_list] = main(opt2)
-    else:
-        try:
-            [err, foot_dict_list2, sect_label_href_list] = main(opt2)
-            
-    
-        except Exception as e:
-            uPlog(opts, '')
-            uPlog(opts, "Problem fetching", url)
-    
-            fp = open(opts['logfile'], 'a')
-            uPlog(opts, "Caught Exception", repr(e))
-            traceback.print_exc(None, fp) 
-            traceback.print_exc()
-            fp.close()
-                
-            err = 'exception ' + uCleanChars(opts, repr(e))
-            err.replace(' ', '_')
-
-    # if wikidown is nonzero our child will increment it if necessary
-    if footnote:
-        
-        assert len(foot_dict_list2) <= 1, "Found %d footnote entires." +\
-                len(foot_dict_list2)
-        if foot_dict_list2:
-            foot_dict = foot_dict_list2[0]
-        
-        if err:
-            assert not foot_dict, "Expected footnote to be empty, found: " +\
-                foot_dict['short_foot']
-        else:
-            assert foot_dict, "Found no footnote, and no error"
-    else:
-        if not err:
-            items_merged = MergeFootUniq(foot_dict_list, foot_dict_list2)
-            uPlogExtra(opts, "Footnote items merged = %d." % items_merged, 2)
-
-    opts['chits'] = opts['chits'] + opt2['chits']
-    opts['wgets'] = opts['wgets'] + opt2['wgets']
-    opts['wikidown'] = opt2['wikidown']
-    opts['footi'] = opt2['footi']
-
-    
-    return err, foot_dict, sect_label_href_list
-
-
-def Foot2GetCachedFootSect(opts, foot_dict_list,
-                       footnote, outdir, foot_title, url, sect_label_href_list,
-                       sect_label_href_list_child):
-    """
-    @summary: Look for foot_title data in both memory and disk cache
-    
-    @return (cache_hit - whether we found foot_title or not,
-             foot_dict - the information for footnotes)
-
-    """
-    cache_hit = False
-    foot_dict = {}
-    sect_dict = {}
-    
-    if footnote:
-        foot_dict = FindFootDict(foot_title, foot_dict_list)
-        if foot_dict:
-            cache_hit = True
-
-            if foot_dict['msg'] == 0:
-                uPlogExtra(opts, 'Cache hit: ' + foot_dict['foot_title']
-                               +', id="#' + foot_dict['ret_anch'] + '_foot"', 3)
-                # only mention a found footnote one time.
-                foot_dict['msg'] = 1
-
-    else:
-        
-        sect_dict = FindSectHref(opts, url, sect_label_href_list + sect_label_href_list_child)
-        if sect_dict:
-            cache_hit = True
-            uPlogExtra(opts, "Found Section Url %s in cache." % url, 2)
-        else:
-            html_file = uGet1HtmlFile(opts, outdir, False)
-            if html_file:
-                cache_hit = True
-
-                base_id = Foot3GenBaseId(opts, url)
-                sect_dict = {'html_file': html_file, 'url': url,
-                             'foot_title': foot_title, 'base_id': base_id}
-            
-                sect_label_href_list.append(sect_dict)
-
-    return cache_hit, foot_dict, sect_dict
-
-
-def Foot12GetHref(opts, foot_dict_list, anch, footnote,
-                  foot_title, foot_dict, outdir, sect_dict, url):
-    """
-    @summary: Return the href for footnotes and sections
-    
-    @return - (href - the html field for href=
-
-    @note: At this stage we have either found the reference as a footnote,
-           or a full section. Whether it was in the cache or not doesn't
-           matter at this stage. We should be able to complete the href.
-           
-           The special case for depth = 0 means that we definitely did not
-           download new material. At depth = 0 we might have found a cached
-           reference, but if not we return the URL as the href.
-           
-           If we don't have an href by the end of this fn there is a bug.
-    """
-
-    err = ''
-    href = ''
-    htmlfile=''
-    if not footnote:
-
-        if not sect_dict and opts['depth'] == 0:
-            href = url
-        else:
-        
-            if not anch:
-                href = '#' + sect_dict['base_id']
-            else:
-                href = '#' + sect_dict['base_id'] + '_Hash_' + anch
-
-    else:
-
-        if not foot_dict and opts['depth'] == 0:
-            href = url
-        else:
-            href = '#' + foot_dict['ret_anch']  + '_foot'
-
-    if not err:
-        assert href , "Should have found an href, or not called this fn.\n" + \
-            "anch = " + str(anch) +", footnote = " + str(footnote) + "\nfoot_title = " + \
-            str(foot_title) + ", url = " + str(url) + "\ndepth = " + str(opts['depth']) + \
-            ", htmlfile=" + str(htmlfile) + "\nfoot_dict:\n" + str(foot_dict)   
-
-    return err, href
 
 
 
@@ -2095,9 +1878,9 @@ def AddSectionsToMain(opts, bl, sect_label_href_list):
             
             subsections.append(sl)
             
-    Foot2ReduceHtmlRefs2Anchors(opts, bl, final_section_list)
+    AddReduceHtmlRefs2Anchors(opts, bl, final_section_list)
 
-    Foot2ReduceHtmlRefs2AnchorsFinal(opts, bl)
+    AddReduceHtmlRefs2AnchorsFinal(opts, bl)
     
     return final_section_list
 
