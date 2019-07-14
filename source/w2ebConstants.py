@@ -65,10 +65,6 @@ IM_SCALEperc = str(int(IM_SCALEpx * 100)) + '%'
 
 MAX_SCALEpx = 4
 
-
-
-
-
 # A footnote link must have at least this many words to be included.
 # we start looking for a natural end from here, i.e. a period or paragraph
 

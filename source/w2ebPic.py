@@ -1,5 +1,72 @@
 
 
+def PicGetImage(opts, url, image_file):
+    """
+    @summary:  Fetch image file from "url" save to output file name "image_file"
+    """
+            
+    err = ''
+    
+    if opts['no_images']:
+        return 1
+    
+    ind = url.find('://')
+    fname = url[ind +3:]
+#    fname = urllib.unquote(url[ind +3:])  # XXX these sometimes have unreadable characters in them
+
+    image_dir = os.path.dirname(image_file)
+
+    if os.path.exists(opts['dcdir'] + '/images/' + fname):
+        #uPlog(opts, "cache hit found", opts['dcdir'] + '/images/' + fname
+
+        opts['chits'] = opts['chits'] + 1
+    else:
+        log_file = '"' + opts['dcdir'] + '/images/wget_log.txt"'
+        wgopts = WGET_OPTS + ' -o ' + log_file    
+        wgopts = wgopts + ' --directory-prefix="' + opts['dcdir'] + '"/images '
+
+        if opts['wikidown']:
+            err = 'wikidown: -w disables wget fetches to wikipedia and relies on cached data'
+            opts['wikidown'] += 1
+        else:        
+
+            err = uSysCmd(opts, '/usr/bin/wget ' + wgopts + ' "' + url + '"', 
+                          opts['debug'])
+            
+            if not err:
+                uPlogExtra(opts, "wget: " + url, 3)
+                opts['wgets'] += 1
+            else:
+                uPlogExtra(opts, "Failed: wget " + url, 2)
+                uPlogFile(opts, opts['dcdir'] + '/images/wget_log.txt', 2)
+
+    if not err:
+        uSysMkdir(opts, opts['bodir'] + '/' + image_dir)
+        
+        try:
+            src_f = opts['dcdir'] + '/images/' + fname
+            srcfile = urllib.unquote(src_f)
+        ## urllib generates a noisy warning 
+        
+        #         with warnings.catch_warnings():
+        #             warnings.simplefilter("ignore")
+        #             srcfile = urllib.quote(src_f) # has some messy warnings. They don't seem important.
+        
+        #        srcfile = urllib.quote(src_f)
+            copyfile(srcfile, opts['bodir'] + '/' + image_file)
+        except Exception as e:
+            uPlogFile(opts, opts['dcdir'] + '/images/wget_log.txt', 1)
+            uPlogExtra(opts, "Exception: " + uCleanChars(opts, str(e)), 1)
+            err = 'Image name has messy control characters ' + uCleanChars(opts, fname)
+            # Sometimes wget garbles the dowloaded file name in a way that we can't guesss.
+            # The right fix involves testing for messy strings prior to
+            # download, and then specifying some safe version of the string later on...
+
+    if not err and not os.path.exists(opts['bodir'] + '/' + image_file ):
+        err = 'Missing file: ' + opts['bodir'] + '/' + image_file
+    return err
+
+
 def PicGetSvgDims(str_line):
     """
     @summary: Read the dimensions of an SVG file
@@ -179,7 +246,7 @@ def PicConvertSVG(opts, image_file, image_url, convert, dosvg2png):
             uPlogNr(opts, "s")
             opts['chits'] = opts['chits'] + 1
     else:
-        err = get_image(opts, image_url, image_file)
+        err = PicGetImage(opts, image_url, image_file)
         if not err:
             err = PicConvertSVGcmd(opts, image_file, dosvg2png)
         if not err:
@@ -240,7 +307,7 @@ def PicIdentifyImageType(image_url, image_file, opts):
     src = opts['bodir'] + '/' + image_file
                     
     if not os.path.isfile(src):
-        get_image(opts, image_url, image_file)
+        PicGetImage(opts, image_url, image_file)
 
     ext = uSysCmdOut1(opts, 'file "' + src + '"', True)
     ext = substr_bt(ext,': ',' ')
@@ -298,7 +365,7 @@ def get_image_url_file(img_tag):
     for prefix in ['https://', 'http://']:
         if image_url[:len(prefix)] == prefix:
             image_file = image_url.replace(prefix, 'images/')
-            image_file = urllib.unquote(image_file)  # XXX do this here or in get_image, not both
+            image_file = urllib.unquote(image_file)  # XXX do this here or in PicGetImage, not both
             #image_file = uCleanChars(opts, urllib.unquote(image_file))   # XXX some files use odd characters 
     
     if alt_image:
@@ -384,7 +451,7 @@ def PicGetImages(opts, bl):
             PicFixPixelDims(bl, img_tag)
             
             if not os.path.isfile(opts['bodir'] + '/' + image_file):
-                err = get_image(opts, image_url, image_file)
+                err = PicGetImage(opts, image_url, image_file)
                 if not err:
                     err, image_type = PicConvertImage(opts, image_url, image_file, suff)
                 if not err:

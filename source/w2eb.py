@@ -17,353 +17,13 @@ from shutil import copyfile
 from bs4 import BeautifulSoup
 from bs4 import NavigableString
 from bs4 import Comment
-from _ast import Or
-
 
 from w2ebFootNotes import FootNotes
 from w2ebUtils import *
 
-WGET_OPTS = """ \
- --timeout=10 \
- --tries=2 \
- --html-extension \
- --restrict-file-names=unix \
- --page-requisites \
- -k \
- --no-parent \
- --backups=0 \
- --level=0 \
- """
 
-# wget has a habit of creating backups which is confusing for us when we are looking
-# for exactly one .html file. Seems that we can't have '-k' without backups, so ..
-# set the limit to 0
 
-#
-# Would like to use -nc, but it conflicts with -k, not sure why we need the conversion
-#
 
-# Page requisites doesn't work. We don't know why.
-#
-# We only get a single page and must manually download
-# links etc. 
-#
-
-# kindle pixel dimesions
-
-WMAX = 580
-HMAX = 790
-
-# set HMAX to be a little less than full height so we always have some room for text
-HMAX = int(.85 * HMAX)
-
-# Don't scale images to a size smaller than this unless
-# the source image is actually this small
-#
-MIN_IMAGEpxW = WMAX
-
-
-# Factor to scale math formulas by, expressed in 'ex' meaning:
-# Relative to the x-height of the current font (rarely used)
-# We like to see about 30 rows on a Kindle with 1/2 space between
-# so maybe HMAX / 30?
-# 
-# A value of 10 give a rough height of 20 pixels, which is a bit small,
-# and mathe equations tend to look bad on this level. Recommend 25 be used.
-#
-# Screen dot pitch is 92, Kindle dpi = 167, so whatever we see on the screen
-# will be about 1/3rd smaller on the Kindle
-
-IM_SCALEex = 25
-
-#
-# Otherwise we assume dimensions are in pixels, meant for a display
-# so we should at least double them.  
-
-IM_SCALEpx = 3
-IM_SCALEperc = str(int(IM_SCALEpx * 100)) + '%'
-
-
-# don't scale by more than MAX_SCALEpx times to get a MIN_IMAGEpx
-
-MAX_SCALEpx = 4
-
-
-
-
-
-# A footnote link must have at least this many words to be included.
-# we start looking for a natural end from here, i.e. a period or paragraph
-
-MIN_WORDS = 15
-
-# Maximum footnote length is 4 * min_words
-
-
-
-# We collect as many as MAX_PAR pargraphs for the detailed note section
-
-NOTE_MAX_PAR = 10
-
-#
-# When searching for a Table of contents we prefer old TOC locations, or 
-# headings that say TOC. If we don't see anything like this after several
-# paragraphs we simply insert our TOC at the beginning.#
-
-TOC_MAX_PAR = 10
-
-# footnotes must have no more than 10 paragraphs
-
-MAX_PARAGRAPH = 10
-
-BASE_DIR = '/home/gilbert/Projects_Recent/wiki_books'
-
-IMAGE_PIC = ['.jpg', '.JPG', 'jpeg', 'JPEG']
-IMAGE_FIG = ['.gif', '.GIF', '.png', '.PNG']
-IMAGE_SVG = ['.svg', '.SVG']
-SUFFIX_OT = ['.ico', '.php', '.pdf', '.PDF']
-
-#
-# There are a few bad images that we see regularly... 
-#
-IMAGE_AVOID = ['Special:CentralAutoLogin']
-
-W2EBID = 'w2eb_base_id'
-W2EBRI = 'w2eb_ret_'
-#
-# I'm still struggling with this on. Basic example:
-# x=u'\x139'
-# print x   <--- gives us a funny symbol
-#
-# https://www.tutorialspoint.com/python/string_encode.htm
-
-# https://docs.python.org/2/library/codecs.html#codec-base-classes
-# and
-# https://docs.python.org/2/library/codecs.html#standard-encodings
-
-def get_text_safe(curr):
-    
-#     text_out = ''
-#     if isinstance(curr, NavigableString):
-#         text_out = str(curr).strip()
-#     else:
-#         if curr:
-#             try:
-#                 if len(curr.contents) == 1:
-#                     text_out = curr.string
-#                 else:
-#                     text_out = str(curr.get_text())
-#             except Exception as e:
-#                 print len(curr.contents)
-#                 print "XXX caught get_text exception", e
-#                 print curr
-#             
-#     return text_out
-    
-    # XXX get_text() and several other methods are failing
-    # on these tags with the error:
-    #
-    # File "python2.7/site-packages/bs4/element.py", line 1339, in descendants
-    # current = current.next_element
-    # AttributeError: 'NoneType' object has no attribute 'next_element'
-    #
-    # This makes me believe that I have broken the tag tree somehow.
-    # I have been destroying a lot of tags, perhaps that is the problem
-    # and I need to somehow do that more cleanly. Documentation for
-    # destroy does say that it removes the tag, then destroys it... not sure.
-    # I tried explicitly extracting tags before destroying them, that didn't work... 
-    
-    curr_str = ''
-    
-    try:
-        for string in curr.strings:
-            try:
-                curr_str += string
-            except:        
-                None
-    except:
-        if curr_str == '':
-            try:
-                curr_str = curr.string
-            except:
-                # I am confused, and don't get this object.
-                None
-
-    return curr_str.strip()
-
-
-
-def clean(opts):
-    
-    del_msg = "XXXX What are we trying to delete? Everything? THIS IS A BAD BUG...XXXX"
-    assert len(opts['bodir']) > 10, del_msg
-    assert len(opts['dcdir']) > 10, del_msg
-
-    #
-    # If we are running on a subarticle don't chatter about cleaning up
-    # directories, we will already have this message in the parent
-    #
-
-    cwd = os.getcwd()
-    
-    cwd_msg = "\n\nUnable to clean the current working directory.\n Try cd ..\n"
-    
-    if opts['clean_book']:
-        assert not opts['bodir'] in cwd, cwd_msg 
-        uSysCmd(opts, 'rm -r "' + opts['bodir'] + '"', False)
-
-    uSysMkdir(opts, opts['bodir'])
-    if opts['parent'] == '':
-        uPlog(opts, '')
-        if opts['clean_book']:
-            uPlog(opts, "Removing all generated htmlfiles, footnotes, images, and equations.")
-
-    if opts['clean_cache']:
-
-        if opts['parent'] == '':
-            assert not opts['dcdir'] in cwd, cwd_msg
-            uSysCmd(opts, "rm -r " + opts['dcdir'] , False)
-            uPlog(opts, "Removing all data previously downloaded from the Internet")
-    
-    if opts['clean_html']:
-        if opts['parent'] == '':
-            uSysCmd(opts, 'find "' + opts['bodir'] +'" -name \*.html -exec rm \{\} \;' , False)
-            uPlog(opts, "Removing generated html files, and failed urls from the cache.")
-    
-    uSysMkdir(opts, opts['bodir'] + '/images')
-    uSysMkdir(opts, opts['bodir'] + '/footnotes')
-
-    uSysMkdir(opts, opts['dcdir'])
-    uSysMkdir(opts, opts['dcdir'] + '/images')
-    uSysMkdir(opts, opts['dcdir'] + '/footnotes')
-
-
-def get_html(opts):
-    """
-    @param opts
-    
-    Gets whatever get_html will collect for a url in opts and 
-    returns the basename of that file for use as a reference.
-    
-    Extract the htmlsoup and save the .html file in the cache
-    """
-
-    bl = None
-    section_bname = ''
-    err = ''
-
-    htmlfile = uGet1HtmlFile(opts, opts['dcdir'], False)
-    if htmlfile:
-        # uPlog(opts, "cache hit found", htmlfile
-        opts['chits'] = opts['chits'] + 1
-    else:
-    
-        wgopts = WGET_OPTS + ' -o "' + opts['dcdir'] + '/wget_log.txt"'
-        wgopts = wgopts + ' --convert-links --no-directories --directory-prefix="' + opts['dcdir'] + '/"'
-
-        # the url may not exists, so always be tentative with at least this wget
-        if opts['wikidown']:
-            err = 'wikidown: -w disables wget fetches to wikipedia and relies on cached data'
-            opts['wikidown'] += 1
-        else:
-            err = uSysCmd(opts, '/usr/bin/wget ' + wgopts + ' "' + 
-                      opts['url'] + '"', False)
-            if not err:
-                opts['wgets'] += 1
-                uPlogExtra(opts, "wget: "+ opts['url'], 3)
-                uPlogFile(opts, opts['dcdir'] + '/wget_log.txt', 3)
-            else:
-                uPlogExtra(opts, "XXX Failed: wget "+ opts['url'], 1)
-                uPlogFile(opts, opts['dcdir'] + '/wget_log.txt', 1)
-
-
-    if not err:
-        htmlfile = uGet1HtmlFile(opts, opts['dcdir'], False)
-        if not htmlfile:
-            err = 'URL is okay, but could not find .html file. See ' + opts['url']
-
-    if not err and htmlfile:
-        section_bname = urllib.unquote(uCleanChars(opts, os.path.basename(htmlfile)))
-
-        assert htmlfile
-        with open(htmlfile) as fp:
-            bl = BeautifulSoup(fp, "html.parser")
-
-    if err:
-        uPlog(opts, "No data for", opts['url'])
-        uPlog(opts, err)
-        uPlog(opts, "Verify that URL exists")
-        uPlog(opts, '')
-        err = 'url_failed: ' + err
-
-    return [err, bl, section_bname]
-
-
-def get_image(opts, url, image_file):
-    """
-    @summary:  Fetch image file from "url" save to output file name "image_file"
-    """
-            
-    err = ''
-    
-    if opts['no_images']:
-        return 1
-    
-    ind = url.find('://')
-    fname = url[ind +3:]
-#    fname = urllib.unquote(url[ind +3:])  # XXX these sometimes have unreadable characters in them
-
-    image_dir = os.path.dirname(image_file)
-
-    if os.path.exists(opts['dcdir'] + '/images/' + fname):
-        #uPlog(opts, "cache hit found", opts['dcdir'] + '/images/' + fname
-
-        opts['chits'] = opts['chits'] + 1
-    else:
-        log_file = '"' + opts['dcdir'] + '/images/wget_log.txt"'
-        wgopts = WGET_OPTS + ' -o ' + log_file    
-        wgopts = wgopts + ' --directory-prefix="' + opts['dcdir'] + '"/images '
-
-        if opts['wikidown']:
-            err = 'wikidown: -w disables wget fetches to wikipedia and relies on cached data'
-            opts['wikidown'] += 1
-        else:        
-
-            err = uSysCmd(opts, '/usr/bin/wget ' + wgopts + ' "' + url + '"', 
-                          opts['debug'])
-            
-            if not err:
-                uPlogExtra(opts, "wget: " + url, 3)
-                opts['wgets'] += 1
-            else:
-                uPlogExtra(opts, "Failed: wget " + url, 2)
-                uPlogFile(opts, opts['dcdir'] + '/images/wget_log.txt', 2)
-
-    if not err:
-        uSysMkdir(opts, opts['bodir'] + '/' + image_dir)
-        
-        try:
-            src_f = opts['dcdir'] + '/images/' + fname
-            srcfile = urllib.unquote(src_f)
-        ## urllib generates a noisy warning 
-        
-        #         with warnings.catch_warnings():
-        #             warnings.simplefilter("ignore")
-        #             srcfile = urllib.quote(src_f) # has some messy warnings. They don't seem important.
-        
-        #        srcfile = urllib.quote(src_f)
-            copyfile(srcfile, opts['bodir'] + '/' + image_file)
-        except Exception as e:
-            uPlogFile(opts, opts['dcdir'] + '/images/wget_log.txt', 1)
-            uPlogExtra(opts, "Exception: " + uCleanChars(opts, str(e)), 1)
-            err = 'Image name has messy control characters ' + uCleanChars(opts, fname)
-            # Sometimes wget garbles the dowloaded file name in a way that we can't guesss.
-            # The right fix involves testing for messy strings prior to
-            # download, and then specifying some safe version of the string later on...
-
-    if not err and not os.path.exists(opts['bodir'] + '/' + image_file ):
-        err = 'Missing file: ' + opts['bodir'] + '/' + image_file
-    return err
 
 def substr_bt(Str, pre, post):
     
@@ -639,13 +299,6 @@ def print_progress(opts, st_time, im_tot, im_all, p_total_est_time):
     return p_total_est_time            
 
 
-
-
-
-Punc1 = ['.','?','!']           # good way to end a sentence
-Punc2 = [',', ':', ';']        # less good
-Punc3 = [')',']','}','>']       # ...
-Punc4 = ['@','#','$','/','\\', '%','^','&','*','(','[','{','<']
 
 
 def ShortFoot(summ0_in):
@@ -1396,11 +1049,13 @@ def trim_to_footnote(bl, opts):
     return err, foot_dict
 
 
-def save_file(opts, ipath, out_data):
+def MainSaveFile(opts, ipath, olist):
+    """
+    @summary: Save our new html file
+    """
 
     ofile = open(ipath, "w+")
     
-    olist = out_data
     ln = 0
     for oline in olist:
         ln += 1
@@ -1441,7 +1096,7 @@ def MainSketchParagraph(paragraph):
     @summary: Generate a normalized Version of a Paragraph
     
     @note: Take the first 8 words in a paragraph and normalize them by
-    ignores all symbols, punctuation and upper and lower case.
+    ignoring all symbols, punctuation and upper and lower case.
     """
     ol = paragraph.split(' ')
     
@@ -1469,12 +1124,12 @@ def MainSketchPage(bl):
     sketch = set()
     
     for tag in bl.find_all('h1') + bl.find_all('h2') + bl.find_all('h3'):
-        sktxt = MainSketchHeading(get_text_safe(tag))
+        sktxt = MainSketchHeading(uGetTextSafe(tag))
         if sktxt:
             sketch = sketch.union({sktxt})
 
     for tag in bl.find_all('p'):
-        sktxt = MainSketchParagraph(get_text_safe(tag))
+        sktxt = MainSketchParagraph(uGetTextSafe(tag))
         if sktxt:
             sketch = sketch.union({sktxt})
 
@@ -1506,7 +1161,7 @@ def MainParentSketchVsMySketch(parent_sketch, my_sketch):
     
     
 
-def PrintArticleStats(opts, im_tot, convert, sect_label_href_list, foot_dict_list,
+def MainPrintArticleStats(opts, im_tot, convert, sect_label_href_list, foot_dict_list,
                       slink, http404, ilink, blink):
 
     uPlog(opts, "\nFound", str(im_tot), "Figures,", "Converted", str(convert), "Figures")
@@ -1535,7 +1190,7 @@ def PrintArticleStats(opts, im_tot, convert, sect_label_href_list, foot_dict_lis
     uPlog(opts, net_access)
 
 
-def PrintFinalStats (opts, bl, im_tot, convert, sect_label_href_list, foot_dict_list,
+def MainPrintFinalStats (opts, bl, im_tot, convert, sect_label_href_list, foot_dict_list,
                      slink, http404, toc_links, old_toc, st_time, ipath): 
 
     ilink = 0
@@ -1547,7 +1202,7 @@ def PrintFinalStats (opts, bl, im_tot, convert, sect_label_href_list, foot_dict_
         else:
             blink += 1
 
-    PrintArticleStats(opts, im_tot, convert, sect_label_href_list, foot_dict_list, slink,
+    MainPrintArticleStats(opts, im_tot, convert, sect_label_href_list, foot_dict_list, slink,
                           http404, ilink, blink)
     if opts['parent'] == '':
         ostr = 'Table of Contents Entries = ' + str(toc_links)
@@ -1836,13 +1491,13 @@ def MainSectionCreate(opts, st_time, bl, section_bname):
         toc_links = TocMake(opts, bl)
         sect_label_href_list = final_sect_label_href_list
 
-    PrintFinalStats(opts, bl, im_tot, convert, sect_label_href_list,
+    MainPrintFinalStats(opts, bl, im_tot, convert, sect_label_href_list,
                     foot_dict_list, slink, http404, toc_links, old_toc,
                     st_time, opts['footsect_name'] + '/' + section_bname)
     
     if opts['parent'] == '':
         MainAddDebugEntries(opts, bl)
-    save_file(opts, opts['bodir'] + '/' + section_bname,
+    MainSaveFile(opts, opts['bodir'] + '/' + section_bname,
               bl.prettify(formatter="html").splitlines(True))
     
     return foot_dict_list, sect_label_href_list
@@ -1859,7 +1514,7 @@ def main(opts):
         
     
     if not opts['footnote']:
-        clean(opts)
+        uClean(opts)
     else:
         uSysMkdir(opts, opts['dcdir'])
 
@@ -1867,7 +1522,7 @@ def main(opts):
         opts['base_url'] = opts['url']
         opts['base_bodir'] = opts['bodir']
 
-    err, bl, section_bname = get_html(opts)
+    err, bl, section_bname = uGetHtml(opts)
     
     if err:
         return err, [], []

@@ -1,6 +1,178 @@
 
 import unicodedata
 
+def uGetTextSafe(curr):
+    """
+    @summary: Beautiful Soup objects often have text, but not always.
+    
+    @return: Return any text found, or the empty string if there is no text.
+    """
+    
+    
+#     text_out = ''
+#     if isinstance(curr, NavigableString):
+#         text_out = str(curr).strip()
+#     else:
+#         if curr:
+#             try:
+#                 if len(curr.contents) == 1:
+#                     text_out = curr.string
+#                 else:
+#                     text_out = str(curr.get_text())
+#             except Exception as e:
+#                 print len(curr.contents)
+#                 print "XXX caught get_text exception", e
+#                 print curr
+#             
+#     return text_out
+    
+    # XXX get_text() and several other methods are failing
+    # on these tags with the error:
+    #
+    # File "python2.7/site-packages/bs4/element.py", line 1339, in descendants
+    # current = current.next_element
+    # AttributeError: 'NoneType' object has no attribute 'next_element'
+    #
+    # This makes me believe that I have broken the tag tree somehow.
+    # I have been destroying a lot of tags, perhaps that is the problem
+    # and I need to somehow do that more cleanly. Documentation for
+    # destroy does say that it removes the tag, then destroys it... not sure.
+    # I tried explicitly extracting tags before destroying them, that didn't work... 
+    
+    curr_str = ''
+    
+    try:
+        for string in curr.strings:
+            try:
+                curr_str += string
+            except:        
+                None
+    except:
+        if curr_str == '':
+            try:
+                curr_str = curr.string
+            except:
+                # I am confused, and don't get this object.
+                None
+
+    return curr_str.strip()
+
+
+def uGetHtml(opts):
+    """
+    @summary: Collect the html file defined by opts.  
+    
+    @param opts
+    
+    Gets whatever uGetHtml will collect for a url in opts and 
+    returns the basename of that file for use as a reference.
+    
+    Extract the htmlsoup and save the .html file in the cache
+    
+    @return: (err - any error that occurs,
+              bl - the Beautiful Soup Structure
+              section_bname - the basename of the URL)
+    """
+
+    bl = None
+    section_bname = ''
+    err = ''
+
+    htmlfile = uGet1HtmlFile(opts, opts['dcdir'], False)
+    if htmlfile:
+        # uPlog(opts, "cache hit found", htmlfile
+        opts['chits'] = opts['chits'] + 1
+    else:
+    
+        wgopts = WGET_OPTS + ' -o "' + opts['dcdir'] + '/wget_log.txt"'
+        wgopts = wgopts + ' --convert-links --no-directories --directory-prefix="' + opts['dcdir'] + '/"'
+
+        # the url may not exists, so always be tentative with at least this wget
+        if opts['wikidown']:
+            err = 'wikidown: -w disables wget fetches to wikipedia and relies on cached data'
+            opts['wikidown'] += 1
+        else:
+            err = uSysCmd(opts, '/usr/bin/wget ' + wgopts + ' "' + 
+                      opts['url'] + '"', False)
+            if not err:
+                opts['wgets'] += 1
+                uPlogExtra(opts, "wget: "+ opts['url'], 3)
+                uPlogFile(opts, opts['dcdir'] + '/wget_log.txt', 3)
+            else:
+                uPlogExtra(opts, "XXX Failed: wget "+ opts['url'], 1)
+                uPlogFile(opts, opts['dcdir'] + '/wget_log.txt', 1)
+
+
+    if not err:
+        htmlfile = uGet1HtmlFile(opts, opts['dcdir'], False)
+        if not htmlfile:
+            err = 'URL is okay, but could not find .html file. See ' + opts['url']
+
+    if not err and htmlfile:
+        section_bname = urllib.unquote(uCleanChars(opts, os.path.basename(htmlfile)))
+
+        assert htmlfile
+        with open(htmlfile) as fp:
+            bl = BeautifulSoup(fp, "html.parser")
+
+    if err:
+        uPlog(opts, "No data for", opts['url'])
+        uPlog(opts, err)
+        uPlog(opts, "Verify that URL exists")
+        uPlog(opts, '')
+        err = 'url_failed: ' + err
+
+    return [err, bl, section_bname]
+
+
+def uClean(opts):
+    """
+    @summary: Cleanup old files, removed cached content, create directories.
+    """
+    
+    del_msg = "XXXX What are we trying to delete? Everything? THIS IS A BAD BUG...XXXX"
+    assert len(opts['bodir']) > 10, del_msg
+    assert len(opts['dcdir']) > 10, del_msg
+
+    #
+    # If we are running on a subarticle don't chatter about cleaning up
+    # directories, we will already have this message in the parent
+    #
+
+    cwd = os.getcwd()
+    
+    cwd_msg = "\n\nUnable to uClean the current working directory.\n Try cd ..\n"
+    
+    if opts['clean_book']:
+        assert not opts['bodir'] in cwd, cwd_msg 
+        uSysCmd(opts, 'rm -r "' + opts['bodir'] + '"', False)
+
+    uSysMkdir(opts, opts['bodir'])
+    if opts['parent'] == '':
+        uPlog(opts, '')
+        if opts['clean_book']:
+            uPlog(opts, "Removing all generated htmlfiles, footnotes, images, and equations.")
+
+    if opts['clean_cache']:
+
+        if opts['parent'] == '':
+            assert not opts['dcdir'] in cwd, cwd_msg
+            uSysCmd(opts, "rm -r " + opts['dcdir'] , False)
+            uPlog(opts, "Removing all data previously downloaded from the Internet")
+    
+    if opts['clean_html']:
+        if opts['parent'] == '':
+            uSysCmd(opts, 'find "' + opts['bodir'] +'" -name \*.html -exec rm \{\} \;' , False)
+            uPlog(opts, "Removing generated html files, and failed urls from the cache.")
+    
+    uSysMkdir(opts, opts['bodir'] + '/images')
+    uSysMkdir(opts, opts['bodir'] + '/footnotes')
+
+    uSysMkdir(opts, opts['dcdir'])
+    uSysMkdir(opts, opts['dcdir'] + '/images')
+    uSysMkdir(opts, opts['dcdir'] + '/footnotes')
+
+
 def uBurn2Ascii(str_in):
     """
     @summary: hack: we force conversion when standard filters fail, with ugly results
