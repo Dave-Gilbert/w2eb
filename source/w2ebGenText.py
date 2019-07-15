@@ -1,4 +1,6 @@
 
+import json
+
 from w2ebUtils import *
 from w2ebConstants import *
 
@@ -67,7 +69,7 @@ def GenTextShortFoot(summ0_in):
     return summ0
 
 
-def GenTextFootnote(bl, opts):
+def GenTextFootNote(opts, bl):
     """
     @summary: Generate the text for footnotes, both long and short.
     
@@ -211,4 +213,49 @@ def GenTextFootnote(bl, opts):
     foot_dict['msg'] = 0
 
     return err, foot_dict
+
+def GenTextSummarizeFootNote(opts, bl):
+    """
+    @summary: Summarize the article represented by bl. Save a representation in the footnote dir.
+    
+    @return (err, or a dictionary of footnote items)
+    """
+    
+    err, foot_dict = GenTextFootNote(opts, bl)
+    if foot_dict:
+        fp = open(opts['base_bodir'] + '/footnotes/' + opts['ret_anch'] + '.json', 'w')
+        if fp:
+            json.dump(foot_dict, fp)
+            fp.close()
+        else:
+            uPlog(opts, "Warning: unable to save footnote in cache, proceeding anyway")
+# Not being able to cache a file should maybe create just a warning.
+
+    return err, foot_dict
+
+def GenTextGetFootNote(opts):
+    
+    st_time = time.time()
+    foot_dict = {}
+    
+    opts['footsect_name'] = uCleanChars(opts, opts['footsect_name'])
+    opts['bodir'] = uCleanChars(opts, opts['bodir'])
+        
+    uSysMkdir(opts, opts['dcdir'])
+
+    err, bl, section_bname = uGetHtml(opts)
+    
+    if err:
+        return err, []
+
+    uPlog(opts, '==> Fetching Summary for "' + opts['footsect_name'] + '"')
+    uPlog(opts, "Searching:", opts['url'])
+    
+    opts['section_bname'] = section_bname
+    
+    if opts['footnote']:
+        err, foot_dict = GenTextSummarizeFootNote(opts, bl)
+
+    return err, foot_dict
+
 

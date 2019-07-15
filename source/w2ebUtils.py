@@ -583,3 +583,141 @@ def uFindSectHref(opts, url_hfile, sect_label_href_list):
     return None
 
 
+def uUrlOk(opts, url, footsect_name):
+    """
+    @summary: Limit our search to wikipedia articles
+    
+    @param url
+    @param footsect_name
+    """
+       
+    # don't download exactly ourselves
+    if url == 'https://en.wikibooks.org/wiki/' + footsect_name:
+        return False
+    if url in opts['url']:
+        return False
+    if '&action=' in url:
+        return False
+    if url[-6:] == '/wiki/':
+        return False
+    if 'wikipedia.org' in url:
+        return True
+    if 'wikibooks.org' in url:
+        return True
+
+    return False
+
+def uHrefOk(tag_href, exclude_internal):
+    """
+    @summary: Verify that soup tag is an anchor with an href and other properties
+    
+    @param tag_href -- a soup tag
+    @param exclude_internal -- Whether or not to allow internal references
+    
+    This function is used as part of a BeautifulSoup find_all() call to
+    filter out tags that we will or wont try to make into footnotes.
+    
+    When we search for tags to modify we don't want to change anything
+    that refers to the current page. We have a separate search that also
+    uses this filter to count all references for statistics purposes.
+    """
+   
+    if not tag_href.name == 'a':
+        return False
+    
+    if not tag_href.has_attr('href'):
+        return False
+
+    url = tag_href['href']
+    
+    if not url:
+        return False
+
+    suff = url[-4:]
+    
+    # We have already resolved the images that we can
+    # at this stage, we don't annotate them further
+    
+    if (suff in IMAGE_FIG + IMAGE_PIC + IMAGE_SVG + SUFFIX_OT):
+        # don't mark up images, or other special objs
+        return False
+
+    if exclude_internal:
+        if url[0:4] != 'http':
+            # page link is internal, don't mark it up
+            return False
+    
+    return True
+
+def uHrefRemote(tag_href):
+    """
+    @summary: True if tag is an anchor that refers to a remote footnote or section
+    """
+    return uHrefOk(tag_href, True)
+
+
+def uFindFootDict(foot_title, foot_dict_list):
+    """
+    @summary: Look up foot_title in a list of foot dictionaries.
+    
+    @return: None if not found, o.w. a footnote dictionary
+    """
+
+    for foot_dict in foot_dict_list:
+        if foot_dict['foot_title'] == foot_title:
+            return foot_dict
+    
+    return None
+
+def uMergeSectUniq(opts, sect_label_href_list, sect_label_href_list2):
+    """
+    @summary: Merge two section lists, include unique items only
+    """
+    items_merged = 0
+    if sect_label_href_list:
+        for item in sect_label_href_list2:
+            if not uFindSectHref(opts, item['html_file'], sect_label_href_list):
+                items_merged += 1
+                sect_label_href_list.append(item)
+
+    return items_merged
+
+
+def uMergeFootUniq(foot_dict_list, foot_dict_list2):
+    """
+    @summary: Merge two footnote lists, include unique items only
+    """
+    items_merged = 0
+    if foot_dict_list2:
+        for item in foot_dict_list2:
+            if not uFindFootDict(item['foot_title'], foot_dict_list):
+                items_merged += 1
+                foot_dict_list.append(item)
+    
+    return items_merged
+
+def uSaveFile(opts, ipath, olist):
+    """
+    @summary: Save our new html file
+    """
+
+    ofile = open(ipath, "w+")
+    
+    ln = 0
+    for oline in olist:
+        ln += 1
+        if opts['debug'] >= 3:
+            ofile.write(oline)
+        else:
+            try:
+                ofile.write(oline)
+            except UnicodeEncodeError:
+                # the following part is a bit harsh, but we need to do something
+                # to recover. Hopefully we don't break the output. 
+                ok_line = unicodedata.normalize('NFKD',oline).encode('ascii','ignore') 
+                ofile.write(ok_line)            
+            
+    ofile.close()
+
+
+

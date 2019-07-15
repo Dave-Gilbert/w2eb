@@ -6,12 +6,10 @@ from w2ebConstants import *
 
 from bs4 import BeautifulSoup
 
-#from w2eb import MainSketch
-from w2eb import MainSketchPage 
-from w2eb import MainParentSketchVsMySketch
 from w2ebTOC import TocMake 
 from w2ebTOC import TocRemoveOldToc
-from w2ebFootNotes import Foot2HrefOk
+from w2ebSketch import SketchPage
+from w2ebSketch import SketchVsMySketch
 
 def FinalPrintArticleStats(opts, im_tot, convert, sect_label_href_list, foot_dict_list,
                       slink, http404, ilink, blink):
@@ -46,7 +44,7 @@ def FinalHrefAll(tag_href):
     """
     @summary: True if tag is an anchor that refers to text in this page or elsewhere
     """
-    return Foot2HrefOk(tag_href, False)
+    return uHrefOk(tag_href, False)
 
 def FinalPrintStats(opts, bl, im_tot, convert, sect_label_href_list, foot_dict_list,
                      slink, http404, toc_links, old_toc, st_time, ipath): 
@@ -108,9 +106,9 @@ def FinalAddSections(opts, bl, sect_label_href_list):
             sl = BeautifulSoup(fp, "html.parser")
 
         uPlogExtra(opts, "==> Processing Section: " + section['foot_title'], 1)
-        main_sketch = MainSketchPage(bl)
-        sect_sketch = MainSketchPage(sl)
-        similar = MainParentSketchVsMySketch(main_sketch, sect_sketch)
+        main_sketch = SketchPage(bl)
+        sect_sketch = SketchPage(sl)
+        similar = SketchVsMySketch(main_sketch, sect_sketch)
         if similar:
             uPlogExtra(opts, "...Section is too similar to existing text %s, excluding." %
                       similar, 1)

@@ -12,36 +12,15 @@ from w2ebUtils import *
 from w2ebConstants import *
 
 from w2ebFinal import FinalReduceSimilarAnchors 
-from w2eb import Main
 
+from w2ebGenText import GenTextGetFootNote
+from w2ebPic import PicGetImages
+from w2ebStartup import StartupReduceTags
+from w2ebSketch import SketchPage
+from w2ebSketch import SketchVsMySketch
 
+from w2ebFinal import FinalMergeFootSectTOC
 
-def MergeSectUniq(opts, sect_label_href_list, sect_label_href_list2):
-    """
-    @summary: Merge two section lists, include unique items only
-    """
-    items_merged = 0
-    if sect_label_href_list:
-        for item in sect_label_href_list2:
-            if not uFindSectHref(opts, item['html_file'], sect_label_href_list):
-                items_merged += 1
-                sect_label_href_list.append(item)
-
-    return items_merged
-
-
-def MergeFootUniq(foot_dict_list, foot_dict_list2):
-    """
-    @summary: Merge two footnote lists, include unique items only
-    """
-    items_merged = 0
-    if foot_dict_list2:
-        for item in foot_dict_list2:
-            if not FindFootDict(item['foot_title'], foot_dict_list):
-                items_merged += 1
-                foot_dict_list.append(item)
-    
-    return items_merged
 
 def FootLabelAnchSuff(opts, label_in):
 
@@ -113,17 +92,21 @@ def Foot2RecursiveCall(opts, bl, url, ret_anch,
         opt2['footsect_name'] = foot_title 
 
     # only the top level parent allows children to write to sys.stdout
-
     if opts['parent']:
         opt2['parent_fp'] = None
 
     if opts['debug'] > 0: # we want to stop if debugging is on 
-        [err, foot_dict_list2, sect_label_href_list] = Main(opt2)
+        if footnote:
+            err, foot_dict = GenTextGetFootNote(opts)
+        else:
+            [err, foot_dict_list2, sect_label_href_list] = FootMain(opt2)
     else:
         try:
-            [err, foot_dict_list2, sect_label_href_list] = Main(opt2)
-            
-    
+            if footnote:
+                err, foot_dict = GenTextGetFootNote(opts)
+            else:
+                [err, foot_dict_list2, sect_label_href_list] = FootMain(opt2)
+
         except Exception as e:
             uPlog(opts, '')
             uPlog(opts, "Problem fetching", url)
@@ -139,20 +122,15 @@ def Foot2RecursiveCall(opts, bl, url, ret_anch,
 
     # if wikidown is nonzero our child will increment it if necessary
     if footnote:
-        
-        assert len(foot_dict_list2) <= 1, "Found %d footnote entires." +\
-                len(foot_dict_list2)
-        if foot_dict_list2:
-            foot_dict = foot_dict_list2[0]
-        
-        if err:
+        if not err:
+            assert foot_dict, "Expected a footnote dictionary"
+        else:
             assert not foot_dict, "Expected footnote to be empty, found: " +\
                 foot_dict['short_foot']
-        else:
-            assert foot_dict, "Found no footnote, and no error"
+
     else:
         if not err:
-            items_merged = MergeFootUniq(foot_dict_list, foot_dict_list2)
+            items_merged = uMergeFootUniq(foot_dict_list, foot_dict_list2)
             uPlogExtra(opts, "Footnote items merged = %d." % items_merged, 2)
 
     opts['chits'] = opts['chits'] + opt2['chits']
@@ -162,7 +140,6 @@ def Foot2RecursiveCall(opts, bl, url, ret_anch,
 
     
     return err, foot_dict, sect_label_href_list
-
 
 
 def Foot2GetCachedFootSect(opts, foot_dict_list,
@@ -180,7 +157,7 @@ def Foot2GetCachedFootSect(opts, foot_dict_list,
     sect_dict = {}
     
     if footnote:
-        foot_dict = FindFootDict(foot_title, foot_dict_list)
+        foot_dict = uFindFootDict(foot_title, foot_dict_list)
         if foot_dict:
             cache_hit = True
 
@@ -208,9 +185,6 @@ def Foot2GetCachedFootSect(opts, foot_dict_list,
                 sect_label_href_list.append(sect_dict)
 
     return cache_hit, foot_dict, sect_dict
-
-
-
 
 
 def Foot12GetHref(opts, foot_dict_list, anch, footnote,
@@ -259,21 +233,6 @@ def Foot12GetHref(opts, foot_dict_list, anch, footnote,
             ", htmlfile=" + str(htmlfile) + "\nfoot_dict:\n" + str(foot_dict)   
 
     return err, href
-
-
-
-def FindFootDict(foot_title, foot_dict_list):
-    """
-    @summary: Look up foot_title in a list of foot dictionaries.
-    
-    @return: None if not found, o.w. a footnote dictionary
-    """
-
-    for foot_dict in foot_dict_list:
-        if foot_dict['foot_title'] == foot_title:
-            return foot_dict
-    
-    return None
 
 def Foot3RaiseAnchor(tag_href, ret_anch):
     """
@@ -358,7 +317,7 @@ def Foot2UpdateHTMLTag(opts, bl, tag_href, ret_anch, footnote, foot_title,
 def Foot2FinalChecksRetPsym(opts, foot_dict_list, footnote, foot_title, cache_hit, foot_dict):
 
     if footnote and opts['depth'] > 0:
-        assert foot_title and FindFootDict(foot_title, foot_dict_list) , \
+        assert foot_title and uFindFootDict(foot_title, foot_dict_list) , \
             'Footnote "' + foot_title + '" not in foot dictionary? Should be an error.\n' +\
             'Have %d items in footnote list.' % len(foot_dict_list)
     if foot_dict:
@@ -461,7 +420,7 @@ def Foot2UpdateMemoryCache(opts, url, outdir, footnote, foot_dict, foot_title, f
     
     if footnote:
 
-        foot_dict_hit = FindFootDict(foot_title, foot_dict_list)
+        foot_dict_hit = uFindFootDict(foot_title, foot_dict_list)
         
         if not foot_dict_hit and foot_dict:
             foot_dict_list += [foot_dict]
@@ -475,7 +434,7 @@ def Foot2UpdateMemoryCache(opts, url, outdir, footnote, foot_dict, foot_title, f
         # We merge our child lists with the parent lists at the end of this function
         # when the child list is complete. This creates a more reasonable order in
         # the final output file when each section is appended.
-        MergeSectUniq(opts, sect_label_href_list_child, sect_label_href_list_child2)
+        uMergeSectUniq(opts, sect_label_href_list_child, sect_label_href_list_child2)
 
         sect_dict = uFindSectHref(opts, url, sect_label_href_list + sect_label_href_list_child)
 
@@ -604,79 +563,6 @@ def Foot1CheckUrlReachable(opts, bl, ok_i_urls, already_warned_url, tag_href,
     return err, url_cache_hit, slink, http404, psym
 
 
-def Foot1UrlOk(opts, url, footsect_name):
-    """
-    @summary: Limit our search to wikipedia articles
-    
-    @param url
-    @param footsect_name
-    """
-       
-    # don't download exactly ourselves
-    if url == 'https://en.wikibooks.org/wiki/' + footsect_name:
-        return False
-    if url in opts['url']:
-        return False
-    if '&action=' in url:
-        return False
-    if url[-6:] == '/wiki/':
-        return False
-    if 'wikipedia.org' in url:
-        return True
-    if 'wikibooks.org' in url:
-        return True
-
-    return False
-
-
-def Foot2HrefOk(tag_href, exclude_internal):
-    """
-    @summary: Verify that soup tag is an anchor with an href and other properties
-    
-    @param tag_href -- a soup tag
-    @param exclude_internal -- Whether or not to allow internal references
-    
-    This function is used as part of a BeautifulSoup find_all() call to
-    filter out tags that we will or wont try to make into footnotes.
-    
-    When we search for tags to modify we don't want to change anything
-    that refers to the current page. We have a separate search that also
-    uses this filter to count all references for statistics purposes.
-    """
-   
-    if not tag_href.name == 'a':
-        return False
-    
-    if not tag_href.has_attr('href'):
-        return False
-
-    url = tag_href['href']
-    
-    if not url:
-        return False
-
-    suff = url[-4:]
-    
-    # We have already resolved the images that we can
-    # at this stage, we don't annotate them further
-    
-    if (suff in IMAGE_FIG + IMAGE_PIC + IMAGE_SVG + SUFFIX_OT):
-        # don't mark up images, or other special objs
-        return False
-
-    if exclude_internal:
-        if url[0:4] != 'http':
-            # page link is internal, don't mark it up
-            return False
-    
-    return True
-
-
-def Foot1HrefRemote(tag_href):
-    """
-    @summary: True if tag is an anchor that refers to a remote footnote or section
-    """
-    return Foot2HrefOk(tag_href, True)
 
 def Foot1HandleErrs(opts, bl, tag_href, err, ok_i_urls, slink,
                     http404, psym, url_cache_hit, already_warned_url):
@@ -822,12 +708,12 @@ def FootNotes(opts, bl):
     sys.stdout.flush()
     uPlogExtra(opts, '', 1)
 
-    for tag_href in bl.find_all(lambda x: Foot1HrefRemote(x)):
+    for tag_href in bl.find_all(lambda x: uHrefRemote(x)):
         im_all += 1
     
     p_total_est_time = im_all / 3.0
     
-    for tag_href in bl.find_all(lambda x: Foot1HrefRemote(x)):
+    for tag_href in bl.find_all(lambda x: uHrefRemote(x)):
 
         if not tag_href.has_attr('href'):
             # this function may remove 'href' fields during the loop
@@ -844,7 +730,7 @@ def FootNotes(opts, bl):
         err, url_cache_hit, slink, http404, psym = Foot1CheckUrlReachable(opts, bl,
               ok_i_urls, already_warned_url, tag_href, slink, http404)
             
-        if not err and Foot1UrlOk(opts, tag_href['href'], opts['footsect_name']):
+        if not err and uUrlOk(opts, tag_href['href'], opts['footsect_name']):
 
             err, footnote, cache_hit, psym = Foot1GetFootSect(opts,
                            bl, tag_href, foot_dict_list, sect_label_href_list, 
@@ -878,6 +764,98 @@ def FootNotes(opts, bl):
     json.dump(ok_i_urls, fp)
     fp.close()
     
-    MergeSectUniq(opts, sect_label_href_list, sect_label_href_list_child)
+    uMergeSectUniq(opts, sect_label_href_list, sect_label_href_list_child)
     
     return [sect_label_href_list, foot_dict_list, slink, http404]
+
+
+def FootMainWelcomeMsg(opts, st_time):
+    """
+    @summary:  Print the welcom message for generating footnotes and sections
+    """
+
+    uPlog(opts, '')
+    uPlog(opts, '---------------------------------------------')
+    uPlog(opts, '==> Downloading Wikibook "' + opts['footsect_name'] + '"')
+    uPlog(opts, "Started at", time.asctime(time.localtime(st_time)))
+    uPlog(opts, "Searching:", opts['url'])
+    if opts['parent']:
+        uPlog(opts,'Parent = "' + opts['parent'] + '"')
+
+    ostr = "Debug = " + str(opts['debug']) + ", Depth = " + str(opts['depth'])
+    if opts['no_images']:
+        ostr += ", No Images =", str(opts['no_images'])
+    if opts['svg2png']:
+        ostr += ", .PNG Math & Figures"
+    elif opts['svgfigs']:
+        ostr += ", .SVG Math & .PNG Figures"
+    else:
+        None
+    uPlog(opts, ostr)
+
+
+def FootMainSectionCreate(opts, st_time, bl, section_bname):
+
+    st_time = time.time()
+    im_tot = 0
+    convert = 0
+    slink = 0
+    http404 = 0
+    foot_dict_list = []
+    foot_dict = {}
+
+    StartupReduceTags(opts, bl, section_bname)
+    im_tot, convert = PicGetImages(opts, bl) # easy...
+    [sect_label_href_list, foot_dict_list, slink, http404] = FootNotes(opts, bl)
+
+    sect_label_href_list = FinalMergeFootSectTOC(opts, st_time, bl, section_bname,
+            im_tot, convert, slink, http404, foot_dict_list, sect_label_href_list)
+
+    uSaveFile(opts, opts['bodir'] + '/' + section_bname,
+              bl.prettify(formatter="html").splitlines(True))
+    
+    return foot_dict_list, sect_label_href_list
+
+def FootMain(opts):
+    
+    st_time = time.time()
+    foot_dict_list = []
+    foot_dict = {}
+    sect_label_href_list = []
+    
+    opts['footsect_name'] = uCleanChars(opts, opts['footsect_name'])
+    opts['bodir'] = uCleanChars(opts, opts['bodir'])
+        
+    assert not opts['footnote'], "Main does not generate footnotes, only sections. See GenTextGetFootNote" 
+
+    uClean(opts)
+
+    if opts['parent'] == '':
+        opts['base_url'] = opts['url']
+        opts['base_bodir'] = opts['bodir']
+
+    err, bl, section_bname = uGetHtml(opts)
+    
+    if err:
+        return err, [], []
+
+    # Compare this section sketch to parents. Fail if they are too similar.    
+    opts['my_sketch'] = SketchPage(bl)
+    i_am_my_parent = SketchVsMySketch(opts['parent_sketch'], 
+                                                opts['my_sketch'])
+
+    if i_am_my_parent:
+        return 'similar_to_parent: ' + i_am_my_parent, None, None
+
+    FootMainWelcomeMsg(opts, st_time)
+    
+    opts['section_bname'] = section_bname
+    
+    foot_dict_list, sect_label_href_list = FootMainSectionCreate(opts, st_time, bl, section_bname)
+
+    return err, foot_dict_list, sect_label_href_list
+
+
+
+
+
