@@ -1,5 +1,6 @@
 
 import sys
+from shutil import copyfile
 
 from w2ebUtils import *
 from w2ebConstants import * 

@@ -97,13 +97,14 @@ def Foot2RecursiveCall(opts, bl, url, ret_anch,
 
     if opts['debug'] > 0: # we want to stop if debugging is on 
         if footnote:
-            err, foot_dict = GenTextGetFootNote(opts)
+            err, foot_dict = GenTextGetFootNote(opt2)
+            sect_label_href_list = []
         else:
             [err, foot_dict_list2, sect_label_href_list] = FootMain(opt2)
     else:
         try:
             if footnote:
-                err, foot_dict = GenTextGetFootNote(opts)
+                err, foot_dict = GenTextGetFootNote(opt2)
             else:
                 [err, foot_dict_list2, sect_label_href_list] = FootMain(opt2)
 
@@ -122,11 +123,7 @@ def Foot2RecursiveCall(opts, bl, url, ret_anch,
 
     # if wikidown is nonzero our child will increment it if necessary
     if footnote:
-        if not err:
-            assert foot_dict, "Expected a footnote dictionary"
-        else:
-            assert not foot_dict, "Expected footnote to be empty, found: " +\
-                foot_dict['short_foot']
+        assert bool(err) ^ bool(foot_dict), "Expected one of err or foot_dict."
 
     else:
         if not err:
@@ -475,6 +472,7 @@ def Foot1GetFootSect(opts, bl, tag_href, foot_dict_list, sect_label_href_list,
                             footnote, outdir, foot_title, url, 
                             sect_label_href_list, sect_label_href_list_child)
 
+
     if not err and cache_hit:
         opts['chits'] = opts['chits'] + 1
         assert foot_dict or sect_dict, \
@@ -508,7 +506,7 @@ def Foot1GetFootSect(opts, bl, tag_href, foot_dict_list, sect_label_href_list,
                            foot_title, href, cache_hit, sect_label_href_list)
     psym = ''
     if not err:
-        
+
         psym = Foot2FinalChecksRetPsym(opts, foot_dict_list, footnote,
                                     foot_title, cache_hit, foot_dict)
 

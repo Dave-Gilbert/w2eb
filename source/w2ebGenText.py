@@ -4,7 +4,6 @@ import json
 from w2ebUtils import *
 from w2ebConstants import *
 
-
 def GenTextStripSquareBr(opts, par_text):
     """
     @summary: Remove any reference like data surrounded by square brackets [*]
@@ -186,7 +185,6 @@ def GenTextFootNote(opts, bl):
         #shortsumm += '<a href="' + '#' + opts['ret_anch'] +'">'
         #shortsumm += foot_title + '</a>: '
 
-
     shortsumm += summ0
     if not kindle_fnotes:
         # works but is ugly XXX 
@@ -239,6 +237,7 @@ def GenTextGetFootNote(opts):
     foot_dict = {}
     
     opts['footsect_name'] = uCleanChars(opts, opts['footsect_name'])
+    
     opts['bodir'] = uCleanChars(opts, opts['bodir'])
         
     uSysMkdir(opts, opts['dcdir'])
@@ -248,13 +247,14 @@ def GenTextGetFootNote(opts):
     if err:
         return err, []
 
-    uPlog(opts, '==> Fetching Summary for "' + opts['footsect_name'] + '"')
+    uPlog(opts, '==> Fetching Footnote Summary for "' + opts['footsect_name'] + '"')
     uPlog(opts, "Searching:", opts['url'])
     
     opts['section_bname'] = section_bname
     
-    if opts['footnote']:
-        err, foot_dict = GenTextSummarizeFootNote(opts, bl)
+    err, foot_dict = GenTextSummarizeFootNote(opts, bl)
+
+    assert bool(err) ^ bool(foot_dict), "One of err or foot_dict should be defined" 
 
     return err, foot_dict
 
