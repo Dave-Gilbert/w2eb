@@ -271,72 +271,7 @@ def str_smh(secs):
     
     return retval
 
-def print_time_left(opts, perc, secs):
 
-    if secs < 1:
-        secs = 1
-                
-    uPlogNr(opts, "\n%2s %% %s left" % (perc, str_smh(secs)),">")
-
-def print_progress(opts, st_time, im_tot, im_all, p_total_est_time):
-    
-    pdone = int(100 * im_tot / im_all)                
-    t2 = time.time()
-    
-    if im_tot == 0:
-        total_est_time = p_total_est_time
-    else:
-        total_est_time = ((t2 - st_time) * im_all) / im_tot
-        total_est_time = (total_est_time + p_total_est_time) / 2
-        
-    if im_tot > 60: 
-        p_total_est_time = total_est_time # smoothing factor
-        
-    tleft = int((total_est_time - (t2 - st_time)))
-    
-    print_time_left(opts, pdone, tleft)
-        
-    return p_total_est_time            
-
-
-
-
-def ShortFoot(summ0_in):
-    """
-    This function is almost the same as the next one, can they be merged?
-    Not sure...
-    """
-
-    half_minw = MIN_WORDS / 2
-
-    wc = 0 # word count
-    summ0_wlist = summ0_in.split(' ')
-    summ0 = ''
-    for wc in range(0, len(summ0_wlist)):
-        word = summ0_wlist[wc]
-        if word[-4:] == '</p>':
-            break 
-        if word[-1:] in Punc1 and wc > 2 * half_minw:
-            if word[-3:-2].isalpha():  # avoid single letter initials h.p. lovercraft
-                break
-        if word[-1:] in Punc2 and wc > 4 * half_minw:
-            break
-        if word[-1:] in Punc3 and wc > 6 * half_minw:
-            break
-        if word[-1:] in Punc4 and wc > 8 * half_minw:
-            word = word[:-1]
-            break
-        if wc > 8 * half_minw:
-    #        print "found foo_max"
-            break
-        summ0 = summ0 + ' ' + word
-
-    summ0 = summ0 + ' ' + word
-
-    if summ0[-4:] == '</p>':
-        summ0 = summ0[:-4]
-
-    return summ0
 
 
 def tag_hasid(tag):
@@ -361,12 +296,6 @@ def fix_easy_prog(opts, ma):
     sys.stdout.flush()
 
     opts['clen'] += len(ma) + 1
-
-    
-def is_comment(tag):
-    if isinstance(tag, Comment):
-        return True
-    return False
 
 def fix_easy_tags(opts, bl, ipath):
     """
@@ -547,13 +476,6 @@ def fix_easy_tags(opts, bl, ipath):
                 continue
             curr.decompose()
 
-#    from the web:
-#
-#    div = soup.find('div', class_='foo')
-#    for element in div(text=lambda text: isinstance(text, Comment)):
-#        element.extract()
-
-
     for comment in bl.findAll(text=lambda text:isinstance(text, Comment)):
         comment.extract()
     # why do we need the entire GNU license
@@ -663,41 +585,6 @@ def FindSectHref(opts, url_hfile, sect_label_href_list):
     
 
     return None
-
-
-
-def LabelDelWhite(label_in):
-    """
-    @summary: Converts all whitespace between words into a single space.
-
-    @return:
-
-    @note: Good for reducing text that might include carriage returns to a single line.
-    """
-    label_in = label_in.strip()
-
-    label_out = ''
-    prev = 'x'
-    for i in range(0, len(label_in)):
-
-        if not label_in[i].isspace():
-            label_out += label_in[i]
-        elif label_in[i].isspace() and not prev.isspace():
-            label_out += ' '
-        else:
-            None
-            
-    return label_out
-
-def LabelAnchSuff(label_in):
-
-    ret_suff = LabelDelWhite(label_in)[:20]
-    #if '/' in ret_suff:
-    ret_suff = '_'.join(ret_suff.split('/'))
-    ret_suff = ret_suff.replace(' ', '_').strip()   
-    ret_suff = uCleanChars(opts, urllib.quote(ret_suff))
-
-    return ret_suff
 
 def AddReduceSimilarAnchors(opts, bl, url):
     """
@@ -892,161 +779,7 @@ def AddReduceHtmlRefs2AnchorsFinal(opts, bl):
 
 
 
-def strip_square_white(opts, par_text):
-    
-    
-    par_text = par_text
-    
-    if not par_text:
-        return ''
-    par_text = par_text.strip()
-    if not par_text:
-        return ''
-    par_text = ' '.join(par_text.split())  # strips \n \t etc. but not ' '
 
-    if not par_text:
-        return ''
-    # There is probably a better way to do this, but for now
-    # just explicitly kill the first 50 numerical references.
-    for i in range(0,50):
-        par_text = par_text.replace('[' + str(i) + ']', '')
-
-        
-    return par_text
-
-def trim_to_footnote(bl, opts):
-     
-    # seems to be the single wikimedia tag defining text content
-    #    
-    # sort of, found some cases where this wasn't true,
-    # for example: https://en.wikibooks.org/wiki/Special:Categories
-    # Lets erase the output file, treat it as a bust
-    
-    tag = bl.find('div', class_='mw-parser-output')
-    
-    foot_dict ={}
-    err = None
-    
-    words = 0
-    
-    if not tag:
-        err = 'bad_footnote: Can not find class=mw-parser-output in wiki text.'
-        return err, foot_dict
-    
-    summ=[]
-
-    max_par = NOTE_MAX_PAR
-    par_ind = 0
-    
-    first_par = True
-    first_string =''
-    for item in tag:
-
-        tag = item.name
-
-        if tag in ['div', 'h1', 'h2']:
-            if item.has_attr('id') and item['id'] == 'toc':
-                # usually a full footnote can be found before the wikipedia toc,
-                # sometimes the footnote isn't enough though. If we have found
-                # the toc keep reading, at least 5 paragraphs.
-                
-                if words < MIN_WORDS:
-                    # don't quit just yet. Keep going
-                    # and see if we can find a little more text
-                    # after the toc, but keep it limited
-                    max_par = NOTE_MAX_PAR / 2
-                else:           
-                    break
-        
-        elif tag in ['p', 'b', 'i', 'u', 'pre', 'code', 'tt', 'center']:
-
-            ustr = item.get_text()
-            ustr = strip_square_white(opts, ustr)
-            words += ustr.count(' ')
-            first_string = first_string + ' ' + ustr
-                    
-            if first_par:
-                if words < MIN_WORDS:   # we need at least MIN_WORDS before paragraph 1 ends
-                    first_string.replace('</p>',' ')
-                    continue
-                else:
-                    first_par = False
-                    summ = summ + [first_string + '</p>']  # prefix created later
-            else:
-                par_ind += 1
-                summ = summ + ['<p>' + ustr + '</p>']
-    
-        if par_ind > max_par:
-            # stop so we don't read a whole article
-            break
-    
-    if words < MIN_WORDS:
-
-        err = 'bad_footnote: Did not find enough text.'
-        uPlog(opts, 'Short footnote. Found %d words, need at least %d words.' %
-             (words, MIN_WORDS))
-        if words > 0:        
-            uPlog(opts, '\n', first_string, '\n')
-        return err, None
-
-    if first_par:
-        summ = summ + [first_string + '</p>']  # prefix created late
-    summ = summ + ['<p></p>']
-    
-    assert summ[0].count('</p>'), "Need exactly one </p> in first line of footnote"
-
-    summ0 = ShortFoot(summ[0])
-
-    foot_title = opts['footsect_name']
-
-    kindle_fnotes = False #XXX
-
-    num = ' [' + opts['ret_anch'].split('_')[2] +']:'
-    
-    assert opts['ret_anch'][0] != '#', "Badly formed ret_anch"
-
-    if kindle_fnotes:
-        # we think kindle footnotes are activated when the backreference lives in 
-        # the same tag as the id....
-        shortsumm = '<p>'
-        shortsumm += '<a href="' + '#' + opts['ret_anch'] +'"'
-        shortsumm += '" id="' + opts['ret_anch'] + '_foot">' + foot_title + num +'</a> '
-
-    else:
-        shortsumm = '<p>'
-        shortsumm +='<b id="' + opts['ret_anch'] + '_foot">' + foot_title + num +'</b> '
-        
-        # Kindle is eager to do things wrong... frustrating... 
-        #shortsumm += '<a href="' + '#' + opts['ret_anch'] +'">'
-        #shortsumm += foot_title + '</a>: '
-
-
-    shortsumm += summ0
-    if not kindle_fnotes:
-        # works but is ugly XXX 
-        shortsumm += '<a href="' + '#' + opts['ret_anch'] +'"> back</a> /'
-        None
-    shortsumm += ' <a href="' + '#' + opts['ret_anch'] + '_long">more...</a></p>'
-    
-    backlinklong  = '<b id="' + opts['ret_anch'] + '_long">' + foot_title + num +'</b> '
-
-    summ[0] = '<p>' + backlinklong + summ[0]
-
-    summ = summ + ['<p><a href="' + '#' + opts['ret_anch'] +'"> back</a> / more @ ']
-    summ = summ + ['<a href="' + opts['url'] +'">' + opts['url'] + '</a></p>']  
-    summ = summ + ['<br />']
-
-    summ += ['<p><hr width="' + str(int(WMAX * .8)) + '" align="center"></p>']  ## Ok idea, maybe later...
-
-    # basic foot dictionary definition... 
-    foot_dict ={}
-    foot_dict['short_foot'] = shortsumm
-    foot_dict['long_foot'] = summ
-    foot_dict['foot_title'] = foot_title
-    foot_dict['ret_anch'] = opts['ret_anch']
-    foot_dict['msg'] = 0
-
-    return err, foot_dict
 
 
 def MainSaveFile(opts, ipath, olist):
@@ -1159,253 +892,6 @@ def MainParentSketchVsMySketch(parent_sketch, my_sketch):
     
     return ""
     
-    
-
-def MainPrintArticleStats(opts, im_tot, convert, sect_label_href_list, foot_dict_list,
-                      slink, http404, ilink, blink):
-
-    uPlog(opts, "\nFound", str(im_tot), "Figures,", "Converted", str(convert), "Figures")
-
-    sfnotes = "Extracted %d Footnotes." % len(foot_dict_list)
-    
-    if sect_label_href_list:
-        sfnotes += " Identified %d Subsections via %s heuristic." %\
-        (len(sect_label_href_list), opts['stype'])
-    uPlog(opts, sfnotes)
-
-    links = 'Internet Refs = ' + str(ilink) + ', Page Refs = ' + str(blink)
-    if slink:
-        links += ', Bad Links Removed = ' + str(slink)
-    if http404:
-        links += ', http 404 = ' + str(int(http404))
-
-    uPlog(opts, links)
-        
-    net_access = "Internet Accesses = " + str(opts['wgets']) + \
-                         ', Cache hits = ' + str(opts['chits'])
-
-    if opts['parent'] == '' and opts['wikidown'] > 1:
-        net_access += ", %d Internet Accesss Skipped (-w)." % (int(opts['wikidown']) - 1)
-
-    uPlog(opts, net_access)
-
-
-def MainPrintFinalStats (opts, bl, im_tot, convert, sect_label_href_list, foot_dict_list,
-                     slink, http404, toc_links, old_toc, st_time, ipath): 
-
-    ilink = 0
-    blink = 0
-    
-    for tag_href in bl.find_all(lambda x: Foot1HrefAll(x)):
-        if tag_href['href'][0:4] == 'http':            
-            ilink += 1
-        else:
-            blink += 1
-
-    MainPrintArticleStats(opts, im_tot, convert, sect_label_href_list, foot_dict_list, slink,
-                          http404, ilink, blink)
-    if opts['parent'] == '':
-        ostr = 'Table of Contents Entries = ' + str(toc_links)
-        if old_toc > 1:
-            ostr += ', Removed %d old TOC Tables' % old_toc
-        uPlog(opts, ostr)
-    
-    uPlog(opts, "\nFinished at " + time.asctime(time.localtime(time.time())))
-    uPlog(opts, "Conversion took",str_smh(time.time() - st_time))
-    uPlog(opts, '')
-    uPlog(opts, "wrote " + ipath)
-    uPlog(opts, "==> Done")
-    uPlog(opts, '')
-
-
-def MainAddSections(opts, bl, sect_label_href_list):
-    
-    if not sect_label_href_list:
-        return
-    
-    head = bl.find('div', class_='mw-content-ltr')
-    
-    assert head, 'Unable to find root of html text, mw-parser-output'
-    
-    head = list(head.contents)[0]
-    #         
-    subsections = bl.new_tag('div')
-    subsections['class'] ='subsections_' + opts['footsect_name']
-    head.append(subsections)
-
-    # the parent sketch is extended each time we add a subsection.
-    # lets make sure that we are not duplicating text, so recompute
-    # the sketches at each stage.
-
-    final_section_list = []
-
-    for section in sect_label_href_list:
-        
-        sfile = section['html_file']
-        
-        assert os.path.exists(sfile), 'Unable to find section "' + section['foot_title'] + \
-            '" in file: ' + str(section)
-            
-        with open(sfile) as fp:
-            sl = BeautifulSoup(fp, "html.parser")
-
-        uPlogExtra(opts, "==> Processing Section: " + section['foot_title'], 1)
-        main_sketch = MainSketchPage(bl)
-        sect_sketch = MainSketchPage(sl)
-        similar = MainParentSketchVsMySketch(main_sketch, sect_sketch)
-        if similar:
-            uPlogExtra(opts, "...Section is too similar to existing text %s, excluding." %
-                      similar, 1)
-        else:
-            final_section_list.append(section)
-
-
-            # if there are any h1 headings demote all headings by 1
-            
-            if sl.find('h1'):
-                for lvl in [3,2,1]:
-                    for heading in sl.find_all('h' + str(lvl)):
-                        heading.name = 'h' + str(lvl + 1)
-                        
-            # Make our new chapter heading
-
-            uPlog(opts, '...Including Section: "'+ section['foot_title'].title() + '"')
-
-            heading = bl.new_tag('h1')
-            heading.string = section['foot_title'].title()
-            heading['id'] = section['base_id']
-            heading['class'] = 'chapter'
-
-            # if we add an 'id' here then this won't be added to the TOC... 
-            # need to sort this idea out, who owns the ids for headings. Do
-            # we respect existing ids, or do we create new ones.
-#           heading['id'] = section['id']
-            
-            subsections.append(heading)
-            
-            subsections.append(sl)
-            
-    AddReduceHtmlRefs2Anchors(opts, bl, final_section_list)
-
-    AddReduceHtmlRefs2AnchorsFinal(opts, bl)
-    
-    return final_section_list
-
-def MainSummaries(opts, bl, foot_dict_list):
-    
-
-    if not foot_dict_list:
-        return
-
-    #head = bl.find('div', class_='mw-parser-output')
-    head = bl.find('div', class_='mw-content-ltr')
-    
-    assert head, 'Unable to find root of html text, mw-parser-output'
-    
-    head = list(head.contents)[0]
-    #         
-    foot_note_section = bl.new_tag('div')
-    foot_note_section['class'] ='footnotes_' + opts['footsect_name']
-    head.append(foot_note_section)
-
-    # we add other details to this section, so keep the heading
-    foot_head = bl.new_tag('h1', id='wiki2epub_' + opts['footsect_name'] + '_footnotes')
-    foot_head.string='Footnotes'
-    foot_head['class'] = 'section'
-    
-    foot_note_section.append(foot_head)
-    
-    # Do not sort foot_dict_list. Sections should appear in the same order
-    # that they are found in the original text
-    
-    foot_dict_list.sort(key = lambda x: x['foot_title'])
-    
-    for item in foot_dict_list:
-        # if we number our backlinks then they too are footnotes... ug. 
-        num = '[' + item['ret_anch'].split('_')[2] +']'
-        ftext = item['short_foot'].replace('<p><a','<p>' + num + '<a')
-        
-        short_foot = BeautifulSoup(ftext, 'html.parser')
-        foot_note_section.append(short_foot)
-
-    top_note = bl.new_tag('h2', id='wiki2epub_' + opts['footsect_name'] + '_notes')
-    top_note.string='Notes'
-    top_note['class'] = 'section'
-    foot_note_section.append(top_note)
-    
-    for item in foot_dict_list:
-        
-        foot_long =''
-        for par in item['long_foot']:
-#            foot_long = clean_char_app(foot_long, par)
-#            foot_long = uCleanChars(opts, foot_long) + uCleanChars(opts, par)
-            foot_long = foot_long + par
-
-        note = BeautifulSoup(foot_long, 'html.parser')
-        foot_note_section.append(note)
-
-def MainAddDebugHeadings(opts, bl):
-
-    """
-    @summary: Add debug headings prior to entries here so they appear in TOC
-    """
-    
-    if opts['debug'] == 0:
-        return
-
-    head = bl.find('div', class_='mw-content-ltr')
-    assert head, 'Unable to find root of html text, mw-parser-output'
-    head = list(head.contents)[0]
-    #         
-    dbg_section = bl.new_tag('div')
-    dbg_section['class'] ='debug_' + opts['footsect_name']
-    head.append(dbg_section)
-
-    dbg_head = bl.new_tag('h1', id='wiki2epub_' + opts['footsect_name'] + '_debug')
-    dbg_head.string='Debug Logs'
-    dbg_head['class'] = 'section'
-
-    dbg_section.append(dbg_head)
-
-    dbg_end = bl.new_tag('h1', id='wiki2epub_' + opts['footsect_name'] + '_debug_end')
-    dbg_end.string='End'
-    dbg_end['class'] = 'section'
-
-    head.append(dbg_end) 
-
-def MainAddDebugEntries(opts, bl):
-    """
-    @summary: The dubug log is kept in a file named wiki_log, include it in the ebook
-    """
-
-    if opts['debug'] == 0:
-        return
-
-    dbg_section = bl.find('div', class_='debug_' + opts['footsect_name'])
-
-    assert dbg_section, "Could not find debug section"
-
-    logfile = opts['bodir'] + '/wiki_log.txt'
-    if os.path.exists(logfile):
-        
-        dbg_data1 = bl.new_tag('p')
-        dbg_data1.string = "wiki2epub generates detailed logs. See: " + logfile
-        dbg_section.append(dbg_data1)
-    
-        dbg_data2 = bl.new_tag('pre')
-    
-        fp = open(logfile)
-        
-        all_log = fp.readlines()
-        fp.close()
-        dbg_data2.string = ''
-        for line in all_log:
-            try:
-                dbg_data2.string += line
-            except:
-                dbg_data2.string += uCleanChars(opts, line)
-        
-        dbg_section.append(dbg_data2)
 
 def MainWelcomeMsg(opts, st_time):
     """
@@ -1446,7 +932,7 @@ def MainSummarize(opts, bl):
     @return (err, or a dictionary of footnote items)
     """
     
-    err, foot_dict = trim_to_footnote(bl, opts)
+    err, foot_dict = GenTextFootnote(bl, opts)
     if foot_dict:
         fp = open(opts['base_bodir'] + '/footnotes/' + opts['ret_anch'] + '.json', 'w')
         if fp:
@@ -1483,20 +969,20 @@ def MainSectionCreate(opts, st_time, bl, section_bname):
     old_toc = 0
 
     if opts['parent'] == '':
-        final_sect_label_href_list = MainAddSections(opts, bl, sect_label_href_list)
-        MainSummaries(opts, bl, foot_dict_list)
+        final_sect_label_href_list = FinalAddSections(opts, bl, sect_label_href_list)
+        FinalSummaries(opts, bl, foot_dict_list)
         while TocRemoveOldToc(opts, bl) == '':
             old_toc += 1
-        MainAddDebugHeadings(opts, bl)
+        FinalAddDebugHeadings(opts, bl)
         toc_links = TocMake(opts, bl)
         sect_label_href_list = final_sect_label_href_list
 
-    MainPrintFinalStats(opts, bl, im_tot, convert, sect_label_href_list,
+    FinalPrintStats(opts, bl, im_tot, convert, sect_label_href_list,
                     foot_dict_list, slink, http404, toc_links, old_toc,
                     st_time, opts['footsect_name'] + '/' + section_bname)
     
     if opts['parent'] == '':
-        MainAddDebugEntries(opts, bl)
+        FinalAddDebugEntries(opts, bl)
     MainSaveFile(opts, opts['bodir'] + '/' + section_bname,
               bl.prettify(formatter="html").splitlines(True))
     

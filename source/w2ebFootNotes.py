@@ -1,6 +1,16 @@
 
 from w2ebUtils import *
 
+def FootLabelAnchSuff(label_in):
+
+    ret_suff = uLabelDelWhite(label_in)[:20]
+    #if '/' in ret_suff:
+    ret_suff = '_'.join(ret_suff.split('/'))
+    ret_suff = ret_suff.replace(' ', '_').strip()   
+    ret_suff = uCleanChars(opts, urllib.quote(ret_suff))
+
+    return ret_suff
+
 def Foot2RecursiveCall(opts, bl, url, ret_anch,
                 err, footnote, foot_title, foot_dict_list):
     """
@@ -377,16 +387,16 @@ def Foot2PickFootVsSect(opts, tag_href):
     if '#' in url:
         anch = url.split('#')[1]
         url = url.split('#')[0]
-    foot_title = LabelDelWhite(uCleanChars(opts, get_text_safe(tag_href)))
-    if 'id' in tag_href and len(LabelDelWhite(tag_href['id'])) > 0:
+    foot_title = uLabelDelWhite(uCleanChars(opts, get_text_safe(tag_href)))
+    if 'id' in tag_href and len(uLabelDelWhite(tag_href['id'])) > 0:
         ret_anch = tag_href['id']
         if len(foot_title) == 0:
-            foot_title = LabelDelWhite(uCleanChars(opts, tag_href['id']))
+            foot_title = uLabelDelWhite(uCleanChars(opts, tag_href['id']))
     elif len(foot_title) == 0:
         err = 'No footnote title for url: ' + url
         foot_title = ''
     else:
-        ret_anch = W2EBRI + '%d_%s' % (opts['footi'], LabelAnchSuff(foot_title))
+        ret_anch = W2EBRI + '%d_%s' % (opts['footi'], FootLabelAnchSuff(foot_title))
 
 #    if not err:
 #        assert ret_anch[-1] != '_', "Badly formed return anchor: ret_anch = " +\

@@ -111,7 +111,7 @@ def TocMakeAndLinkTags(opts, bl, toc_list, hlist):
         chapt_list.append(li)
         text = bl.new_tag('a', href='#' + tag['id'])
 
-        text.append(LabelDelWhite(TocShortLabel(htag['heading'])))
+        text.append(uLabelDelWhite(TocShortLabel(htag['heading'])))
         li.append(text)
         
         uPlogExtra(opts, "Toc - adding " + lvl + ' ' + TocShortLabel(htag['heading']), 3)
@@ -159,7 +159,7 @@ def TocFindHead(opts, bl, create_default):
         html_1stitem = list(htmlroot.contents)[0]
 
         uPlogExtra(opts, 'TOC - placing before first tag "' + htmlroot.name +'" with body "' + \
-                  LabelDelWhite(get_text_safe(htmlroot)[0:50]), 2)
+                  uLabelDelWhite(get_text_safe(htmlroot)[0:50]), 2)
 
         head = bl.new_tag('div', class_='toc')  # make a fake head, so we can fined it later
         html_1stitem.insert_before(head)
@@ -196,7 +196,7 @@ def TocRemoveOldToc(opts, bl):
         mode = 1 
 
     uPlogExtra(opts, "=> Removing old TOC: " + head.name + ' ' +
-              LabelDelWhite(get_text_safe(head)[0:20]), 1)
+              uLabelDelWhite(get_text_safe(head)[0:20]), 1)
     
     # Plow through until we reach a heading or some real text. Ignore any
     # empty paragraphs, or 

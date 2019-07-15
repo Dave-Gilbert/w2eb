@@ -454,5 +454,49 @@ def uSysCmdOut1(opts, cmdstr, catch_errors):
         return rval[0]
     return ''
 
+def uPrintProgress(opts, st_time, im_tot, im_all, p_total_est_time):
+    
+    pdone = int(100 * im_tot / im_all)                
+    t2 = time.time()
+    
+    if im_tot == 0:
+        total_est_time = p_total_est_time
+    else:
+        total_est_time = ((t2 - st_time) * im_all) / im_tot
+        total_est_time = (total_est_time + p_total_est_time) / 2
+        
+    if im_tot > 60: 
+        p_total_est_time = total_est_time # smoothing factor
+        
+    tleft = int((total_est_time - (t2 - st_time)))
+    
+    if secs < 1:
+        secs = 1
+                
+    uPlogNr(opts, "\n%2s %% %s left" % (perc, str_smh(secs)),">")
+        
+    return p_total_est_time
 
+def uLabelDelWhite(label_in):
+    """
+    @summary: Converts all whitespace between words into a single space.
+
+    @return:
+
+    @note: Good for reducing text that might include carriage returns to a single line.
+    """
+    label_in = label_in.strip()
+
+    label_out = ''
+    prev = 'x'
+    for i in range(0, len(label_in)):
+
+        if not label_in[i].isspace():
+            label_out += label_in[i]
+        elif label_in[i].isspace() and not prev.isspace():
+            label_out += ' '
+        else:
+            None
+            
+    return label_out
 
