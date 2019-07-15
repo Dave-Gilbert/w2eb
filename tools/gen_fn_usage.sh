@@ -15,8 +15,15 @@ grep ^def *.py | tr '(' '\n' | grep ':def' > /tmp/fn_list.txt
 
 for fn in `cat /tmp/fn_list.txt | awk '{print $2}' | sort `
 do 
-	line=`grep "def ${fn}"$ fn_list.txt`
+	line=`grep "def ${fn}"$ /tmp/fn_list.txt`
 	file=`echo $line | tr ':' ' ' | awk '{print $1}'`
+	if [ -z "$file" ]
+	then
+		echo $line 
+		echo $fn
+		echo XXXXXXXXXXXXXXXXx
+		exit
+	fi
 	stat=`grep -F ${fn}'(' *.py | grep -v $file | awk '{print $1}' | uniq -c `
 	if [ -n "${stat}" ]
 	then
