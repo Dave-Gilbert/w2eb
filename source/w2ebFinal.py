@@ -1,6 +1,17 @@
 
+import time
 
+from w2ebUtils import *
+from w2ebConstants import *
 
+from bs4 import BeautifulSoup
+
+#from w2eb import MainSketch
+from w2eb import MainSketchPage 
+from w2eb import MainParentSketchVsMySketch
+from w2ebTOC import TocMake 
+from w2ebTOC import TocRemoveOldToc
+from w2ebFootNotes import Foot2HrefOk
 
 def FinalPrintArticleStats(opts, im_tot, convert, sect_label_href_list, foot_dict_list,
                       slink, http404, ilink, blink):
@@ -31,13 +42,19 @@ def FinalPrintArticleStats(opts, im_tot, convert, sect_label_href_list, foot_dic
     uPlog(opts, net_access)
 
 
+def FinalHrefAll(tag_href):
+    """
+    @summary: True if tag is an anchor that refers to text in this page or elsewhere
+    """
+    return Foot2HrefOk(tag_href, False)
+
 def FinalPrintStats(opts, bl, im_tot, convert, sect_label_href_list, foot_dict_list,
                      slink, http404, toc_links, old_toc, st_time, ipath): 
 
     ilink = 0
     blink = 0
     
-    for tag_href in bl.find_all(lambda x: Foot1HrefAll(x)):
+    for tag_href in bl.find_all(lambda x: FinalHrefAll(x)):
         if tag_href['href'][0:4] == 'http':            
             ilink += 1
         else:
@@ -52,7 +69,7 @@ def FinalPrintStats(opts, bl, im_tot, convert, sect_label_href_list, foot_dict_l
         uPlog(opts, ostr)
     
     uPlog(opts, "\nFinished at " + time.asctime(time.localtime(time.time())))
-    uPlog(opts, "Conversion took",str_smh(time.time() - st_time))
+    uPlog(opts, "Conversion took", uStrTimeSMH(time.time() - st_time))
     uPlog(opts, '')
     uPlog(opts, "wrote " + ipath)
     uPlog(opts, "==> Done")
@@ -126,9 +143,9 @@ def FinalAddSections(opts, bl, sect_label_href_list):
             
             subsections.append(sl)
             
-    AddReduceHtmlRefs2Anchors(opts, bl, final_section_list)
+    FinalReduceHtmlRefs2Anchors(opts, bl, final_section_list)
 
-    AddReduceHtmlRefs2AnchorsFinal(opts, bl)
+    FinalReduceHtmlRefs2AnchorsFinal(opts, bl)
     
     return final_section_list
 
@@ -326,7 +343,7 @@ def FinalReduceHtmlRefs2Anchors(opts, bl, final_section_list):
                     # already fixed with our baseid, continue
                     continue
                 
-                sect_dict = FindSectHref(opts, href, final_section_list)
+                sect_dict = uFindSectHref(opts, href, final_section_list)
                 if sect_dict:
                     href = sect_dict['base_id']
                     continue

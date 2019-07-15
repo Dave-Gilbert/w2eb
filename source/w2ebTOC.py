@@ -1,3 +1,13 @@
+
+
+from bs4 import NavigableString
+
+
+from w2ebUtils import *
+from w2ebConstants import *
+
+
+
 def TocShortLabel(heading_str):
         
     rval = heading_str.strip()
@@ -58,7 +68,7 @@ def TocGetH1H2(hlist, hdlist, curr, head):
     
     if not curr.has_attr('id'):
         
-        if not get_text_safe(curr).strip():
+        if not uGetTextSafe(curr).strip():
             # with no text and no id, this isn't really anything
             return
         curr['id'] = 'toc_heading_' + str(len(hdlist)) 
@@ -67,7 +77,7 @@ def TocGetH1H2(hlist, hdlist, curr, head):
         
     if curr['id'] not in hdlist:
 
-        curr_str = get_text_safe(curr).strip()
+        curr_str = uGetTextSafe(curr).strip()
 
         if curr_str == "":
             curr_str = curr['id'].replace('_',' ').title()
@@ -128,9 +138,9 @@ def TocCandidate(tag):
         return True
     if tag.name == 'h2' and tag.has_attr('id') and tag['id'].lower() in toc_headings:
         return True
-    if tag.name == 'h1' and get_text_safe(tag).lower() in toc_headings:
+    if tag.name == 'h1' and uGetTextSafe(tag).lower() in toc_headings:
         return True
-    if tag.name == 'h2' and get_text_safe(tag).lower() in toc_headings:
+    if tag.name == 'h2' and uGetTextSafe(tag).lower() in toc_headings:
         return True
     if tag.name == 'p': # N.B. paragraph is not a real option, but we need to count them
         return True
@@ -159,13 +169,13 @@ def TocFindHead(opts, bl, create_default):
         html_1stitem = list(htmlroot.contents)[0]
 
         uPlogExtra(opts, 'TOC - placing before first tag "' + htmlroot.name +'" with body "' + \
-                  uLabelDelWhite(get_text_safe(htmlroot)[0:50]), 2)
+                  uLabelDelWhite(uGetTextSafe(htmlroot)[0:50]), 2)
 
         head = bl.new_tag('div', class_='toc')  # make a fake head, so we can fined it later
         html_1stitem.insert_before(head)
 
         uPlogExtra(opts, "Inserting TOC as first tag before: " + html_1stitem.name + 
-                  ' ' + get_text_safe(html_1stitem), 2)
+                  ' ' + uGetTextSafe(html_1stitem), 2)
 
         
     return head
@@ -196,7 +206,7 @@ def TocRemoveOldToc(opts, bl):
         mode = 1 
 
     uPlogExtra(opts, "=> Removing old TOC: " + head.name + ' ' +
-              uLabelDelWhite(get_text_safe(head)[0:20]), 1)
+              uLabelDelWhite(uGetTextSafe(head)[0:20]), 1)
     
     # Plow through until we reach a heading or some real text. Ignore any
     # empty paragraphs, or 
@@ -221,13 +231,13 @@ def TocRemoveOldToc(opts, bl):
                  curr.name == 'p'):
                 
                 if curr.name == 'p':
-                    curr_str = get_text_safe(curr)
+                    curr_str = uGetTextSafe(curr)
                     if curr_str and len(curr_str) < 50:  # XXX stomps on homemad tocs 
                         break
                 else:
                     break
 
-            uPlogExtra(opts, "Toc - removing old entry: " + get_text_safe(curr)[0:20], 2)
+            uPlogExtra(opts, "Toc - removing old entry: " + uGetTextSafe(curr)[0:20], 2)
             curr.decompose()
         
     head.decompose()   # had to write this

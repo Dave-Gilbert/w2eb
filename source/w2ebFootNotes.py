@@ -1,7 +1,49 @@
 
-from w2ebUtils import *
 
-def FootLabelAnchSuff(label_in):
+import urllib
+import json
+import traceback
+import time
+import sys
+
+from bs4 import NavigableString
+
+from w2ebUtils import *
+from w2ebConstants import *
+
+from w2ebFinal import FinalReduceSimilarAnchors 
+from w2eb import Main
+
+
+
+def MergeSectUniq(opts, sect_label_href_list, sect_label_href_list2):
+    """
+    @summary: Merge two section lists, include unique items only
+    """
+    items_merged = 0
+    if sect_label_href_list:
+        for item in sect_label_href_list2:
+            if not uFindSectHref(opts, item['html_file'], sect_label_href_list):
+                items_merged += 1
+                sect_label_href_list.append(item)
+
+    return items_merged
+
+
+def MergeFootUniq(foot_dict_list, foot_dict_list2):
+    """
+    @summary: Merge two footnote lists, include unique items only
+    """
+    items_merged = 0
+    if foot_dict_list2:
+        for item in foot_dict_list2:
+            if not FindFootDict(item['foot_title'], foot_dict_list):
+                items_merged += 1
+                foot_dict_list.append(item)
+    
+    return items_merged
+
+def FootLabelAnchSuff(opts, label_in):
 
     ret_suff = uLabelDelWhite(label_in)[:20]
     #if '/' in ret_suff:
@@ -76,10 +118,10 @@ def Foot2RecursiveCall(opts, bl, url, ret_anch,
         opt2['parent_fp'] = None
 
     if opts['debug'] > 0: # we want to stop if debugging is on 
-        [err, foot_dict_list2, sect_label_href_list] = main(opt2)
+        [err, foot_dict_list2, sect_label_href_list] = Main(opt2)
     else:
         try:
-            [err, foot_dict_list2, sect_label_href_list] = main(opt2)
+            [err, foot_dict_list2, sect_label_href_list] = Main(opt2)
             
     
         except Exception as e:
@@ -150,7 +192,7 @@ def Foot2GetCachedFootSect(opts, foot_dict_list,
 
     else:
         
-        sect_dict = FindSectHref(opts, url, sect_label_href_list + sect_label_href_list_child)
+        sect_dict = uFindSectHref(opts, url, sect_label_href_list + sect_label_href_list_child)
         if sect_dict:
             cache_hit = True
             uPlogExtra(opts, "Found Section Url %s in cache." % url, 2)
@@ -387,7 +429,7 @@ def Foot2PickFootVsSect(opts, tag_href):
     if '#' in url:
         anch = url.split('#')[1]
         url = url.split('#')[0]
-    foot_title = uLabelDelWhite(uCleanChars(opts, get_text_safe(tag_href)))
+    foot_title = uLabelDelWhite(uCleanChars(opts, uGetTextSafe(tag_href)))
     if 'id' in tag_href and len(uLabelDelWhite(tag_href['id'])) > 0:
         ret_anch = tag_href['id']
         if len(foot_title) == 0:
@@ -396,7 +438,7 @@ def Foot2PickFootVsSect(opts, tag_href):
         err = 'No footnote title for url: ' + url
         foot_title = ''
     else:
-        ret_anch = W2EBRI + '%d_%s' % (opts['footi'], FootLabelAnchSuff(foot_title))
+        ret_anch = W2EBRI + '%d_%s' % (opts['footi'], FootLabelAnchSuff(opts, foot_title))
 
 #    if not err:
 #        assert ret_anch[-1] != '_', "Badly formed return anchor: ret_anch = " +\
@@ -405,7 +447,7 @@ def Foot2PickFootVsSect(opts, tag_href):
     return err, url, anch, footnote, foot_title, ret_anch
 
 
-def Foot2UpdateMemoryCache(url, outdir, footnote, foot_dict, foot_title, foot_dict_list,
+def Foot2UpdateMemoryCache(opts, url, outdir, footnote, foot_dict, foot_title, foot_dict_list,
                           sect_label_href_list,
                           sect_label_href_list_child, sect_label_href_list_child2):
     """
@@ -435,7 +477,7 @@ def Foot2UpdateMemoryCache(url, outdir, footnote, foot_dict, foot_title, foot_di
         # the final output file when each section is appended.
         MergeSectUniq(opts, sect_label_href_list_child, sect_label_href_list_child2)
 
-        sect_dict = FindSectHref(opts, url, sect_label_href_list + sect_label_href_list_child)
+        sect_dict = uFindSectHref(opts, url, sect_label_href_list + sect_label_href_list_child)
 
         if not sect_dict:
         # compute an id for referring to this section
@@ -486,7 +528,8 @@ def Foot1GetFootSect(opts, bl, tag_href, foot_dict_list, sect_label_href_list,
                     bl, url, ret_anch, err, footnote, foot_title, foot_dict_list)
 
             if not err:
-                foot_dict, sect_dict = Foot2UpdateMemoryCache(url, outdir, footnote, foot_dict, foot_title,
+                foot_dict, sect_dict = Foot2UpdateMemoryCache(opts, url, outdir,
+                                   footnote, foot_dict, foot_title,
                                    foot_dict_list, sect_label_href_list,
                                    sect_label_href_list_child, sect_label_href_list_child2)
 
@@ -494,9 +537,7 @@ def Foot1GetFootSect(opts, bl, tag_href, foot_dict_list, sect_label_href_list,
                         "No data for url " + url
 
     if not err:
-
         # if we have exceeded our depth, their may not be a reference
-        
         err, href = Foot12GetHref(opts, foot_dict_list, anch, footnote,
                                   foot_title, foot_dict, outdir, sect_dict, url)
 
@@ -637,14 +678,6 @@ def Foot1HrefRemote(tag_href):
     """
     return Foot2HrefOk(tag_href, True)
 
-
-def Foot1HrefAll(tag_href):
-    """
-    @summary: True if tag is an anchor that refers to text in this page or elsewhere
-    """
-    return Foot2HrefOk(tag_href, False)
-
-
 def Foot1HandleErrs(opts, bl, tag_href, err, ok_i_urls, slink,
                     http404, psym, url_cache_hit, already_warned_url):
     """
@@ -682,7 +715,7 @@ def Foot1HandleErrs(opts, bl, tag_href, err, ok_i_urls, slink,
             del tag_href['href']
             http404 += 1 # remove the reference if we cannot reach it
         if 'similar_to_parent' in err:
-            Foot2ReduceSimilarAnchors(opts, bl, url)
+            FinalReduceSimilarAnchors(opts, bl, url)
             slink += 1
             ok_i_urls[url] = err
             psym = '~'
@@ -742,7 +775,7 @@ def Foot1LoadCache(opts, bl):
             # if a footnote was similar to its parent in the past this won't change.
             # We can't totally ignore this error, we need to reduce again
             if 'similar_to_parent' in item[1]:
-                Foot2ReduceSimilarAnchors(opts, bl, item[0])
+                FinalReduceSimilarAnchors(opts, bl, item[0])
                 ok_i_urls[item[0]] = item[1]
 
 
@@ -824,16 +857,16 @@ def FootNotes(opts, bl):
                 if not footnote and not cache_hit:
                     uPlog(opts, '----------' + opts['footsect_name'] + '------- cont...')
                     if i % 25 != 0:
-                        p_total_est_time = print_progress(opts, st_time, i, 
+                        p_total_est_time = uPrintProgress(opts, st_time, i, 
                                                       im_all, p_total_est_time)
 
         slink, http404, psym = Foot1HandleErrs(opts, bl, tag_href, err, ok_i_urls,
                                      slink, http404, psym, url_cache_hit, already_warned_url)
                 
-        assert(psym)
+        assert(psym), "Should not happen. psym should be defined at this point"
 
         if i % 25 == 0:
-            p_total_est_time = print_progress(opts, st_time, i,
+            p_total_est_time = uPrintProgress(opts, st_time, i,
                                               im_all, p_total_est_time)
 
         uPlogNr(opts, psym)

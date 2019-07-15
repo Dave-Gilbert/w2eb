@@ -1,4 +1,8 @@
 
+from w2ebUtils import *
+from w2ebConstants import *
+
+
 def GenTextStripSquareBr(opts, par_text):
     """
     @summary: Remove any reference like data surrounded by square brackets [*]

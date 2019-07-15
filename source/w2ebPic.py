@@ -1,4 +1,8 @@
 
+import sys
+
+from w2ebUtils import *
+from w2ebConstants import * 
 
 def PicGetImage(opts, url, image_file):
     """
@@ -329,7 +333,7 @@ def PicIdentifyImageType(image_url, image_file, opts):
 
     return image_file
 
-def get_image_url_file(img_tag):
+def PicGetUrlFileName(opts, img_tag):
     """
     @summary: extract from the tag the image url, and a file name to save it to
     """
@@ -422,11 +426,11 @@ def PicGetImages(opts, bl):
         
         err = ''
         if im_tot % 25 == 0:
-            p_total_est_time = print_progress(opts, st_time, im_tot, im_all,
+            p_total_est_time = uPrintProgress(opts, st_time, im_tot, im_all,
                                               p_total_est_time)
         sys.stdout.flush()
         
-        [image_url, image_file] = get_image_url_file(img_tag)
+        [image_url, image_file] = PicGetUrlFileName(opts, img_tag)
 
         cont = False
         for bad_image in IMAGE_AVOID:

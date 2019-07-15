@@ -1,4 +1,6 @@
 
+from w2ebUtils import *
+
 
 WGET_OPTS = """ \
  --timeout=10 \

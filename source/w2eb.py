@@ -4,60 +4,21 @@ import unicodedata
 import time
 import sys
 import os
-import getopt
-
-import urllib
-
-# import warnings
-
-import traceback
 import json
+
 from shutil import copyfile
-# import BeautifulSoup
 from bs4 import BeautifulSoup
-from bs4 import NavigableString
 from bs4 import Comment
 
-from w2ebFootNotes import FootNotes
 from w2ebUtils import *
 
-
-
-
-
-
-                
-
-def MergeSectUniq(opts, sect_label_href_list, sect_label_href_list2):
-    """
-    @summary: Merge two section lists, include unique items only
-    """
-    items_merged = 0
-    if sect_label_href_list:
-        for item in sect_label_href_list2:
-            if not uFindSectHref(opts, item['html_file'], sect_label_href_list):
-                items_merged += 1
-                sect_label_href_list.append(item)
-
-    return items_merged
-
-
-def MergeFootUniq(foot_dict_list, foot_dict_list2):
-    """
-    @summary: Merge two footnote lists, include unique items only
-    """
-    items_merged = 0
-    if foot_dict_list2:
-        for item in foot_dict_list2:
-            if not FindFootDict(item['foot_title'], foot_dict_list):
-                items_merged += 1
-                foot_dict_list.append(item)
-    
-    return items_merged
-
-
-
-
+from w2ebFootNotes import FootNotes
+from w2ebFootNotes import Foot2HrefOk
+from w2ebGenText import GenTextFootnote
+from w2ebPic import PicGetImages
+from w2ebStartup import Startup
+from w2ebStartup import StartupReduceTags
+from w2ebFinal import FinalMergeFootSectTOC
 
 
 def MainSaveFile(opts, ipath, olist):

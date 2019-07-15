@@ -1,5 +1,12 @@
 
 import unicodedata
+import os
+import urllib
+import time
+
+from bs4 import BeautifulSoup
+
+from w2ebConstants import *
 
 def uSubstrBt(Str, pre, post):
     """
@@ -194,7 +201,7 @@ def uClean(opts):
     uSysMkdir(opts, opts['dcdir'] + '/footnotes')
 
 
-def uBurn2Ascii(str_in):
+def uBurn2Ascii(opts, str_in):
     """
     @summary: hack: we force conversion when standard filters fail, with ugly results
     """
@@ -239,16 +246,14 @@ def uCleanChars(opts, str_in):
         str_out = unicodedata.normalize('NFKD',str_in).encode('ascii','replace')
         done = True
     except Exception as e:
-        uPlogExtra(opts, 'XXX2 Caught encoding exception on string len = %d' % len(str_in), 1)
         None
     
     if not done: # try again with burnedascii as our input
-        burnedascii = uBurn2Ascii(str_in)
+        burnedascii = uBurn2Ascii(opts, str_in)
         burneduni = unicode(burnedascii, 'unicode-escape')
         str_out = unicodedata.normalize('NFKD', burneduni).encode('ascii','replace')
     
     return(str_out)
-
 
 
 def uPlogExtra(opts, o_string, dbg):
@@ -488,7 +493,7 @@ def uStrTimeSMH(secs):
 
 def uPrintProgress(opts, st_time, im_tot, im_all, p_total_est_time):
     
-    pdone = int(100 * im_tot / im_all)                
+    perc = int(100 * im_tot / im_all)                
     t2 = time.time()
     
     if im_tot == 0:
@@ -500,7 +505,7 @@ def uPrintProgress(opts, st_time, im_tot, im_all, p_total_est_time):
     if im_tot > 60: 
         p_total_est_time = total_est_time # smoothing factor
         
-    tleft = int((total_est_time - (t2 - st_time)))
+    secs = int((total_est_time - (t2 - st_time)))
     
     if secs < 1:
         secs = 1
@@ -508,6 +513,7 @@ def uPrintProgress(opts, st_time, im_tot, im_all, p_total_est_time):
     uPlogNr(opts, "\n%2s %% %s left" % (perc, uStrTimeSMH(secs)),">")
         
     return p_total_est_time
+
 
 def uLabelDelWhite(label_in):
     """
