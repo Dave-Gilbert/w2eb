@@ -31,7 +31,7 @@ def FinalPrintArticleStats(opts, im_tot, convert, sect_label_href_list, foot_dic
     uPlog(opts, net_access)
 
 
-def FinalPrintStats (opts, bl, im_tot, convert, sect_label_href_list, foot_dict_list,
+def FinalPrintStats(opts, bl, im_tot, convert, sect_label_href_list, foot_dict_list,
                      slink, http404, toc_links, old_toc, st_time, ipath): 
 
     ilink = 0
@@ -247,3 +247,229 @@ def FinalAddDebugEntries(opts, bl):
                 dbg_data2.string += uCleanChars(opts, line)
         
         dbg_section.append(dbg_data2)
+        
+
+def FinalReduceSimilarAnchors(opts, bl, url):
+    """
+    @summary: Find all references to URL and make them local, preserving anchors
+    
+    """
+    
+    #
+    # often we don't import files with remote anchors because we think
+    # that we have this information stored locally anyway. The remote file
+    # is "too similar" to our current text. 
+    # 
+    # See if the anchor is mentioned in this doc, and reduce where possible.    
+    #
+    # if we can't find a local anchor, then there is no target at all and
+    # we must erase the anchor text
+
+    for tag_href in bl.find_all('a', href = True):
+
+        if url not in tag_href['href']:
+            continue
+
+        if '#' in tag_href['href']:
+            lanch = tag_href['href'].split('#')[1]
+
+        else:
+         
+            lanch = os.path.basename(tag_href['href'])
+             
+        tag = bl.find(lambda x: x and x.has_attr('id') and 
+                      x['id'] == lanch)
+
+        # A sloppier search ignoring capitalization, I'm not sure
+        # that this is worth doing, seems to be a rare circumstance
+        if not tag:
+            tag = bl.find(lambda x: x and x.has_attr('id') and 
+                          x['id'].lower() == lanch.lower())
+        
+        if tag:
+            tag_href['href'] = '#' + lanch
+            continue
+
+        uPlogExtra(opts, 'Can not find reference to "%s", dropping.' % ('#' + lanch), 2)
+
+        tag_href.name = 'i'
+        del tag_href['href']
+
+
+def FinalReduceHtmlRefs2Anchors(opts, bl, final_section_list):
+    """
+    @summary: Find all references to html files and convert them to anchors
+    
+    @note: There are a few ways we can miss these during previous processing.
+    
+    We might find
+    
+    <partial_file>.html
+    <full_path>
+    
+    <partial_file>.html#anch
+    <full_path>#anch
+    
+    http:<weburl>
+    https:<weburl>
+    http:<weburl>#anch
+    https:<weburl>#anch
+    
+    """ 
+    for how in ['exact', 'partial']:
+        for section in final_section_list:
+            for tag_href in bl.find_all('a', href = True):
+                
+                href = tag_href['href']
+            
+                if W2EBID in href or W2EBRI in href: 
+                    # already fixed with our baseid, continue
+                    continue
+                
+                sect_dict = FindSectHref(opts, href, final_section_list)
+                if sect_dict:
+                    href = sect_dict['base_id']
+                    continue
+                
+                url = ''
+                rfile = ''
+                href = tag_href['href']
+            
+                if href[0:5] == 'http:' or href[0:6] == 'https:':
+                    url = tag_href['href'].split('#')[0]
+                else:
+                    rfile = tag_href['href'].split('#')[0]
+            
+                anch = ''
+                if '#' in href:
+                    anch = '_Hash_' + tag_href['href'].split('#')[1]
+            
+                # First two are clear cut matches.
+                new_id = ''
+                why = ''
+                if how == 'exact':
+                    if url and url == section['url']: # we can reduce this one easily
+                        new_id = section['base_id'] + anch
+                        why = how + ' url match'
+                    elif rfile and rfile == section['html_file']: 
+                        new_id = section['base_id'] + anch
+                        why = how + ' file match'
+                else:
+                    if url and (url in section['url']
+                                or section['url'] in url): # we can reduce this one easily
+                        new_id = section['base_id'] + anch
+                        why = how + ' url match'
+                    elif rfile and (rfile in section['html_file']
+                                    or section['html_file'] in rfile): 
+                        new_id = section['base_id'] + anch
+                        why = how + ' file match'
+            
+                if not new_id:
+                    continue
+                
+                uPlogExtra(opts, "Using %s to reduce %s to\n...#%s" %
+                          (why, tag_href['href'], new_id), 1)
+            
+                tag_href['href'] = '#' + new_id
+
+
+
+def FinalReduceHtmlRefs2AnchorsFinal(opts, bl):
+    """
+    @summary: Find all references to html files and convert them to anchors or remove them
+    
+    @note: There are a few ways we can miss these during previous processing.
+    
+    We might find
+    
+    <partial_file>.html
+    <full_path>
+    
+    <partial_file>.html#anch
+    <full_path>#anch
+    
+    http:<weburl>
+    https:<weburl>
+    http:<weburl>#anch
+    https:<weburl>#anch
+    
+    """ 
+        
+    for tag_href in bl.find_all('a', href = True):
+        href = tag_href['href']
+
+        if W2EBID in href or W2EBRI in href: 
+            # already fixed with our baseid, continue
+            continue
+        
+        if href[0:5] == 'http:' or href[0:6] == 'https:':
+            # We have already tested whther these match a section URL,
+            # at this stage we are done with urls
+            continue
+
+        anch = ''
+        new_id =''
+
+        if '#' in href:
+            anch = tag_href['href'].split('#')[1]
+
+            if bl.find(lambda x: x.has_attr('id') and x['id'] == anch):
+                # our reference matches an anchor, nothing to do here.
+                uPlogExtra(opts, "Validated href #%s" % anch, 3)
+                new_id = anch # no change
+            else:
+                # Sledgehammerish, and potentially wrong:
+                # Almost any match will do
+                for tag in bl.find_all(lambda x: x.has_attr('id')):
+                    if anch in tag['id']:
+                        new_id = tag['id']
+                        break
+    
+                if new_id:
+                    uPlog(opts, "Reducing %s to\n...#%s" %
+                         (tag_href['href'], new_id))
+        
+                    tag_href['href'] = '#' + new_id
+
+        if not new_id:
+            # without an anchor or a file match, we need to drop this reference.
+            # we don't understand what it was pointing to. 
+
+            del tag_href['href']
+            tag_href.name = 'i'
+
+            uPlogExtra(opts, "Missing referenat. Dropping %s" % href, 2)
+
+
+def FinalMergeFootSectTOC(opts, st_time, bl, section_bname, im_tot, convert,
+                          slink, http404, foot_dict_list, sect_label_href_list):
+    """
+    @summary: Merge the main text with footnotes, sections, TOC, and debug logs.
+    
+    @return: (sect_label_href_list - a list of sections)
+    """
+
+    if opts['parent']:
+        uPlog(opts, '=============================================')
+    else:
+        uPlog(opts, '=================Finalizing==================')
+    toc_links = 0
+    old_toc = 0
+    if opts['parent'] == '':
+        final_sect_label_href_list = FinalAddSections(opts, bl, sect_label_href_list)
+        FinalSummaries(opts, bl, foot_dict_list)
+        while TocRemoveOldToc(opts, bl) == '':
+            old_toc += 1
+        
+        FinalAddDebugHeadings(opts, bl)
+        toc_links = TocMake(opts, bl)
+        sect_label_href_list = final_sect_label_href_list
+    FinalPrintStats(opts, bl, im_tot, convert, sect_label_href_list,
+                    foot_dict_list, slink, http404, toc_links, old_toc,
+                    st_time, opts['footsect_name'] + '/' + section_bname)
+    if opts['parent'] == '':
+        FinalAddDebugEntries(opts, bl)
+    
+    return sect_label_href_list
+
+

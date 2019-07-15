@@ -1,6 +1,27 @@
 
 import unicodedata
 
+def uSubstrBt(Str, pre, post):
+    """
+    @summary: Get the substring between two other strings
+    
+    @return: The substring
+    """
+    
+    rval =""
+    ind2 = -1
+    
+    ind = Str.find(pre, 0)
+    if ind >= 0 and post != '$':
+        ind2 = Str.find(post, ind + len(pre))
+        if ind2 >= 0:
+            rval = Str[ind + len(pre): ind2]        # +1?
+    elif ind >= 0:
+        rval = Str[ind + len(pre):] # +1?
+
+    return rval
+
+
 def uGetTextSafe(curr):
     """
     @summary: Beautiful Soup objects often have text, but not always.
@@ -454,6 +475,17 @@ def uSysCmdOut1(opts, cmdstr, catch_errors):
         return rval[0]
     return ''
 
+def uStrTimeSMH(secs):
+    
+    if secs < 180:
+        retval = "%3d secs" % int(secs)
+    elif secs < 7200:
+        retval = "%3d mins" % int((30 + secs)/60)
+    else:
+        retval = "%2d hours" % int(secs/3600)
+    
+    return retval
+
 def uPrintProgress(opts, st_time, im_tot, im_all, p_total_est_time):
     
     pdone = int(100 * im_tot / im_all)                
@@ -473,7 +505,7 @@ def uPrintProgress(opts, st_time, im_tot, im_all, p_total_est_time):
     if secs < 1:
         secs = 1
                 
-    uPlogNr(opts, "\n%2s %% %s left" % (perc, str_smh(secs)),">")
+    uPlogNr(opts, "\n%2s %% %s left" % (perc, uStrTimeSMH(secs)),">")
         
     return p_total_est_time
 
@@ -499,4 +531,49 @@ def uLabelDelWhite(label_in):
             None
             
     return label_out
+
+G_our_print_version_file = ''
+
+def uFindSectHref(opts, url_hfile, sect_label_href_list):
+    """
+    @summary: use url_hfile to lookup sections by either html file name or http: url
+    
+    @return section dictionary
+    """
+    global G_our_print_version_file
+
+    for item in sect_label_href_list:
+        if url_hfile[0] == '/':
+            if item['html_file'] == url_hfile:
+                return item
+        else:
+            if item['url'] == url_hfile:
+                return item
+
+    if not G_our_print_version_file:
+        G_our_print_version_file = uGet1HtmlFile(opts, opts['bodir'], False)
+        # This fails sometimes, don't know why... needs fixing XXX
+
+    if not G_our_print_version_file:
+        return None
+
+    url_dname = opts['base_url']
+    if os.path.basename(opts['base_url']).lower() == 'print_version':
+        url_dname = os.path.dirname(opts['base_url'])
+
+#    print url_dname, "vs", url_hfile
+
+    # treat the current book as a special case, which we can always find... 
+    if (url_hfile == G_our_print_version_file or 
+        url_hfile == opts['base_url'] or
+        url_hfile == url_dname):
+        # pointing to ourselves:
+        sect_dict = {'html_file': G_our_print_version_file,
+                     'url': opts['base_url'],
+                     'foot_title': opts['booknm'], 'base_id': 'Contents_root'}
+        return sect_dict
+    
+
+    return None
+
 

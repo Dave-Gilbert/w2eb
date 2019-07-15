@@ -81,17 +81,17 @@ def PicGetSvgDims(str_line):
     # use the width tag to compute scaling, assume 
     # height tag agrees
     
-    wstr = substr_bt(str_line, 'width="', 'ex"')
+    wstr = uSubstrBt(str_line, 'width="', 'ex"')
     if wstr:
         im_scale = IM_SCALEex
     
     if not wstr:
-        wstr = substr_bt(str_line, 'width:', 'ex;')
+        wstr = uSubstrBt(str_line, 'width:', 'ex;')
         if wstr:
             im_scale = IM_SCALEex
     
     if not wstr:
-        wstr = substr_bt(str_line, ' width="', '"')
+        wstr = uSubstrBt(str_line, ' width="', '"')
         if wstr:
             im_scale = IM_SCALEpx
     
@@ -100,12 +100,12 @@ def PicGetSvgDims(str_line):
         if wi > WMAX:
             im_scale = WMAX / float(wstr)
 
-    hstr = substr_bt(str_line, 'height="', 'ex"')
+    hstr = uSubstrBt(str_line, 'height="', 'ex"')
     if not hstr:
-        hstr = substr_bt(str_line, 'height:', 'ex;')
+        hstr = uSubstrBt(str_line, 'height:', 'ex;')
     
     if not hstr:
-        hstr = substr_bt(str_line, ' height="', '"')
+        hstr = uSubstrBt(str_line, ' height="', '"')
         
     if hstr:
         hi = int(float(hstr) * im_scale)
@@ -310,7 +310,7 @@ def PicIdentifyImageType(image_url, image_file, opts):
         PicGetImage(opts, image_url, image_file)
 
     ext = uSysCmdOut1(opts, 'file "' + src + '"', True)
-    ext = substr_bt(ext,': ',' ')
+    ext = uSubstrBt(ext,': ',' ')
 
     if ext in IMAGE_FIG + IMAGE_PIC + IMAGE_SVG:
     
@@ -348,7 +348,7 @@ def get_image_url_file(img_tag):
     image_file = ''
 
     if img_tag.has_attr('srcset'):
-        alt_image = substr_bt(img_tag['srcset'], '1.5x, ', ' 2x')
+        alt_image = uSubstrBt(img_tag['srcset'], '1.5x, ', ' 2x')
         if (alt_image):
             image_url = alt_image 
 
