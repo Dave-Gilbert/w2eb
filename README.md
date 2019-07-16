@@ -1,38 +1,46 @@
 # w2eb
 
-**w2eb** takes Wikipedia pages and converts them ebooks.
+**w2eb** Converts Wikipedia pages to ebooks.
 
 Why would you want this? 
 
-E-ink readers are fantastic devices but have a large number of limitations in terms of what they can properly render. A basic e-reader usually has a 600x800 monochrome pixel display, small memory storage, and performs poorly when used as a web browser.
+E-ink readers are fantastic devices but have a large number of limitations in terms of what they can render. A basic e-reader has a 600x800 monochrome pixel display, small memory storage, and performs poorly when used as a web browser.
 
-Wikipedia's database is enormous and a great source for content. While you can convert web pages with amazon's "send to kindle" web browser plug-in, "send to kindle" is a very generic answer.
+Wikipedia's database is a great source for content. While you can convert web pages with Amazon's "send to kindle" web browser plug-in, "send to kindle" is a generic answer not really tuned to Wikipedia's content.
 
 # w2eb Features
 
-**w2eb** takes a topic name and converts it into a wikipedia derived "ebook". It supports the following fundamental features:
+**w2eb** takes a topic name and converts it into a wikipedia derived "ebook". It supports the following features:
 
 1. Follows "Primary" links to create subsections
-..* **w2eb** is selective about which links it explores completely.
-..* **w2eb** provides simple controls to help you define what to include.
+  * **w2eb** is selective about which links it explores completely.
+  * **w2eb** provides simple controls to help you define what to include.
 2. **w2eb** Summarizes "Secondary" links to create notes and footnotes.
-..* Wikipedia articles often include hundreds of references, **w2eb** presents these as footnotes
-..* A **w2eb** footnote is the first few sentences of a referred Wikipedia article.
-..* Footnotes can be disabled and presented as internet links to reduce file sizes.
-..* Footnoes can be extended with Notes. **w2eb** preserves the first 10 paragraphs of any wikipedia reference and the original in a special Notes section.
+  * Wikipedia articles often include hundreds of references, **w2eb** presents these as footnotes
+  * A **w2eb** footnote is the first few sentences of a referred Wikipedia article.
+  * Footnotes can be disabled and presented as internet links to reduce file sizes.
+  * Footnoes can be extended with Notes. **w2eb** preserves the first 10 paragraphs of any wikipedia reference and the original in a special Notes section.
 3. **w2eb** Organizes related wikipedia links into a "book"
-..* **w2eb** Arranges the pages it downloads in a breadth first pattern, so that if you read your wikibook start to finish it will make a certain sense.
-..* **w2eb** Stores all footnotes at the end of the book, alphabetizing them, and storing extended notes in a final section.
-4. **w2eb** is math friendly.
-..* Wikipedia stores math equations in .svg format. If your reader supports this format, great! If your reader doesn't support it, **w2eb** will convert the file for you.
+  * **w2eb** Arranges the pages it downloads in a breadth first pattern, so that if you read your wikibook start to finish it will make a certain sense.
+  * **w2eb** Stores all footnotes at the end of the book, alphabetizing them, and storing extended notes in a final section.
+4. **w2eb** simplifies pages while preserving as much content as it can.
+  * Wikipedia pages follow a consistent format but include formatting details that ereaders cannot display. Rather than completely reconstructing the page **w2eb** removes the elements it knows an ereader cannot render.
 5. **w2eb** is image friendly.
-..* Wikipedia usually stores several versions of each image. **w2eb** finds the "best" one for your reader and fetches it. The "best" image is about 600x600 pixels. This size leaves some space at the top or bottom for a caption. 
+  * Wikipedia usually stores several versions of each image. **w2eb** finds the "best" one for your reader and fetches it. The "best" image is about 600x600 pixels. This size leaves some space at the top or bottom for a caption. 
+6. **w2eb** is math friendly.
+  * Wikipedia stores math equations in .svg format. If your reader supports this format, great! If your reader doesn't support it, **w2eb** will convert the file for you.
 
 # Why this tool?
 
-While there are many sources fiction in epub format, it is very hard to find any scientific or mathematically based content that you can read on a Kindle or similar device. Project Gutenberg hosts only a small selection of math and science books and these are in Latex format, not epub format.
+It is easy to find fiction in epub format. Project Gutenburg and Archive.org sources for free books, and if you want the latest publications you can go to Amazon or your local library. Despite all these many good sources of fiction in epub format, it is very hard to find scientific or mathematically based content formatted for an ereader. Project Gutenberg hosts only a small selection of math and science books and these are in pdf and Latex format, not epub or html format.
 
-Other web sites that provide science based media limit their offerings to .pdf files. See for example the openstax collection. You can get a mobi version of their astronomy text book, but not the Physics, Calculus, or Statistics books. It is very difficult to properly convert a .pdf file to an epub file. The most interesting tool for this job is k2pdfopt, which effectively treats each page of a .pdf file as an image, cuts the image up, and then rearranges it so that it makes sense on an ereader. This is a great tool, but it requires some tinkering to get the settings correct for each .pdf file, and once a file is converted fonts cannot be resized. 
+Other web sites that provide science based media limit their offerings to pdf files. See for example the Openstax collection of University freshman level text books. You can get a Kindle version of their astronomy text book for free through the Amazon store, but not the Physics, Calculus, or Statistics books. These books are only offered in pdf format. While the tool they use will generate epub files, they don't post epub files because of lack of interest and the cost associated with maintaining additional formats. This is what one representative told me at least.
+
+It is very difficult to properly convert a pdf file to an epub file. The most interesting tool for this job is k2pdfopt, which effectively treats each page of the pdf file as an image, cuts the image up, and then rearranges it so that it makes sense on the smaller geometery of an ereader's display. The k2pdfopt tool is a great, but it requires some tinkering to get the settings correct for each .pdf file, and once a file is converted fonts cannot be resized. 
+
+Some people say- get a bigger tablet, and yes this is an answer. A tablet with a sufficiently high resolution and enough CPU cycles will allow you to read whatever electronic file you want on a portable table. For me, the whole appeal of the eink reader is that it is inexpensive, small, highly portable, and with cloud support provided by Amazon losing it isn't a big deal.
+
+Nothing beats an e-ink display for readability and battery life. With amazon's cross platform support you can also read the same book on a phone that you have on your e-reader. My phone is really small, I like it that way for the sake of portability, but that means that if I want to read on it I need the font to be resizable and I appreciate it when the other limitations of small devices are respected.
 
 # Demo
 
