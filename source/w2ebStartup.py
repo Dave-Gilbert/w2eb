@@ -32,6 +32,10 @@ def Startup():
 
 
 def StartupUsage(err):
+    """
+    @summary: Print the usage message. This is our basic documentation.
+    """
+    
 
     print """
 wiki_get.py, A script for fetching html versions of Wikibooks."""
@@ -80,48 +84,65 @@ wiki_get.py, A script for fetching html versions of Wikibooks."""
     assert 0, "Failed to exit"
 
 
-def StartupGetOptions():
+
+def StartupParseCLI(op):
+    """
+    @summary: Establish defaults for CLI options, parse op list.
     
-    try:
-        op, args = getopt.getopt(sys.argv[1:], 'Eu:b:cCKd:D:nwbphPsS:')
-    except:
-        StartupUsage("Error: unrecognized command line options: " +
-              " ".join(sys.argv[1:]));
-
-    if len(args) > 0:
-        StartupUsage('Trailing Options Not Processed:\n' + str(args))
-
+    @return: A collection of booleans, strings, and integers.
+    """
+    
+    
     clean_html = False
     clean_book = False
     clean_cache = False
     wikidown = 0
-    export = False 
-    
+    export = False
     url = ""
     booknm = ''
     argc = 1
-    depth = 2
+    depth = 1
     no_images = False
     wspider = 0
     bw_images = False
     svg2png = False
     svgfigs = False
-    debug = 2
+    debug = 1
     stype = 'bookname'
     
     for o, a in op:
         argc += 1
-        if o == '-u':
-            url = a
-        elif o == '-b':
+        if o == '-b':
             booknm = a
+        elif o == '-B':
+            bw_images = True
         elif o == '-c':
-            clean_html = True 
+            clean_html = True
         elif o == '-C':
             clean_html = True
             clean_book = True
-        elif o == '-B':
-            bw_images = True
+        elif o == '-d':
+            try:
+                depth = int(a)
+            except:
+                StartupUsage('-d requires a numeric argument')
+        elif o == '-D':
+            try:
+                debug = int(a)
+            except:
+                StartupUsage('-D requires a numeric argument')
+        elif o == '-E':
+            export = True
+        elif o == '-h':
+            StartupUsage('')
+        elif o == '-H':
+            StartupUsage('')
+        elif o == '-K':
+            clean_html = True
+            clean_book = True
+            clean_cache = True
+        elif o == '-n':
+            no_images = True
         elif o == '-P':
             svg2png = True
         elif o == '-s':
@@ -135,31 +156,39 @@ def StartupGetOptions():
                 stype = 'bookword'
             else:
                 StartupUsage('Unrecognized option for -S = %s. Use -h to get a list of valid options' % a)
-            
-        elif o == '-K':
-            clean_html = True
-            clean_book = True
-            clean_cache = True
-        elif o == '-d':
-            try:
-                depth = int(a)
-            except:
-                StartupUsage('-d requires a numeric argument')
-        elif o == '-D':
-            try:
-                debug = int(a)
-            except:
-                StartupUsage('-D requires a numeric argument')
-        elif o == '-n':
-            no_images = True
         elif o == '-w':
             wikidown = 1
-        elif o == '-E':
-            export = True
         elif o == '-u':
-            StartupUsage('')
+            url = a
         else:
-            StartupUsage('Option "%s" not supported for arg "%s"' % (o,a))
+            StartupUsage('Option "%s" not supported for arg "%s"' % (o, a))
+    
+    return svg2png, svgfigs, booknm, url, wikidown, clean_cache, debug, wspider,\
+        stype, clean_html, clean_book, depth, no_images, bw_images, export
+
+def StartupGetOptions():
+    """
+    @summary: Get command line options from the user
+    
+    @return: The global structure opts. 
+    
+    @note: opts is passed by name as the first argument to many functions,
+    which allows reference to global state of page generation. opts includes
+    important variables like the output directory name, and the source url name.
+    """
+    
+    try:
+        op, args = getopt.getopt(sys.argv[1:], 'Eu:b:cCKd:D:nwbphPsS:')
+    except:
+        StartupUsage("Error: unrecognized command line options: " +
+              " ".join(sys.argv[1:]));
+
+    if len(args) > 0:
+        StartupUsage('Trailing Options Not Processed:\n' + str(args))
+
+    svg2png, svgfigs, booknm, url, wikidown, clean_cache, debug, wspider, \
+        stype, clean_html, clean_book, depth, no_images, bw_images, export = \
+                                            StartupParseCLI(op)
 
     if svg2png and svgfigs:
         StartupUsage('Cannot combine -P and -s')
@@ -255,7 +284,7 @@ TAG_FMSG = 'Fixing Tags:'
 
 def StartupReduceProgress(opts, ma):
     """
-    @summary: progress indicator for tag fixing. With big HTML files it can take a bit
+    @summary: progress indicator for tag reduction.
     """
 
     if opts['clen'] > 68:
@@ -266,6 +295,96 @@ def StartupReduceProgress(opts, ma):
     sys.stdout.flush()
 
     opts['clen'] += len(ma) + 1
+
+
+def StartupReduceMessyTags(opts, bl, tag):
+    """
+    @summary: Remove complex HTML that can't be rendered on a Kindle
+    
+    @note: 
+    Wikipedia pages include a lot of details that can't be easily rendered
+    on a Kindle. Many of the tags are simple and always present. This fn
+    gets rid of them while reporting progress.
+    """
+    
+    # remove a lot of the noisy / non-functional elements.
+    StartupReduceProgress(opts, 'sc')
+#   for tag_scr in bl.html.head.find_all('script'):
+    for tag_scr in bl.find_all('script'):
+        tag_scr.decompose()
+    
+    StartupReduceProgress(opts, 'li')
+    for tag in bl.html.head.find_all('link', href=True):
+        tag.decompose()
+    
+    StartupReduceProgress(opts, 'me')
+    for tag in bl.html.head.find_all('meta'):
+        tag.decompose()
+    
+    StartupReduceProgress(opts, 'sp')
+    for edit in bl.find_all('span', class_="mw-editsection"):
+        edit.decompose()
+    
+    # if the only item for a tag is string based contents
+    # then access it via '.string'
+    StartupReduceProgress(opts, 'ti')
+    bl.head.title.string = bl.head.title.string.replace(
+        '/Print version - Wikibooks, open books for an open world', '')
+    # these look really ugly
+    StartupReduceProgress(opts, 'jl')
+    for item in bl.find_all('a', class_="mw-jump-link"):
+        item.decompose()
+    
+    # these look really ugly, no print suggests they are only for the web
+    StartupReduceProgress(opts, 'np')
+    for item in bl.find_all('div', class_="noprint"):
+        item.decompose()
+    
+    StartupReduceProgress(opts, 'na')
+    # these look really ugly, no print suggests they are only for the web
+    for item in bl.find_all('div', id='mw-navigation'):
+        item.decompose()
+    
+    # some of this material just looks bad in an .epub
+    StartupReduceProgress(opts, 'ta')
+    for tag in bl.find_all('table'):
+        if tag.find('a href="https://en.wikibooks.org/wiki/File:Printer.svg"'):
+            tag.decompose()
+    
+    StartupReduceProgress(opts, 'di')
+    for tag in bl.find_all('div', id='contentSub'):
+        tag.decompose()
+    
+    StartupReduceProgress(opts, 'td')
+    for tag in bl.find_all('td', class_='mbox-text'):
+        tag.decompose()
+    
+    # ugly things near the end of the doc
+    StartupReduceProgress(opts, 'ft')
+    for tag in bl.find_all('div', id='footer'):
+        if isinstance(tag, NavigableString):
+            continue
+        tag.decompose()
+    
+    StartupReduceProgress(opts, 'pf')
+    for tag in bl.find_all('div', class_='printfooter'):
+        if isinstance(tag, NavigableString):
+            continue
+        tag.decompose()
+    
+    StartupReduceProgress(opts, 'cl')
+    for tag in bl.find_all('div', class_='catlinks'):
+        if isinstance(tag, NavigableString):
+            continue
+        tag.decompose()
+    
+    StartupReduceProgress(opts, 'hi')
+    for tag in bl.find_all('div', id='mw-hidden-catlinks'):
+        if isinstance(tag, NavigableString):
+            continue
+        tag.decompose()
+    
+
 
 def StartupReduceTags(opts, bl, ipath):
     """
@@ -332,103 +451,7 @@ def StartupReduceTags(opts, bl, ipath):
             tag.extract() # we cant decompose since we still refer to data in tag
 
     
-    # remove a lot of the noisy / non-functional elements.
-
-    StartupReduceProgress(opts,'sc')
-                                      
-#   for tag_scr in bl.html.head.find_all('script'):
-    for tag_scr in bl.find_all('script'):
-        tag_scr.decompose()
-
-    StartupReduceProgress(opts,'li')
-
-    for tag in bl.html.head.find_all('link', href=True):
-        tag.decompose()
-
-    StartupReduceProgress(opts,'me')
-
-    for tag in bl.html.head.find_all('meta'):
-        tag.decompose()
-
-    StartupReduceProgress(opts,'sp')
-    
-    for edit in bl.find_all('span', class_="mw-editsection"):
-        edit.decompose()
-
-    # if the only item for a tag is string based contents
-    # then access it via '.string'        
-
-    StartupReduceProgress(opts,'ti')
-
-    bl.head.title.string = bl.head.title.string.replace(
-        '/Print version - Wikibooks, open books for an open world','')
-
-    # these look really ugly 
-    StartupReduceProgress(opts,'jl')
-
-    for item in bl.find_all('a', class_="mw-jump-link"):
-        item.decompose()
-
-    # these look really ugly, no print suggests they are only for the web
-    StartupReduceProgress(opts,'np')
-
-    for item in bl.find_all('div', class_="noprint"):
-        item.decompose()
-
-    StartupReduceProgress(opts,'na')
-
-    # these look really ugly, no print suggests they are only for the web
-    for item in bl.find_all('div', id='mw-navigation'):
-        item.decompose()
-        
-    # some of this material just looks bad in an .epub
-
-    StartupReduceProgress(opts,'ta')
-    
-    for tag in bl.find_all('table'):
-    
-        if tag.find('a href="https://en.wikibooks.org/wiki/File:Printer.svg"'):
-            tag.decompose()
-
-    StartupReduceProgress(opts,'di')
-
-    for tag in bl.find_all('div', id='contentSub'):
-        tag.decompose()
-
-    StartupReduceProgress(opts,'td')
-       
-    for tag in bl.find_all('td', class_='mbox-text'):
-        tag.decompose()
-
-    # ugly things near the end of the doc
-
-    StartupReduceProgress(opts,'ft')
-
-    for tag in bl.find_all('div', id='footer'):
-        if isinstance(tag, NavigableString):
-                continue
-        tag.decompose()
-
-    StartupReduceProgress(opts,'pf')
-
-    for tag in bl.find_all('div', class_='printfooter'):
-        if isinstance(tag, NavigableString):
-                continue
-        tag.decompose()
-
-    StartupReduceProgress(opts,'cl')
-
-    for tag in bl.find_all('div', class_='catlinks'):
-        if isinstance(tag, NavigableString):
-                continue
-        tag.decompose()
-
-    StartupReduceProgress(opts,'hi')
-
-    for tag in bl.find_all('div', id='mw-hidden-catlinks'):
-        if isinstance(tag, NavigableString):
-                continue
-        tag.decompose()
+    StartupReduceMessyTags(opts, bl, tag)
             
     # have found some messy stuff at the end of documents that starts with
     # a tag of the class hiddenStructure. Blow it away
