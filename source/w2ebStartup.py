@@ -38,39 +38,50 @@ def StartupUsage(err):
     
 
     print """
-wiki_get.py, A script for fetching html versions of Wikibooks."""
+w2eb.py, A script for converting Wikipedia articles into ebooks."""
 
     if not err:
         print """
-    StartupUsage:  wiki_get.py  [opts] [-u <URL>] [-b <book>] 
+    Usage:  w2eb.py  [opts] [-u <URL>] [-b <book>] 
         
-        -c        Erase all .html files and retry URLs that previously failed.
-        -C        Erase all generated files, including .html, images, and footnotes.
-        -K        Clean generated files and network cache. Redownload everything.
-                    Without c, C, or K, a normal run will rewrite root html only.
+        -c        Erase .html files and retry URLs that previously failed.
+        -C        Erase generated files: .html, images, and footnotes.
+        -K        Erase all generated files and all cached downloads.
+                    Without c, C, or K, a run will rewrite root doc only.
         -E        Export book to epub. Uses calibre for conversion.
         
         -n        No images 
-        -B        Convert color images to black and white, should reduce file sizes.
-        -P        Convert all .svg images to .png. Older e-readers may not support .svg.
-                    Wikipedia provides math equations in .svg format, converting them takes time.
-        -s        Use .svg for non-math figures. Svg figures with transparent zones 
-                    don't render correctly on the kindle. Default is to render them.
-        -u <url>  Url to use as the base of the ebook. If -b is not supplied the basename
-                    of the url will be used to generate the bookname.
-        -b <nm>   The name of the e-book. Try to guess a wikipedia style url based on
-                    the bookname if -u is not supplied. 
+        -B        Convert color images to black and white.
+        -P        Convert all .svg images to .png. Older e-readers may
+                    not support .svg. Wikipedia provides math equations
+                    in .svg format, although converting them is time
+                    consuming.
+        -s        Use .svg for non-math figures. Svg figures with
+                    transparent zones don't render correctly on the kindle.
+                    Default is to render them.
+
+        -u <url>  Url to use as the base of the ebook. If -b is not supplied
+                    the basename of the url will be used to generate the
+                    bookname, usually these match.
+        -b <nm>   The name of the e-book. Wikipedia urls are usually short
+                    and use the url basename as a version of the article name.
+                    If -u is not supplied, guess a url based on the bookname.
               
-        -d <#>    depth, 0 for no subarticles, 2 for default.
-        -S <typ>  Section type. Determines whether a link is treated as a subsction or not.
-                  <typ> can be one of:
-                  bookurl  - subsection url has book url as a substring
-                  bookname - subsection url has book name as a substring  < default>
-                  bookword  - subsection url has at least one 4 letter word from book name as substring
+        -d <#>    depth, 0 for no subarticles. Default is 1. 
+        -S <typ>  Section type. Determines whether a link is treated
+                    as a subsection or not.
+                    
+                    <typ> can be one of:
+                    bookurl  - subsection url has book url as a substring
+                    bookname - subsection url has book name as a substring
+                               < default>
+                    bookword - subsection url has at least one 4 letter word
+                            from book name as substring
         
-        -D <#>    Debug level. 0 = none, 1 = footnote only, 2 = failure only, 3 = all.
-        -w        wiki down, rely on cache instead of wget (debugging...)
-        -h        this message
+        -D <#>    Debug level. 0 = none, 1 = footnote only, 2 = failure only,
+                    3 = all. Debug notes are included in the book by default.
+        -w        Wiki down, rely on cache instead of wget (debugging...)
+        -h        This message.
 """
 
     if err:
@@ -389,7 +400,6 @@ def StartupReduceMessyTags(opts, bl, tag):
 def StartupReduceTags(opts, bl, ipath):
     """
     @summary: Remove as many tags as possible
-
 
     @note: 
     wikipedia recommends downloading portions of its database
