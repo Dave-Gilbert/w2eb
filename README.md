@@ -57,11 +57,11 @@ The current version of **w2eb** has several dependencies. HTML files are fetched
 
 The speed of the tool is mainly limited by the speed of your Internet connection. Because of the size of Wikipedia book downloads are limited by the '-d' flag. This determines the "depth" of a search. The default setting for this flag is 1, which means that the tool will collect some of the subsections mentioned on the first page, but no subsections mentioned by child pages. **w2eb** generates several progress meters with summary symbols so you have an idea of what it is doing. Downloading the "aardvark" book generates the following output:
 
-`gilbert@dave:~$ wiki2epub.sh -b aardvark
+`gilbert@dave:~$ wiki2epub.sh -b aardvark`
 
 
----------------------------------------------
-==> Downloading Wikibook "aardvark"
+`---------------------------------------------`
+`==> Downloading Wikibook "aardvark"
 Started at Tue Jul 16 14:57:31 2019
 Searching: https://en.wikipedia.org/wiki/aardvark
 Debug = 1, Depth = 1
@@ -159,8 +159,7 @@ w2eb.py, A script for converting Wikipedia articles into ebooks.
         -D <#>    Debug level. 0 = none, 1 = footnote only, 2 = failure only,
                     3 = all. Debug notes are included in the book by default.
         -w        Wiki down, rely on cache instead of wget (debugging...)
-        -h        This message.
-`
+        -h        This message.`
 
 # Contact
 
