@@ -13,25 +13,18 @@ Wikipedia's database is enormous and a great source for content. While you can c
 **w2eb** takes a topic name and converts it into a wikipedia derived "ebook". It supports the following fundamental features:
 
 1. Follows "Primary" links to create subsections
-
 ..* **w2eb** is selective about which links it explores completely.
 ..* **w2eb** provides simple controls to help you define what to include.
-
 2. **w2eb** Summarizes "Secondary" links to create notes and footnotes.
-
 ..* Wikipedia articles often include hundreds of references, **w2eb** presents these as footnotes
 ..* A **w2eb** footnote is the first few sentences of a referred Wikipedia article.
 ..* Footnotes can be disabled and presented as internet links to reduce file sizes.
 ..* Footnoes can be extended with Notes. **w2eb** preserves the first 10 paragraphs of any wikipedia reference and the original in a special Notes section.
-
 3. **w2eb** Organizes related wikipedia links into a "book"
-
 ..* **w2eb** Arranges the pages it downloads in a breadth first pattern, so that if you read your wikibook start to finish it will make a certain sense.
 ..* **w2eb** Stores all footnotes at the end of the book, alphabetizing them, and storing extended notes in a final section.
-
 4. **w2eb** is math friendly.
 ..* Wikipedia stores math equations in .svg format. If your reader supports this format, great! If your reader doesn't support it, **w2eb** will convert the file for you.
-
 5. **w2eb** is image friendly.
 ..* Wikipedia usually stores several versions of each image. **w2eb** finds the "best" one for your reader and fetches it. The "best" image is about 600x600 pixels. This size leaves some space at the top or bottom for a caption. 
 
@@ -57,11 +50,12 @@ The current version of **w2eb** has several dependencies. HTML files are fetched
 
 The speed of the tool is mainly limited by the speed of your Internet connection. Because of the size of Wikipedia book downloads are limited by the '-d' flag. This determines the "depth" of a search. The default setting for this flag is 1, which means that the tool will collect some of the subsections mentioned on the first page, but no subsections mentioned by child pages. **w2eb** generates several progress meters with summary symbols so you have an idea of what it is doing. Downloading the "aardvark" book generates the following output:
 
-`gilbert@dave:~$ wiki2epub.sh -b aardvark`
+```
+gilbert@dave:~$ wiki2epub.sh -b aardvark
 
 
-`---------------------------------------------`
-`==> Downloading Wikibook "aardvark"
+---------------------------------------------
+==> Downloading Wikibook "aardvark"
 Started at Tue Jul 16 14:57:31 2019
 Searching: https://en.wikipedia.org/wiki/aardvark
 Debug = 1, Depth = 1
@@ -100,7 +94,8 @@ Finished at Tue Jul 16 15:02:38 2019
 Conversion took   5 mins
 
 wrote aardvark/aardvark.html
-==> Done`
+==> Done
+```
 
 ## Performance
 
@@ -116,7 +111,8 @@ All footnotes and sections are merged into a single file which requires **w2eb**
 
 **w2eb** provides a detailed usage message.
 
-`gilbert@dave:~$ w2eb -h
+```
+gilbert@dave:~$ w2eb -h
 
 w2eb.py, A script for converting Wikipedia articles into ebooks.
 
@@ -159,7 +155,8 @@ w2eb.py, A script for converting Wikipedia articles into ebooks.
         -D <#>    Debug level. 0 = none, 1 = footnote only, 2 = failure only,
                     3 = all. Debug notes are included in the book by default.
         -w        Wiki down, rely on cache instead of wget (debugging...)
-        -h        This message.`
+        -h        This message.
+```
 
 # Contact
 
