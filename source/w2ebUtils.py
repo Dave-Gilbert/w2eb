@@ -546,6 +546,7 @@ def uFindSectHref(opts, url_hfile, sect_label_href_list):
     
     @return section dictionary
     """
+
     global G_our_print_version_file
 
     for item in sect_label_href_list:

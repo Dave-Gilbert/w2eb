@@ -65,9 +65,9 @@ def FinalPrintStats(opts, bl, im_tot, convert, sect_label_href_list, foot_dict_l
         if old_toc > 1:
             ostr += ', Removed %d old TOC Tables' % old_toc
         uPlog(opts, ostr)
-    
-    uPlog(opts, "\nFinished at " + time.asctime(time.localtime(time.time())))
-    uPlog(opts, "Conversion took", uStrTimeSMH(time.time() - st_time))
+        uPlog(opts, "\nFinished at " + time.asctime(time.localtime(time.time())))
+        uPlog(opts, "Conversion took", uStrTimeSMH(time.time() - st_time))
+        
     uPlog(opts, '')
     uPlog(opts, "wrote " + ipath)
     uPlog(opts, "==> Done")
@@ -75,6 +75,17 @@ def FinalPrintStats(opts, bl, im_tot, convert, sect_label_href_list, foot_dict_l
 
 
 def FinalAddSections(opts, bl, sect_label_href_list):
+    
+    """
+    @summary: Add the collected sections to the end of the book
+    
+    @note: 
+    
+    The oder of sect_label_href_list is important, and determined during book
+    traversal. The tree of sections is flattened using a breadth first search.
+    This means that all the references to any article appear in order after that
+    article, even if those articles have their own subarticles. 
+    """
     
     if not sect_label_href_list:
         return
@@ -147,7 +158,15 @@ def FinalAddSections(opts, bl, sect_label_href_list):
     
     return final_section_list
 
-def FinalSummaries(opts, bl, foot_dict_list):
+def FinalAppendFootnotes(opts, bl, foot_dict_list):
+    """
+    @summary: Append the foot note dictionary list at the end of the book.
+    
+    @param opts: global parameters
+    @param bl: beautiful soup html structure
+    @param foot_dict_list: A list of footnotes in dictionary format
+        
+    """
     
 
     if not foot_dict_list:
@@ -472,7 +491,7 @@ def FinalMergeFootSectTOC(opts, st_time, bl, section_bname, im_tot, convert,
     old_toc = 0
     if opts['parent'] == '':
         final_sect_label_href_list = FinalAddSections(opts, bl, sect_label_href_list)
-        FinalSummaries(opts, bl, foot_dict_list)
+        FinalAppendFootnotes(opts, bl, foot_dict_list)
         while TocRemoveOldToc(opts, bl) == '':
             old_toc += 1
         

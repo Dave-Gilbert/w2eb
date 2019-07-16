@@ -1,6 +1,17 @@
 
 from w2ebUtils import *
 
+#
+# All output is stored under the following directory
+#
+
+BASE_DIR = '/home/gilbert/Projects_Recent/wiki_books'
+
+#
+# Some temp files are created as part of image conversion. Store them here:
+#
+
+TMP_DIR = '/tmp/'
 
 WGET_OPTS = """ \
  --timeout=10 \
@@ -90,8 +101,6 @@ TOC_MAX_PAR = 10
 # footnotes must have no more than 10 paragraphs
 
 MAX_PARAGRAPH = 10
-
-BASE_DIR = '/home/gilbert/Projects_Recent/wiki_books'
 
 IMAGE_PIC = ['.jpg', '.JPG', 'jpeg', 'JPEG']
 IMAGE_FIG = ['.gif', '.GIF', '.png', '.PNG']

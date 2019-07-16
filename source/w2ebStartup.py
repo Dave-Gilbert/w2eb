@@ -10,15 +10,23 @@ from w2ebUtils import *
 
 
 def Startup():
+    """
+    @summary: Called for command line startup, sets the opts dict from the CLI.
+    
+    @note: 
+    Several fields in the opts structure are only used by recursive calls and
+    are not specified by the command line interface. In particular the initiating
+    call must leave the 'parent' field empty, all others must define it.
+    """
 
     opts = StartupGetOptions()
     uSysCmd(opts, 'rm -r "' + opts['bodir'] + '/wiki_log.txt"', False)
-    opts['parent'] = ''
-    opts['parent_fp'] = ''
-    opts['parent_fpc'] = 0
-    opts['parent_sketch'] = ''
-    opts['ret_anch'] = ''
-    opts['footi'] = 1
+    opts['parent'] = ''         # name of the parent, empty in the CLI case
+    opts['parent_fp'] = ''      # unused, development, XXX consider removing
+    opts['parent_fpc'] = 0      # unused, development, XXX consider removing
+    opts['parent_sketch'] = ''  # a description of the parent. See Sketch fns.
+    opts['ret_anch'] = ''       # the return anchor for this footnote
+    opts['footi'] = 1           # the footnote counter
     
     return opts
 
