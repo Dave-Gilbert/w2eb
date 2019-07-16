@@ -116,8 +116,7 @@ All footnotes and sections are merged into a single file which requires **w2eb**
 
 **w2eb** provides a detailed usage message.
 
-`
-gilbert@dave:~$ w2eb -h
+`gilbert@dave:~$ w2eb -h
 
 w2eb.py, A script for converting Wikipedia articles into ebooks.
 
