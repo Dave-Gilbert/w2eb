@@ -1,6 +1,6 @@
-# w2eb
+# W2EB
 
-## w2eb Converts Wikipedia pages to offline ebooks.
+## W2EB Converts Wikipedia pages to offline ebooks
 
 Wikipedia is a fantastic source of information which has changed the
 way most people do research. However, Wikipedia pages are designed to
@@ -8,40 +8,42 @@ be viewed online. Usually you will need either a computer connected to
 the Internet or a cell phone with a good data plan in order to access
 Wikipedia.
 
-E-ink readers are fantastic devices with incredible battery life and
-easy to read screens but they have several limitations in terms of
-what they can render. A basic e-reader has a 600x800 monochrome pixel
-display, small memory storage, and performs poorly when used as a web
-browser.
+E-ink readers have incredible battery life and easy to read screens
+but they have several limitations in terms of what they can render. A
+basic e-reader has a 600x800 monochrome pixel display, small memory
+storage, and performs poorly when used as a web browser.
 
-While there are many strategies for converting web content to an
-ereader format the results are often unsatisfactory. This is where
-**w2eb** comes in. The goal, take rich online content, like a
-Wikipedia article or wikibook, and convert it into a format suitable for
-offline reading on a monochrome e-reader with a small screen.
+There are many strategies for converting web content to an ereader
+format but the results are often unsatisfactory. This is where
+**w2eb** comes in. The goal: take the rich online content found in a
+Wikipedia article or in a wikibook, and convert it into a format
+suitable for offline reading on a monochrome e-reader with a small
+screen.
 
-# w2eb Features
+# W2EB Features
 
-**w2eb** takes a topic name and converts it into a Wikipedia derived
-"ebook". It supports the following features:
+**W2eb** takes a topic name and converts it into a Wikipedia derived
+ebook. It supports the following features:
 
-1. **w2eb** follows *primary* links to create subsections.
-  * *Primary* links are explored completely.
-  * *Primary* links are selected by user defined keywords or the book title.
-2. **w2eb** summarizes *secondary* links to create notes and
+1. **W2eb** follows *primary* links to create subsections.
+  * *Primary* links are explored completely, all images and references
+    are gathered.
+  * *Primary* link selection is limited by the book title or user
+    defined keywords.
+2. **W2eb** summarizes *secondary* links to create notes and
     footnotes.
   * Wikipedia articles include hundreds of references, **w2eb**
-    presents these as *footnotes*.
+    presents these in summary form as *footnotes*.
   * Footnotes can be extended by *notes*, which provide an in-depth
     summary of an article.
-3. **w2eb** Organizes related wikipedia links into a single epub file.
-  * A custom table of contents lists the original page, its major
-    headings and all subsections.
-  * Footnotes and notes appear at the end, including backlinks.
-4. **w2eb** is image friendly.
-  * Wikipedia usually stores several versions of each image. **w2eb**
+3. **W2eb** Organizes related wikipedia links into a single epub file.
+  * A custom table of contents lists presents links to the original major
+    headings and all subsections as well as all derived sections.
+  * Footnotes and notes appear at the end.
+4. **W2eb** is image friendly.
+  * Wikipedia usually stores several versions of each image. **W2eb**
     finds the "best" one for your reader and fetches it.
-5. **w2eb** is math friendly.
+5. **W2eb** is math friendly.
   * Equations get special treatment to ensure they are readable.
 
 ## Demo
@@ -71,17 +73,16 @@ mathematically based content formatted for an ereader.
 
 Project Gutenberg hosts only a small selection of math and science
 books and these are in pdf and Latex format, not epub or html format.
-Other web sites that provide science based media limit their offerings
-to pdf files. See for example the Openstax collection of University
-freshman level math and science text books. These books are offered
-primarily in pdf format.
+Other web sites that provide science based media often limit their
+offerings to pdf files. See for example the Openstax collection of
+University freshman level math and science text books.
 
 It is difficult to convert a pdf file to an epub file if the pdf file
 includes equations, tables, unusual symbols or a complex page layouts.
 The most interesting tool for this job is k2pdfopt, which effectively
 treats each page of the pdf file as an image, cuts the image up, and
 then rearranges the elements so the page can be viewed on the smaller
-geometery of an ereader's display. The k2pdfopt tool is a great, but
+geometry of an ereader's display. The k2pdfopt tool is a great, but
 it requires some tinkering to get the settings correct for each .pdf
 file, and once a file is converted fonts cannot be resized.
 
@@ -89,7 +90,7 @@ Some people say- "get a bigger tablet...", and yes this is an answer.
 Depending on your needs this might be the right answer. A tablet with
 a sufficiently high resolution and enough CPU cycles will allow you to
 read whatever electronic file you want without using a desktop
-computer. For me, the whole appeal of the eink reader is that it is
+computer. For me, the whole appeal of the e-ink reader is that it is
 inexpensive, small, and highly portable. If you want to see the world
 of documents through a 6 inch e-ink display, you will need to alter those
 documents by extracting their core details and simplifying their
@@ -97,15 +98,16 @@ formatting, and this is what **w2eb** does.
 
 # Usage
 
-**w2eb** it is a command line tool with a variety of options, it is
-meant to be simple to use, although the tool currently has several
-dependencies. Once the tool is installed, lets suppose you want the
-Wikipedia book on Aardvarks. From your command line you would type:
+**W2eb** is a command line tool with a variety of options. It is meant
+to be simple to use, although the tool currently has several
+dependencies so installation is not streamlined. Once the tool is
+installed, lets suppose you want the Wikipedia book on Aardvarks. From
+your command line you would type:
 
 `gilbert@dave:~$ w2eb -b aardvark`
 
-**w2eb** tries this keywords with one of several Wikipedia base urls
-and starts downloading text and images. **w2eb** generates several
+**W2eb** tries this keywords with one of several Wikipedia base urls
+and starts downloading text and images. **W2eb** generates several
 progress meters with summary symbols so you have an idea of what it is
 doing. When it is done it generates some summary statistics which
 detail how many pages it visited.
@@ -113,7 +115,7 @@ detail how many pages it visited.
 Downloading the "aardvark" book generates the following output:
 
 ```plaintext
-gilbert@dave:~$ wiki2epub.sh -b Aardvark
+gilbert@dave:~$ w2eb -b Aardvark
 
 
 ---------------------------------------------
@@ -161,23 +163,31 @@ wrote aardvark/aardvark.html
 
 ## Performance
 
-A typical article can be downloaded and processed in about 5 minutes,
-although execution time depends more on the sort of internet
-connection you have and what article you are downloading. The flag
-'-d' controls the depth of the search. Each time a new subsection is
-found it is searched with a reduced value for depth. 
+With default settings an article can often be downloaded and processed
+in about 5 minutes.  Execution times can vary from a few seconds to
+hours depending on the sort of internet connection you have, what
+article you are downloading, and the extent to which you instruct
+**w2eb** to probe Wikipedia. A recursive breadth first search is used
+to explore the tree, the depth of this search is limited by the '-d'
+flag. References to web pages outside Wikipedia are verified, but not
+explored. Most references within Wikipedia are treated as footnotes,
+and only summary information is explored. For a reference to be
+treated as a section it must have a title similar to the current
+book's title, this behaviour is controlled with the '-S' flag.
 
 **w2eb** maintains a cache of everything it downloads. This is mainly
 for development since downloading individual files consumes a large
-amount of time. After a book is created the first time, recreating it
-a second time with different settings is much faster. Cache erasure is
-controled by '-c', '-C', and '-K'. Each flag erases successively more
-of the cache with '-K' erasing everything.
+amount of time. Articles which reference the same urls repeatedly also
+benefit from the cache. After a book is created for the first time,
+recreating it a second time with different settings is much faster.
+Cache erasure is controlled by the '-c', '-C', and '-K' flags. Each
+flag erases successively more of the cache with '-K' erasing
+everything.
 
-Converting .svg files into .png files can be very time consuming,
+Converting svg files into png files can be very time consuming,
 especially for books which define a large number of equations. For the
-kindle e-reader, .svg files with transparent background are rendered
-as black, so by default an .svg image which does not appear to be a
+kindle e-reader, svg files with transparent background are rendered
+as black, so by default an svg image which does not appear to be a
 math equation is converted to a .png file. In my tests I did not see
 any equation files that used transparent backgrounds so by default
 these are not converted. 
@@ -194,7 +204,7 @@ lot of unresolved links.
 ```plaintext
 gilbert@dave:~$ w2eb -h
 
-w2eb.py, A script for converting Wikipedia articles into ebooks.
+W2EB - A tool for converting Wikipedia articles into ebooks.
 
     Usage:  w2eb.py  [opts] [-u <URL>] [-b <book>] 
         
@@ -240,12 +250,12 @@ w2eb.py, A script for converting Wikipedia articles into ebooks.
 
 ## Dependencies
 
-**w2eb** is written for Python 2.7. The current version of **w2eb**
+**W2eb** is written for Python 2.7. The current version of **w2eb**
 has several dependencies. HTML files are fetched by *wget* and
 processed by *Beautiful Soup*, both must be present for the tool to
 work. Images are processed by *Image Magick's* *"convert"* command
-line tool. **w2eb** generates .html files that are epub friendly, but
-still relies on third party tools to do the final conversion. **w2eb**
+line tool. **W2eb** generates .html files that are epub friendly, but
+still relies on third party tools to do the final conversion. **W2eb**
 adds some tags that help *calibre* recognize headings that should be
 included in the table of contents.  Testing has only been done on
 Linux. 
@@ -255,60 +265,82 @@ entirely ready for general consumption.*
 
 Minimizing dependencies is important, as is the ability to execute on
 various platforms. I hope to remove wget soon, and perhaps find a
-reasonable windows alternative to Image Magick's convert.
+reasonable Windows alternative to Image Magick's convert.
 
-Many people, including me, prefer to use a GUI front end if one is
-available. Currently this is a long range goal.
+At this time there is no GUI.
 
 # Bugs
 
 *The current version should be considered in development and not
 entirely ready for general consumption.*
 
-Information is extracted from Wikipedia by crawling or
-scraping their web pages. A better strategy would be to access their
-content database directly.
+Information is extracted from Wikipedia by crawling or scraping their
+web pages. A better strategy would be to access their content database
+directly.
 
-**w2eb** relies on the presence of certain special tags which are
+**W2eb** relies on the presence of certain special tags which are
 found only in .html pages generated by Wikipedia. This is fragile in
 the sense that an upgrade to the wiki rendering system would break
-**w2eb**, see above the note about reading the database directly.
+**w2eb**, see the preceding note about reading Wikipedia's database directly.
 
-**w2eb** tries to replace the table of contents in an article with a
+**W2eb** tries to replace the table of contents in an article with a
 corrected version, although depending on how the original table of
 contents was created this doesn't always work. Sometimes there are
 several table of contents.
 
-**w2eb**'s idea of a footnote is an invention which tries to make the
+**W2eb** adds hints to headings so that calibre will select
+appropriate entries for the epub files native table of contents,
+although this doesn't always work. Sometimes there are nonsense
+TOC entries picked up by Calibre during import. 
+
+**W2eb**'s idea of a footnote is an invention which tries to make the
 internet look like a book. You may think of this as a bug, although it
 is intended to be a feature. For **w2eb** a footnote is really just a
 link that it has decided might be important but is off the beaten path
 and not worth presenting in full.
 
-**w2eb** When the same footnote is mentioned in multiple locations in
+When the same footnote is mentioned in multiple locations in
 the text this complicates the backlink feature. It can be the case
 that when a reader clicks on a footnote and then clicks on the
 backlink from the footnote instead of being returned to their original
 location they will be returned to another place in the text that
 references this note.
 
-**w2eb** generates notes and footnotes using the same heuristic which
+**W2eb** generates notes and footnotes using the same heuristic which
 drops all images, tables and formatting. This can sometimes leave
-strange gaps in the note text, especially when something important has
-been dropped.
+strange gaps in the footnot or note text.
 
-**w2eb** rearranges text in certain situations. An ereader presents
-material in a more linear fashion than a web page. A wikipedia page is
-mostly linear, but includes side bars, large tables, etc. The goal is
-to improve presentation through a simplified arrangement, but this
-sometimes doesn't work perfectly.
+**W2eb** rearranges text in certain situations. An ereader presents
+material in a more linear fashion than a web page. A Wikipedia page is
+mostly linear, but includes side bars, large tables, and other
+features. **W2eb**'s goal is to improve presentation through a simplified
+arrangement, but this sometimes doesn't work quite right.
 
-**w2eb** currently doesn't handle certain tables in a very nice way.
+**W2eb** currently doesn't handle certain tables in a very nice way.
 
-**w2eb** was originally written for the "wikibooks" section of
-wikipedia, it works better with URLs that resolve to this
+**W2eb** was originally written to create books from the "wikibooks"
+section of Wikipedia. It works better with URLs that resolve to this
 area, and doesn't do as nice of a job rendering other articles from
-Wikipedia.
+the main section in Wikipedia.
+
+# License
+
+**W2EB** is released under GPLv3. 
+
+```
+    W2EB is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+```
 
 # Contact
 

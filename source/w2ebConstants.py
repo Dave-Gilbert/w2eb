@@ -1,3 +1,12 @@
+"""
+@summary:      W2EB - A tool for converting Wikipedia articles into ebooks.
+@author:       Dave Gilbert
+@contact:      dave.wm.gilbert@gmail.com
+@license:      GPLv3
+@requires:     Python 2.7, wget, Image Magick's convert, Beautiful Soup, Calibre
+@since:        2019.04.10 
+@version:      0.3
+"""
 
 from w2ebUtils import *
 

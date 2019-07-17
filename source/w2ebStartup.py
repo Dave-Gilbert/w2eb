@@ -1,3 +1,12 @@
+"""
+@summary:      W2EB - A tool for converting Wikipedia articles into ebooks.
+@author:       Dave Gilbert
+@contact:      dave.wm.gilbert@gmail.com
+@license:      GPLv3
+@requires:     Python 2.7, wget, Image Magick's convert, Beautiful Soup, Calibre
+@since:        2019.04.10 
+@version:      0.3
+"""
 
 
 import getopt
@@ -38,7 +47,7 @@ def StartupUsage(err):
     
 
     print """
-w2eb.py, A script for converting Wikipedia articles into ebooks."""
+W2EB - A tool for converting Wikipedia articles into ebooks."""
 
     if not err:
         print """
@@ -308,7 +317,7 @@ def StartupReduceProgress(opts, ma):
     opts['clen'] += len(ma) + 1
 
 
-def StartupReduceMessyTags(opts, bl, tag):
+def StartupReduceMessyTags(opts, bl):
     """
     @summary: Remove complex HTML that can't be rendered on a Kindle
     
@@ -336,6 +345,10 @@ def StartupReduceMessyTags(opts, bl, tag):
     for edit in bl.find_all('span', class_="mw-editsection"):
         edit.decompose()
     
+    StartupReduceProgress(opts, 'in')
+    for edit in bl.find_all('div', class_="mw-indicator"):
+        edit.decompose()
+
     # if the only item for a tag is string based contents
     # then access it via '.string'
     StartupReduceProgress(opts, 'ti')
@@ -345,7 +358,10 @@ def StartupReduceMessyTags(opts, bl, tag):
     StartupReduceProgress(opts, 'jl')
     for item in bl.find_all('a', class_="mw-jump-link"):
         item.decompose()
-    
+
+    StartupReduceProgress(opts, 'jn')
+    for item in bl.find_all('div', id="jump-to-nav"):
+        item.decompose()
     # these look really ugly, no print suggests they are only for the web
     StartupReduceProgress(opts, 'np')
     for item in bl.find_all('div', class_="noprint"):
@@ -395,7 +411,28 @@ def StartupReduceMessyTags(opts, bl, tag):
             continue
         tag.decompose()
     
+def StartupReduceTable(opts, bl):
+    """
+    @summary: Rerender Wikipedia's summary table, keeping images.
+    
+    @note: This function should try to preserve other elements from 
+    the opening table. TODO.
+    """
+    
+    StartupReduceProgress(opts, 'ta')
+    
+    for tag in bl.find_all('table', class_='infobox biota'):
 
+        ph_tag = bl.new_tag('div')
+        ph_tag['id'] = 'location of infobox biota'
+        tag.insert_before(ph_tag)
+        
+        tag.extract()
+        
+        for itag in tag.find_all('img'):
+            ph_tag.append(itag)
+             
+        
 
 def StartupReduceTags(opts, bl, ipath):
     """
@@ -461,8 +498,10 @@ def StartupReduceTags(opts, bl, ipath):
             tag.extract() # we cant decompose since we still refer to data in tag
 
     
-    StartupReduceMessyTags(opts, bl, tag)
-            
+    StartupReduceMessyTags(opts, bl)
+    
+    StartupReduceTable(opts, bl)
+    
     # have found some messy stuff at the end of documents that starts with
     # a tag of the class hiddenStructure. Blow it away
 

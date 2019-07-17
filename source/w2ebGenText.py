@@ -1,3 +1,12 @@
+"""
+@summary:      W2EB - A tool for converting Wikipedia articles into ebooks.
+@author:       Dave Gilbert
+@contact:      dave.wm.gilbert@gmail.com
+@license:      GPLv3
+@requires:     Python 2.7, wget, Image Magick's convert, Beautiful Soup, Calibre
+@since:        2019.04.10 
+@version:      0.3
+"""
 
 import json
 
@@ -236,10 +245,8 @@ def GenTextGetFootNote(opts):
     st_time = time.time()
     foot_dict = {}
     
-    opts['footsect_name'] = uCleanChars(opts, opts['footsect_name'])
-    
-    opts['bodir'] = uCleanChars(opts, opts['bodir'])
-        
+    opts['footsect_name'] = opts['footsect_name']
+            
     uSysMkdir(opts, opts['dcdir'])
 
     err, bl, section_bname = uGetHtml(opts)
@@ -247,8 +254,8 @@ def GenTextGetFootNote(opts):
     if err:
         return err, []
 
-    uPlog(opts, '==> Fetching Footnote Summary for "' + opts['footsect_name'] + '"')
-    uPlog(opts, "Searching:", opts['url'])
+    uPlogExtra(opts, '==> Fetching Footnote Summary for "' + opts['footsect_name'] + '"', 3)
+    uPlogExtra(opts, "Searching:", opts['url'], 3)
     
     opts['section_bname'] = section_bname
     

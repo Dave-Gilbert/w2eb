@@ -1,3 +1,12 @@
+"""
+@summary:      W2EB - A tool for converting Wikipedia articles into ebooks.
+@author:       Dave Gilbert
+@contact:      dave.wm.gilbert@gmail.com
+@license:      GPLv3
+@requires:     Python 2.7, wget, Image Magick's convert, Beautiful Soup, Calibre
+@since:        2019.04.10 
+@version:      0.3
+"""
 
 import sys
 from shutil import copyfile
@@ -72,7 +81,7 @@ def PicGetImage(opts, url, image_file):
     return err
 
 
-def PicGetSvgDims(str_line):
+def PicGetSvgDims(opts, str_line):
     """
     @summary: Read the dimensions of an SVG file
     
@@ -123,9 +132,10 @@ def PicGetSvgDims(str_line):
     
     retval = str(w) + 'x' + str(h)
     
-    if w * h == 0 or h < IM_SCALEex / 2:
+    if w * h == 0:
         assert 0, "Math Failed %f %dx%d %s" % (im_scale, h,w,str_line)
-        retval = None
+    if h < IM_SCALEex / 2:
+        uPlogExtra(opts, "Small Math Dimensions %dx%d" % (h,w), 3)
         
     return retval
 
@@ -198,7 +208,7 @@ def PicConvertSVGcmd(opts, image_file, dosvg2png):
     l1 = fp_im.readline()
     fp_im.close()
     
-    wxh = PicGetSvgDims(l1)
+    wxh = PicGetSvgDims(opts, l1)
 
     png_conv = convcmd
     if opts['bw_images']:

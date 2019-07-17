@@ -1,4 +1,12 @@
-
+"""
+@summary:      W2EB - A tool for converting Wikipedia articles into ebooks.
+@author:       Dave Gilbert
+@contact:      dave.wm.gilbert@gmail.com
+@license:      GPLv3
+@requires:     Python 2.7, wget, Image Magick's convert, Beautiful Soup, Calibre
+@since:        2019.04.10 
+@version:      0.3
+"""
 
 import urllib
 import json
@@ -28,7 +36,7 @@ def MainLabelAnchSuff(opts, label_in):
     #if '/' in ret_suff:
     ret_suff = '_'.join(ret_suff.split('/'))
     ret_suff = ret_suff.replace(' ', '_').strip()   
-    ret_suff = uCleanChars(opts, urllib.quote(ret_suff))
+    ret_suff = urllib.quote(uCleanChars(opts, ret_suff))
 
     return ret_suff
 
@@ -385,11 +393,11 @@ def MainPickFootVsSect(opts, tag_href):
     if '#' in url:
         anch = url.split('#')[1]
         url = url.split('#')[0]
-    foot_title = uLabelDelWhite(uCleanChars(opts, uGetTextSafe(tag_href)))
+    foot_title = uLabelDelWhite(uGetTextSafe(tag_href))
     if 'id' in tag_href and len(uLabelDelWhite(tag_href['id'])) > 0:
         ret_anch = tag_href['id']
         if len(foot_title) == 0:
-            foot_title = uLabelDelWhite(uCleanChars(opts, tag_href['id']))
+            foot_title = uLabelDelWhite(tag_href['id'])
     elif len(foot_title) == 0:
         err = 'No footnote title for url: ' + url
         foot_title = ''
@@ -821,8 +829,8 @@ def Main(opts):
     foot_dict = {}
     sect_label_href_list = []
     
-    opts['footsect_name'] = uCleanChars(opts, opts['footsect_name'])
-    opts['bodir'] = uCleanChars(opts, opts['bodir'])
+    opts['footsect_name'] = opts['footsect_name']
+    opts['bodir'] = opts['bodir']
         
     assert not opts['footnote'], "Main does not generate footnotes, only sections. See GenTextGetFootNote" 
 
