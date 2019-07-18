@@ -60,7 +60,7 @@ def TocShortLabel(heading_str):
 
 def TocGetH1H2(hlist, hdlist, curr, head):
     """
-    @summary:  verify curr and if okay add to our list of tags.
+    Verify curr and if okay add to our list of tags.
     """
        
     if isinstance(curr, NavigableString):
@@ -191,7 +191,7 @@ def TocFindHead(opts, bl, create_default):
 
 def TocRemoveOldToc(opts, bl):
     """
-    @summary: Find and remove any old Table of Contents listings in the document
+    Find and remove any old Table of Contents listings in the document
     
     @note: This function destroys original content
     """

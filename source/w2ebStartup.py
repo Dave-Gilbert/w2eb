@@ -59,7 +59,7 @@ W2EB - A tool for converting Wikipedia articles into ebooks."""
                     Without c, C, or K, a run will rewrite root doc only.
         -E        Export book to epub. Uses calibre for conversion.
         
-        -n        No images 
+        -i        No images 
         -B        Convert color images to black and white.
         -P        Convert all .svg images to .png. Older e-readers may
                     not support .svg. Wikipedia provides math equations
@@ -76,7 +76,9 @@ W2EB - A tool for converting Wikipedia articles into ebooks."""
                     and use the url basename as a version of the article name.
                     If -u is not supplied, guess a url based on the bookname.
               
-        -d <#>    depth, 0 for no subarticles. Default is 1. 
+        -d <#>    depth, 0 for no subarticles. Default is 1.
+        -n        Never include notes, only allow footnotes
+        -N        Always allow notes to be generated alongside footnotes
         -S <typ>  Section type. Determines whether a link is treated
                     as a subsection or not.
                     
@@ -129,6 +131,7 @@ def StartupParseCLI(op):
     svgfigs = False
     debug = 1
     stype = 'bookname'
+    notes = 'some'
     
     for o, a in op:
         argc += 1
@@ -157,12 +160,16 @@ def StartupParseCLI(op):
             StartupUsage('')
         elif o == '-H':
             StartupUsage('')
+        elif o == '-i':
+            no_images = True
         elif o == '-K':
             clean_html = True
             clean_book = True
             clean_cache = True
         elif o == '-n':
-            no_images = True
+            notes = 'never'
+        elif o == '-N':
+            notes = 'always'
         elif o == '-P':
             svg2png = True
         elif o == '-s':
@@ -184,7 +191,7 @@ def StartupParseCLI(op):
             StartupUsage('Option "%s" not supported for arg "%s"' % (o, a))
     
     return svg2png, svgfigs, booknm, url, wikidown, clean_cache, debug, wspider,\
-        stype, clean_html, clean_book, depth, no_images, bw_images, export
+        stype, clean_html, clean_book, depth, no_images, bw_images, export, notes
 
 def StartupGetOptions():
     """
@@ -198,7 +205,7 @@ def StartupGetOptions():
     """
     
     try:
-        op, args = getopt.getopt(sys.argv[1:], 'Eu:b:cCKd:D:nwbphPsS:')
+        op, args = getopt.getopt(sys.argv[1:], 'Eu:b:cCKd:D:nNwbphPsS:')
     except:
         StartupUsage("Error: unrecognized command line options: " +
               " ".join(sys.argv[1:]));
@@ -207,7 +214,7 @@ def StartupGetOptions():
         StartupUsage('Trailing Options Not Processed:\n' + str(args))
 
     svg2png, svgfigs, booknm, url, wikidown, clean_cache, debug, wspider, \
-        stype, clean_html, clean_book, depth, no_images, bw_images, export = \
+        stype, clean_html, clean_book, depth, no_images, bw_images, export, notes, = \
                                             StartupParseCLI(op)
 
     if svg2png and svgfigs:
@@ -282,6 +289,7 @@ def StartupGetOptions():
             'clean_cache': clean_cache, # erase the cach directory for the book, forces redownload
             'depth': depth,             # 0 = no sub articles, 1 = footnote sub article
             'footnote': False,           # whether this is a footnote, never set from CLI
+            'notes': notes,
             'bodir': bodir,             # book output directory
             'dcdir': dcdir,             # download cache directory
             'no_images': no_images,     # suppress images

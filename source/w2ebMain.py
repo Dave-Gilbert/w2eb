@@ -60,10 +60,9 @@ def MainRecursiveCall(opts, bl, url, ret_anch,
         
     foot_dict = {}
 
-    if footnote and opts['parent'] == '':
-        logfile = opts['bodir'] + '/' + 'wiki_log.txt'
-    else:
-        logfile = opts['logfile']
+    opt2_notes = opts['notes']
+    if not footnote and opts['depth'] <= 1 and opts['notes'] == 'some':
+            opt2_notes = 'never'
 
     opt2 = {'url':url,
         'base_url': opts['base_url'],       # base_url + '/' + booknm == url
@@ -75,7 +74,8 @@ def MainRecursiveCall(opts, bl, url, ret_anch,
         'clean_book': opts['clean_book'], 
         'clean_cache': False, # only the root should clean the whole cache
         'depth': opts['depth'] - 1, 
-        'footnote': footnote, 
+        'footnote': footnote,
+        'notes': opt2_notes, 
         'bodir': opts['bodir'] + '/' + os.path.basename(url), 
         'dcdir': opts['dcdir'] + '/' + os.path.basename(url), 
         'no_images': footnote or opts['no_images'],
@@ -84,10 +84,9 @@ def MainRecursiveCall(opts, bl, url, ret_anch,
         'svgfigs': opts['svgfigs'],
         'ret_anch': ret_anch, 
         'parent': opts['section_bname'],
-        'parent_log': logfile,            # future expansion?
         'parent_fpc': 0, 
         'parent_sketch': opts['my_sketch'], 
-        'logfile': logfile, 
+        'logfile': opts['logfile'], 
         'chits': 0,
         'wgets': 0,
         'footi': opts['footi'],

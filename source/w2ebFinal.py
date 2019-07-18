@@ -25,10 +25,15 @@ def FinalPrintArticleStats(opts, im_tot, convert, sect_label_href_list, foot_dic
 
     uPlog(opts, "\nFound", str(im_tot), "Figures,", "Converted", str(convert), "Figures")
 
-    sfnotes = "Extracted %d Footnotes." % len(foot_dict_list)
+    sfnotes = "Extracted %d Footnotes" % len(foot_dict_list)
     
+    nc = FinalNoteCount(foot_dict_list)
+    
+    if nc:
+        sfnotes += ", %d notes" % nc  
+
     if sect_label_href_list:
-        sfnotes += " Identified %d Subsections via %s heuristic." %\
+        sfnotes += ", Identified %d Subsections via %s heuristic" %\
         (len(sect_label_href_list), opts['stype'])
     uPlog(opts, sfnotes)
 
@@ -90,7 +95,7 @@ def FinalAddSections(opts, bl, sect_label_href_list):
     
     @note: 
     
-    The oder of sect_label_href_list is important, and determined during book
+    The order of sect_label_href_list is important, and determined during book
     traversal. The tree of sections is flattened using a breadth first search.
     This means that all the references to any article appear in order after that
     article, even if those articles have their own subarticles. 
@@ -167,7 +172,21 @@ def FinalAddSections(opts, bl, sect_label_href_list):
     
     return final_section_list
 
-def FinalAppendFootnotes(opts, bl, foot_dict_list):
+def FinalNoteCount(foot_dict_list):
+    """
+    Count the number of full notes.
+    
+    @note: Not every foot_dict includes a long form note. Only some
+    will. Count those that do.
+    """
+    tnotes = 0
+    for foot_dict in foot_dict_list:
+        if foot_dict['long_foot']:
+            tnotes += 1
+            
+    return tnotes
+
+def FinalAddFootnotes(opts, bl, foot_dict_list):
     """
     Append the foot note dictionary list at the end of the book.
     
@@ -202,7 +221,7 @@ def FinalAppendFootnotes(opts, bl, foot_dict_list):
     # Do not sort foot_dict_list. Sections should appear in the same order
     # that they are found in the original text
     
-    foot_dict_list.sort(key = lambda x: x['foot_title'])
+    foot_dict_list.sort(key = lambda x: x['foot_title'].lower())
     
     for item in foot_dict_list:
         # if we number our backlinks then they too are footnotes... ug. 
@@ -213,20 +232,21 @@ def FinalAppendFootnotes(opts, bl, foot_dict_list):
         foot_note_section.append(short_foot)
 
     top_note = bl.new_tag('h2', id='wiki2epub_' + opts['footsect_name'] + '_notes')
-    top_note.string='Notes'
-    top_note['class'] = 'section'
-    foot_note_section.append(top_note)
-    
-    for item in foot_dict_list:
-        
-        foot_long =''
-        for par in item['long_foot']:
-#            foot_long = clean_char_app(foot_long, par)
-#            foot_long = uCleanChars(opts, foot_long) + uCleanChars(opts, par)
-            foot_long = foot_long + par
 
-        note = BeautifulSoup(foot_long, 'html.parser')
-        foot_note_section.append(note)
+    if FinalNoteCount(foot_dict_list):
+
+        top_note.string='Notes'
+        top_note['class'] = 'section'
+        foot_note_section.append(top_note)
+        
+        for item in foot_dict_list:
+            
+            foot_long =''
+            for par in item['long_foot']:
+                foot_long = foot_long + par
+    
+            note = BeautifulSoup(foot_long, 'html.parser')
+            foot_note_section.append(note)
 
 def FinalAddDebugHeadings(opts, bl):
 
@@ -411,7 +431,7 @@ def FinalReduceHtmlRefs2Anchors(opts, bl, final_section_list):
                     continue
                 
                 uPlogExtra(opts, "Using %s to reduce %s to\n...#%s" %
-                          (why, tag_href['href'], new_id), 1)
+                          (why, tag_href['href'], new_id), 3)
             
                 tag_href['href'] = '#' + new_id
 
@@ -500,7 +520,7 @@ def FinalMergeFootSectTOC(opts, st_time, bl, section_bname, im_tot, convert,
     old_toc = 0
     if opts['parent'] == '':
         final_sect_label_href_list = FinalAddSections(opts, bl, sect_label_href_list)
-        FinalAppendFootnotes(opts, bl, foot_dict_list)
+        FinalAddFootnotes(opts, bl, foot_dict_list)
         while TocRemoveOldToc(opts, bl) == '':
             old_toc += 1
         

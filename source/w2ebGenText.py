@@ -38,7 +38,7 @@ def GenTextStripSquareBr(opts, par_text):
     return par_text
 
 
-def GenTextShortFoot(summ0_in):
+def GenTextShortFoot(note0_in):
     """
     Generate the text for the short footnote, about MIN_WORDS long.
 
@@ -48,10 +48,10 @@ def GenTextShortFoot(summ0_in):
     half_minw = MIN_WORDS / 2
 
     wc = 0 # word count
-    summ0_wlist = summ0_in.split(' ')
-    summ0 = ''
-    for wc in range(0, len(summ0_wlist)):
-        word = summ0_wlist[wc]
+    note0_wlist = note0_in.split(' ')
+    note0 = ''
+    for wc in range(0, len(note0_wlist)):
+        word = note0_wlist[wc]
         if word[-4:] == '</p>':
             break 
         if word[-1:] in Punc1 and wc > 2 * half_minw:
@@ -67,15 +67,80 @@ def GenTextShortFoot(summ0_in):
         if wc > 8 * half_minw:
     #        print "found foo_max"
             break
-        summ0 = summ0 + ' ' + word
+        note0 = note0 + ' ' + word
 
-    summ0 = summ0 + ' ' + word
+    note0 = note0 + ' ' + word
 
-    if summ0[-4:] == '</p>':
-        summ0 = summ0[:-4]
+    if note0[-4:] == '</p>':
+        note0 = note0[:-4]
 
-    return summ0
+    return note0
 
+
+
+def GetTextMakeFootDict(opts, note):
+    """
+    Construct the foot dictionary from the raw text summary. Add backlink, number etc.
+    
+    @return: foot_dict - a structure with several standard entries
+    """
+    # Kindle has a footnote feature where it creates a small box on top of the
+    # text where the footnote appears, however, it doesn't work consistently.
+    # A boolean is included to enable it one day, but for not it simply doesn't
+    # work. The backlink needs to be kept separate from the id to disable it.
+    # keeping them together only sometimes enables it, and often the Kindle can't
+    # seem to find the end of the footnote.
+    
+    kindle_fnotes = False
+    
+    assert note[0].count('</p>'), "Need exactly one </p> in first line of footnote"
+    assert not kindle_fnotes, "Kindle style footnotes are not supported"
+
+    note0 = GenTextShortFoot(note[0])
+    foot_title = opts['footsect_name']
+
+    num = ' [' + opts['ret_anch'].split('_')[2] + ']:'
+    assert opts['ret_anch'][0] != '#', "Badly formed ret_anch"
+
+    if kindle_fnotes:
+        # we think kindle footnotes are activated when the backreference lives in
+        # the same tag as the id....
+        shortnote = '<p>'
+        shortnote += '<a href="' + '#' + opts['ret_anch'] + '"'
+        shortnote += '" id="' + opts['ret_anch'] + '_foot">' + foot_title + num + '</a> '
+    else:
+        shortnote = '<p>'
+        shortnote += '<b id="' + opts['ret_anch'] + '_foot">' + foot_title + num + '</b> '
+        # Kindle is eager to do things wrong... frustrating...
+        #shortnote += '<a href="' + '#' + opts['ret_anch'] +'">'
+        #shortnote += foot_title + '</a>: '
+    shortnote += note0
+    if not kindle_fnotes:
+        # works but is ugly XXX
+        shortnote += '<a href="' + '#' + opts['ret_anch'] + '"> back</a>  / '
+        None
+    
+    if opts['notes'] == 'never':
+        shortnote += ' more @ <a href="' + opts['url'] + '">' + opts['url'] + '</a></p>'
+        note = []
+    else:
+        shortnote += ' <a href="' + '#' + opts['ret_anch'] + '_long">more...</a></p>'
+        backlinklong = '<b id="' + opts['ret_anch'] + '_long">' + foot_title + num + '</b> '
+        note[0] = '<p>' + backlinklong + note[0]
+        note = note + ['<p><a href="' + '#' + opts['ret_anch'] + '"> back</a> /  more @ ']
+        note = note + ['<a href="' + opts['url'] + '">' + opts['url'] + '</a></p>']
+        note = note + ['<br />']
+        note += ['<p><hr width="' + str(int(WMAX * .8)) + '" align="center"></p>'] ## Ok idea, maybe later...
+
+    # basic foot dictionary definition...
+    foot_dict = {}
+    foot_dict['short_foot'] = shortnote
+    foot_dict['long_foot'] = note
+    foot_dict['foot_title'] = foot_title
+    foot_dict['ret_anch'] = opts['ret_anch']
+    foot_dict['msg'] = 0
+    
+    return foot_dict
 
 def GenTextFootNote(opts, bl):
     """
@@ -98,16 +163,15 @@ def GenTextFootNote(opts, bl):
     
     tag = bl.find('div', class_='mw-parser-output')
     
-    foot_dict ={}
     err = None
     
     words = 0
     
     if not tag:
         err = 'bad_footnote: Can not find class=mw-parser-output in wiki text.'
-        return err, foot_dict
+        return err, {}
     
-    summ=[]
+    note = []
 
     max_par = NOTE_MAX_PAR
     par_ind = 0
@@ -145,10 +209,10 @@ def GenTextFootNote(opts, bl):
                     continue
                 else:
                     first_par = False
-                    summ = summ + [first_string + '</p>']  # prefix created later
+                    note = note + [first_string + '</p>']  # prefix created later
             else:
                 par_ind += 1
-                summ = summ + ['<p>' + ustr + '</p>']
+                note = note + ['<p>' + ustr + '</p>']
     
         if par_ind > max_par:
             # stop so we don't read a whole article
@@ -164,60 +228,10 @@ def GenTextFootNote(opts, bl):
         return err, None
 
     if first_par:
-        summ = summ + [first_string + '</p>']  # prefix created late
-    summ = summ + ['<p></p>']
+        note = note + [first_string + '</p>']  # prefix created late
+    note = note + ['<p></p>']
     
-    assert summ[0].count('</p>'), "Need exactly one </p> in first line of footnote"
-
-    summ0 = GenTextShortFoot(summ[0])
-
-    foot_title = opts['footsect_name']
-
-    kindle_fnotes = False #XXX
-
-    num = ' [' + opts['ret_anch'].split('_')[2] +']:'
-    
-    assert opts['ret_anch'][0] != '#', "Badly formed ret_anch"
-
-    if kindle_fnotes:
-        # we think kindle footnotes are activated when the backreference lives in 
-        # the same tag as the id....
-        shortsumm = '<p>'
-        shortsumm += '<a href="' + '#' + opts['ret_anch'] +'"'
-        shortsumm += '" id="' + opts['ret_anch'] + '_foot">' + foot_title + num +'</a> '
-
-    else:
-        shortsumm = '<p>'
-        shortsumm +='<b id="' + opts['ret_anch'] + '_foot">' + foot_title + num +'</b> '
-        
-        # Kindle is eager to do things wrong... frustrating... 
-        #shortsumm += '<a href="' + '#' + opts['ret_anch'] +'">'
-        #shortsumm += foot_title + '</a>: '
-
-    shortsumm += summ0
-    if not kindle_fnotes:
-        # works but is ugly XXX 
-        shortsumm += '<a href="' + '#' + opts['ret_anch'] +'"> back</a> /'
-        None
-    shortsumm += ' <a href="' + '#' + opts['ret_anch'] + '_long">more...</a></p>'
-    
-    backlinklong  = '<b id="' + opts['ret_anch'] + '_long">' + foot_title + num +'</b> '
-
-    summ[0] = '<p>' + backlinklong + summ[0]
-
-    summ = summ + ['<p><a href="' + '#' + opts['ret_anch'] +'"> back</a> / more @ ']
-    summ = summ + ['<a href="' + opts['url'] +'">' + opts['url'] + '</a></p>']  
-    summ = summ + ['<br />']
-
-    summ += ['<p><hr width="' + str(int(WMAX * .8)) + '" align="center"></p>']  ## Ok idea, maybe later...
-
-    # basic foot dictionary definition... 
-    foot_dict ={}
-    foot_dict['short_foot'] = shortsumm
-    foot_dict['long_foot'] = summ
-    foot_dict['foot_title'] = foot_title
-    foot_dict['ret_anch'] = opts['ret_anch']
-    foot_dict['msg'] = 0
+    foot_dict = GetTextMakeFootDict(opts, note)
 
     return err, foot_dict
 
@@ -255,7 +269,7 @@ def GenTextGetFootNote(opts):
         return err, []
 
     uPlogExtra(opts, '==> Fetching Footnote Summary for "' + opts['footsect_name'] + '"', 3)
-    uPlogExtra(opts, "Searching:", opts['url'], 3)
+    uPlogExtra(opts, "Searching:" + opts['url'], 3)
     
     opts['section_bname'] = section_bname
     
