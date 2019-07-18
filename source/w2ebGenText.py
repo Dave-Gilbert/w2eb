@@ -15,7 +15,7 @@ from w2ebConstants import *
 
 def GenTextStripSquareBr(opts, par_text):
     """
-    @summary: Remove any reference like data surrounded by square brackets [*]
+    Remove any reference like data surrounded by square brackets [*]
     """
     
     par_text = par_text
@@ -40,7 +40,7 @@ def GenTextStripSquareBr(opts, par_text):
 
 def GenTextShortFoot(summ0_in):
     """
-    @summary: Generate the text for the short footnote, about MIN_WORDS long.
+    Generate the text for the short footnote, about MIN_WORDS long.
 
     @return: A footnote style summary.
     """
@@ -79,7 +79,7 @@ def GenTextShortFoot(summ0_in):
 
 def GenTextFootNote(opts, bl):
     """
-    @summary: Generate the text for footnotes, both long and short.
+    Generate the text for footnotes, both long and short.
     
     @return: (err - any error,
               foot_dict - a structure with 4 fields
@@ -223,7 +223,7 @@ def GenTextFootNote(opts, bl):
 
 def GenTextSummarizeFootNote(opts, bl):
     """
-    @summary: Summarize the article represented by bl. Save a representation in the footnote dir.
+    Summarize the article represented by bl. Save a representation in the footnote dir.
     
     @return (err, or a dictionary of footnote items)
     """

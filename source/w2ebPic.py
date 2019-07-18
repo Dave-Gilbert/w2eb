@@ -16,7 +16,7 @@ from w2ebConstants import *
 
 def PicGetImage(opts, url, image_file):
     """
-    @summary:  Fetch image file from "url" save to output file name "image_file"
+    Fetch image file from "url" save to output file name "image_file"
     """
             
     err = ''
@@ -83,7 +83,7 @@ def PicGetImage(opts, url, image_file):
 
 def PicGetSvgDims(opts, str_line):
     """
-    @summary: Read the dimensions of an SVG file
+    Read the dimensions of an SVG file
     
     @return: (retval - a string encoding <w>x<h>)
     """
@@ -312,7 +312,7 @@ def PicConvertImage(opts, image_url, image_file, suff):
 
 def PicIdentifyImageType(image_url, image_file, opts):
     """
-    @summary: Use the unix file command to identify images
+    Use the unix file command to identify images
     
     @return link the file to a renamed version with a meaningful .<ext>
     """
@@ -346,7 +346,7 @@ def PicIdentifyImageType(image_url, image_file, opts):
 
 def PicGetUrlFileName(opts, img_tag):
     """
-    @summary: extract from the tag the image url, and a file name to save it to
+    extract from the tag the image url, and a file name to save it to
     """
 
     # default image url

@@ -19,7 +19,7 @@ from w2ebConstants import *
 
 def uSubstrBt(Str, pre, post):
     """
-    @summary: Get the substring between two other strings
+    Get the substring between two other strings
     
     @return: The substring
     """
@@ -40,7 +40,7 @@ def uSubstrBt(Str, pre, post):
 
 def uGetTextSafe(curr):
     """
-    @summary: Beautiful Soup objects often have text, but not always.
+    Beautiful Soup objects often have text, but not always.
     
     @return: Return any text found, or the empty string if there is no text.
     """
@@ -97,7 +97,7 @@ def uGetTextSafe(curr):
 
 def uGetHtml(opts):
     """
-    @summary: Collect the html file defined by opts.  
+    Collect the html file defined by opts.  
     
     @param opts
     
@@ -164,7 +164,7 @@ def uGetHtml(opts):
 
 def uClean(opts):
     """
-    @summary: Cleanup old files, removed cached content, create directories.
+    Cleanup old files, removed cached content, create directories.
     """
     
     del_msg = "XXXX What are we trying to delete? Everything? THIS IS A BAD BUG...XXXX"
@@ -212,7 +212,7 @@ def uClean(opts):
 
 def uBurn2Ascii(opts, str_in):
     """
-    @summary: hack: we force conversion when standard filters fail, with ugly results
+    hack: we force conversion when standard filters fail, with ugly results
     """
 
     ba = bytearray(str_in)
@@ -237,8 +237,8 @@ def uBurn2Ascii(opts, str_in):
 
 def uCleanChars(opts, str_in):
     """
-    @summary:  this function ought only be called if we are seeing unhandled exceptions
-            It creates as many problems as it solves, hence the noise. 
+    This function ought only be called if we are seeing unhandled exceptions
+    It creates as many problems as it solves, hence the noise. 
     """
     
     str_out = ''
@@ -267,7 +267,7 @@ def uCleanChars(opts, str_in):
 
 def uPlogExtra(opts, o_string, dbg):
     """
-    @summary: Appends a string to our regular log file, skips stdout
+    Appends a string to our regular log file, skips stdout
     """
     if dbg > opts['debug']:
         return
@@ -278,7 +278,7 @@ def uPlogExtra(opts, o_string, dbg):
 
 def uPlogFile(opts, filename, dbg):
     """
-    @summary: Include additional file in log
+    Include additional file in log
     """
     if dbg > opts['debug']:
         return
@@ -309,20 +309,20 @@ def uPlogFile(opts, filename, dbg):
 
 def uPlog(opts, *msgs):
     """
-    @summary:  print to stdout and log, by default add a carriage return
+     print to stdout and log, by default add a carriage return
     """
     uPlogCr(opts, True, *msgs)
 
 def uPlogNr(opts, *msgs):
     """
-    @summary:  print to stdout only. Don't add a carriage return
+    Print to stdout only. Don't add a carriage return
     """
 
     uPlogCr(opts, False, *msgs)
 
 def uPlogCr(opts, cr, *msgs):
     """
-    @summary:  Writes messages to both wiki_log.txt and stdout. cr toggles stdout only with continuatin
+    Writes messages to both wiki_log.txt and stdout. cr toggles stdout only with continuatin
     """
 
     sep = ''
@@ -374,7 +374,7 @@ def uGetFlistFromDir(ls_dir, prefix, ext, must_get):
 
 def uGet1HtmlFile(opts, ls_dir, must_get):
     """
-    @summary: Get the name of the first .html file in the directory.
+    Get the name of the first .html file in the directory.
     
     @param ls_dir - directory to check
     @param must_get - whether multiple entries are tollerated. They shouldn't be.
@@ -406,7 +406,7 @@ def uGet1HtmlFile(opts, ls_dir, must_get):
 
 def uSysMkdir(opts, dirname):
     """
-    @summary: Emulate mkdir -p behaviour, create all subidirs unless the exist
+    Emulate mkdir -p behaviour, create all subidirs unless the exist
     
     """
     
@@ -526,7 +526,7 @@ def uPrintProgress(opts, st_time, im_tot, im_all, p_total_est_time):
 
 def uLabelDelWhite(label_in):
     """
-    @summary: Converts all whitespace between words into a single space.
+    Converts all whitespace between words into a single space.
 
     @return:
 
@@ -551,7 +551,7 @@ G_our_print_version_file = ''
 
 def uFindSectHref(opts, url_hfile, sect_label_href_list):
     """
-    @summary: use url_hfile to lookup sections by either html file name or http: url
+    use url_hfile to lookup sections by either html file name or http: url
     
     @return section dictionary
     """
@@ -595,7 +595,7 @@ def uFindSectHref(opts, url_hfile, sect_label_href_list):
 
 def uUrlOk(opts, url, footsect_name):
     """
-    @summary: Limit our search to wikipedia articles
+    Limit our search to wikipedia articles
     
     @param url
     @param footsect_name
@@ -619,7 +619,7 @@ def uUrlOk(opts, url, footsect_name):
 
 def uHrefOk(tag_href, exclude_internal):
     """
-    @summary: Verify that soup tag is an anchor with an href and other properties
+    Verify that soup tag is an anchor with an href and other properties
     
     @param tag_href -- a soup tag
     @param exclude_internal -- Whether or not to allow internal references
@@ -661,14 +661,14 @@ def uHrefOk(tag_href, exclude_internal):
 
 def uHrefRemote(tag_href):
     """
-    @summary: True if tag is an anchor that refers to a remote footnote or section
+    True if tag is an anchor that refers to a remote footnote or section
     """
     return uHrefOk(tag_href, True)
 
 
 def uFindFootDict(foot_title, foot_dict_list):
     """
-    @summary: Look up foot_title in a list of foot dictionaries.
+    Look up foot_title in a list of foot dictionaries.
     
     @return: None if not found, o.w. a footnote dictionary
     """
@@ -681,7 +681,7 @@ def uFindFootDict(foot_title, foot_dict_list):
 
 def uMergeSectUniq(opts, sect_label_href_list, sect_label_href_list2):
     """
-    @summary: Merge two section lists, include unique items only
+    Merge two section lists, include unique items only
     """
     items_merged = 0
     if sect_label_href_list:
@@ -695,7 +695,7 @@ def uMergeSectUniq(opts, sect_label_href_list, sect_label_href_list2):
 
 def uMergeFootUniq(foot_dict_list, foot_dict_list2):
     """
-    @summary: Merge two footnote lists, include unique items only
+    Merge two footnote lists, include unique items only
     """
     items_merged = 0
     if foot_dict_list2:
@@ -708,7 +708,7 @@ def uMergeFootUniq(foot_dict_list, foot_dict_list2):
 
 def uSaveFile(opts, ipath, olist):
     """
-    @summary: Save our new html file
+    Save our new html file
     """
 
     ofile = open(ipath, "w+")

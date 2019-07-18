@@ -20,7 +20,7 @@ from w2ebUtils import *
 
 def Startup():
     """
-    @summary: Called for command line startup, sets the opts dict from the CLI.
+    Called for command line startup, sets the opts dict from the CLI.
     
     @note: 
     Several fields in the opts structure are only used by recursive calls and
@@ -42,7 +42,7 @@ def Startup():
 
 def StartupUsage(err):
     """
-    @summary: Print the usage message. This is our basic documentation.
+    Print the usage message. This is our basic documentation.
     """
     
 
@@ -107,7 +107,7 @@ W2EB - A tool for converting Wikipedia articles into ebooks."""
 
 def StartupParseCLI(op):
     """
-    @summary: Establish defaults for CLI options, parse op list.
+    Establish defaults for CLI options, parse op list.
     
     @return: A collection of booleans, strings, and integers.
     """
@@ -188,7 +188,7 @@ def StartupParseCLI(op):
 
 def StartupGetOptions():
     """
-    @summary: Get command line options from the user
+    Get command line options from the user
     
     @return: The global structure opts. 
     
@@ -304,7 +304,7 @@ TAG_FMSG = 'Fixing Tags:'
 
 def StartupReduceProgress(opts, ma):
     """
-    @summary: progress indicator for tag reduction.
+    progress indicator for tag reduction.
     """
 
     if opts['clen'] > 68:
@@ -319,7 +319,7 @@ def StartupReduceProgress(opts, ma):
 
 def StartupReduceMessyTags(opts, bl):
     """
-    @summary: Remove complex HTML that can't be rendered on a Kindle
+    Remove complex HTML that can't be rendered on a Kindle
     
     @note: 
     Wikipedia pages include a lot of details that can't be easily rendered
@@ -413,7 +413,7 @@ def StartupReduceMessyTags(opts, bl):
     
 def StartupReduceTable(opts, bl):
     """
-    @summary: Rerender Wikipedia's summary table, keeping images.
+    Rerender Wikipedia's summary table, keeping images.
     
     @note: This function should try to preserve other elements from 
     the opening table. TODO.
@@ -436,7 +436,7 @@ def StartupReduceTable(opts, bl):
 
 def StartupReduceTags(opts, bl, ipath):
     """
-    @summary: Remove as many tags as possible
+    Remove as many tags as possible
 
     @note: 
     wikipedia recommends downloading portions of its database

@@ -86,7 +86,7 @@ def FinalPrintStats(opts, bl, im_tot, convert, sect_label_href_list, foot_dict_l
 def FinalAddSections(opts, bl, sect_label_href_list):
     
     """
-    @summary: Add the collected sections to the end of the book
+    Add the collected sections to the end of the book
     
     @note: 
     
@@ -169,7 +169,7 @@ def FinalAddSections(opts, bl, sect_label_href_list):
 
 def FinalAppendFootnotes(opts, bl, foot_dict_list):
     """
-    @summary: Append the foot note dictionary list at the end of the book.
+    Append the foot note dictionary list at the end of the book.
     
     @param opts: global parameters
     @param bl: beautiful soup html structure
@@ -231,7 +231,7 @@ def FinalAppendFootnotes(opts, bl, foot_dict_list):
 def FinalAddDebugHeadings(opts, bl):
 
     """
-    @summary: Add debug headings prior to entries here so they appear in TOC
+    Add debug headings prior to entries here so they appear in TOC
     """
     
     if opts['debug'] == 0:
@@ -259,7 +259,7 @@ def FinalAddDebugHeadings(opts, bl):
 
 def FinalAddDebugEntries(opts, bl):
     """
-    @summary: The dubug log is kept in a file named wiki_log, include it in the ebook
+    The dubug log is kept in a file named wiki_log, include it in the ebook
     """
 
     if opts['debug'] == 0:
@@ -294,7 +294,7 @@ def FinalAddDebugEntries(opts, bl):
 
 def FinalReduceSimilarAnchors(opts, bl, url):
     """
-    @summary: Find all references to URL and make them local, preserving anchors
+    Find all references to URL and make them local, preserving anchors
     
     """
     
@@ -341,7 +341,7 @@ def FinalReduceSimilarAnchors(opts, bl, url):
 
 def FinalReduceHtmlRefs2Anchors(opts, bl, final_section_list):
     """
-    @summary: Find all references to html files and convert them to anchors
+    Find all references to html files and convert them to anchors
     
     @note: There are a few ways we can miss these during previous processing.
     
@@ -419,7 +419,7 @@ def FinalReduceHtmlRefs2Anchors(opts, bl, final_section_list):
 
 def FinalReduceHtmlRefs2AnchorsFinal(opts, bl):
     """
-    @summary: Find all references to html files and convert them to anchors or remove them
+    Find all references to html files and convert them to anchors or remove them
     
     @note: There are a few ways we can miss these during previous processing.
     
@@ -487,7 +487,7 @@ def FinalReduceHtmlRefs2AnchorsFinal(opts, bl):
 def FinalMergeFootSectTOC(opts, st_time, bl, section_bname, im_tot, convert,
                           slink, http404, foot_dict_list, sect_label_href_list):
     """
-    @summary: Merge the main text with footnotes, sections, TOC, and debug logs.
+    Merge the main text with footnotes, sections, TOC, and debug logs.
     
     @return: (sect_label_href_list - a list of sections)
     """

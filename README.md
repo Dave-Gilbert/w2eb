@@ -13,7 +13,7 @@ but they have several limitations in terms of what they can render. A
 basic e-reader has a 600x800 monochrome pixel display, small memory
 storage, and performs poorly when used as a web browser.
 
-There are many strategies for converting web content to an ereader
+There are many strategies for converting web content to an e-reader
 format but the results are often unsatisfactory. This is where
 **w2eb** comes in. The goal: take the rich online content found in a
 Wikipedia article or in a wikibook, and convert it into a format
@@ -25,9 +25,9 @@ screen.
 **W2eb** takes a topic name and converts it into a Wikipedia derived
 ebook. It supports the following features:
 
-1. **W2eb** follows *primary* links to create subsections.
+1. **W2eb** follows *primary* links to create complete subsections.
   * *Primary* links are explored completely, all images and references
-    are gathered.
+    are gathered. References become candidates for new *primary* links.
   * *Primary* link selection is limited by the book title or user
     defined keywords.
 2. **W2eb** summarizes *secondary* links to create notes and
@@ -36,10 +36,10 @@ ebook. It supports the following features:
     presents these in summary form as *footnotes*.
   * Footnotes can be extended by *notes*, which provide an in-depth
     summary of an article.
-3. **W2eb** Organizes related wikipedia links into a single epub file.
+3. **W2eb** organizes related wikipedia links into a single epub file.
   * A custom table of contents lists presents links to the original major
     headings and all subsections as well as all derived sections.
-  * Footnotes and notes appear at the end.
+  * Footnotes, notes and other special indecies appear at the end.
 4. **W2eb** is image friendly.
   * Wikipedia usually stores several versions of each image. **W2eb**
     finds the "best" one for your reader and fetches it.
@@ -75,7 +75,7 @@ It is easy to find fiction in epub format. Project Gutenburg and
 Archive.org are great sources for free books. If you want the latest
 publications you can go to your local library. Despite all these many
 good sources of fiction, it is very hard to find scientific or
-mathematically based content formatted for an ereader.
+mathematically based content formatted for an e-reader.
 
 Project Gutenberg hosts only a small selection of math and science
 books and these are in pdf and Latex format, not epub or html format.
@@ -88,8 +88,8 @@ includes equations, tables, unusual symbols or a complex page layouts.
 The most interesting tool for this job is k2pdfopt, which effectively
 treats each page of the pdf file as an image, cuts the image up, and
 then rearranges the elements so the page can be viewed on the smaller
-geometry of an ereader's display. The k2pdfopt tool is a great, but
-it requires some tinkering to get the settings correct for each .pdf
+geometry of an e-reader's display. The k2pdfopt tool is a great, but
+it requires some tinkering to get the settings correct for each pdf
 file, and once a file is converted fonts cannot be resized.
 
 Some people say- "get a bigger tablet...", and yes this is an answer.
@@ -97,16 +97,17 @@ Depending on your needs this might be the right answer. A tablet with
 a sufficiently high resolution and enough CPU cycles will allow you to
 read whatever electronic file you want without using a desktop
 computer. For me, the whole appeal of the e-ink reader is that it is
-inexpensive, small, and highly portable. If you want to see the world
-of documents through a 6 inch e-ink display, you will need to alter those
-documents by extracting their core details and simplifying their
-formatting, and this is what **w2eb** does.
+inexpensive, small, and highly portable. The trade-off incurred by
+using a compact device is the imposed limitation that documents must
+themselves be smaller and simpler in their presentation. **W2eb**
+achieves this for Wikipedia by simplifying page formatting as much as
+possible without discarding content.
 
 # Usage
 
 **W2eb** is a command line tool with a variety of options. It is meant
 to be simple to use, although the tool currently has several
-dependencies so installation is not streamlined. Once the tool is
+dependencies so installation is not yet streamlined. Once the tool is
 installed, lets suppose you want the Wikipedia book on Aardvarks. From
 your command line you would type:
 
@@ -169,32 +170,56 @@ wrote aardvark/aardvark.html
 
 ## Performance
 
-With default settings an article can often be downloaded and processed
-in about 5 minutes.  Execution times can vary from a few seconds to
-hours depending on the sort of internet connection you have, what
-article you are downloading, and the extent to which you instruct
-**w2eb** to probe Wikipedia. A recursive breadth first search is used
-to explore the tree, the depth of this search is limited by the '-d'
-flag. References to web pages outside Wikipedia are verified, but not
-explored. Most references within Wikipedia are treated as footnotes,
-and only summary information is explored. For a reference to be
-treated as a section it must have a title similar to the current
-book's title, this behaviour is controlled with the '-S' flag.
+Using the default settings an article can be downloaded and processed
+in about 1-5 minutes. Execution times vary widely depending on the
+sort of internet connection you have, what article you are
+downloading, and the extent to which you allow **w2eb** to probe
+Wikipedia. Deep extractions will generate enormous ebooks which can be
+unusable on an e-reader. **W2eb** generates a lot of cross references,
+even for small articles, which when too numerous can cause e-readers
+to crash.
 
-**w2eb** maintains a cache of everything it downloads. This is mainly
-for development since downloading individual files consumes a large
-amount of time. Articles which reference the same urls repeatedly also
-benefit from the cache. After a book is created for the first time,
-recreating it a second time with different settings is much faster.
-Cache erasure is controlled by the '-c', '-C', and '-K' flags. Each
-flag erases successively more of the cache with '-K' erasing
-everything.
+A recursive breadth first search is used to explore a Wikipedia
+article's reference structure. The depth of this search is limited by
+the '-d' flag. References to web pages outside Wikipedia are verified,
+but not explored. Most references within Wikipedia are treated
+*secondary* and only summary information is collected. A *secondary*
+reference is called either a note or a footnote in the ebook. A
+*footnote* stores just the first few sentences from an article. If
+*notes* are enabled, a separate section linked to the footnote will
+provide a longer summary somewhere between 2 and 10 paragraphs. Both
+notes and footnotes are quite simple, they don't include images,
+lists, or tables. The also include the link to the original article,
+so if your reader has internet access you can go to the original
+source.
+
+For a reference to be treated as a *primary* section it must have a
+title similar to the current book's title, or include user specified
+keywords in its title. This behaviour is controlled with the '-S'
+flag. For example, while downloading the article on "Chernobyl",
+several subsections are identified, including: "Chernobyl Disaster
+Effects", "Chernobyl Disaster-Related Deaths", and "Cultural Impact Of
+The Chernobyl Disaster". These wiki articles are treated as primary
+articles because they share the name "Chernobyl" in their title and
+these references are found in the main article. Increasing the search
+depth to 2 or 3 will allow more *primary* sections to be identified
+from previously found *primary* sections. Ebooks will grow
+exponentially in size, so care should be taken when selecting
+parameters.
+
+**W2eb** maintains a cache of everything it downloads. This was
+originally implemented to reduce testing time since although articles
+which reference the same urls repeatedly also benefit from the cache.
+After a book is created for the first time, recreating it a second
+time with different settings is much faster.  Cache erasure is
+controlled by the '-c', '-C', and '-K' flags. Each flag erases
+successively more of the cache with '-K' erasing everything.
 
 Converting svg files into png files can be very time consuming,
 especially for books which define a large number of equations. For the
 kindle e-reader, svg files with transparent background are rendered
 as black, so by default an svg image which does not appear to be a
-math equation is converted to a .png file. In my tests I did not see
+math equation is converted to a png file. In my tests I did not see
 any equation files that used transparent backgrounds so by default
 these are not converted. 
 
@@ -266,9 +291,6 @@ adds some tags that help *calibre* recognize headings that should be
 included in the table of contents.  Testing has only been done on
 Linux. 
  
-*The current version should be considered in development and not
-entirely ready for general consumption.*
-
 Minimizing dependencies is important, as is the ability to execute on
 various platforms. I hope to remove wget soon, and perhaps find a
 reasonable Windows alternative to Image Magick's convert.
@@ -277,8 +299,10 @@ At this time there is no GUI.
 
 # Bugs
 
-*The current version should be considered in development and not
-entirely ready for general consumption.*
+*The current version, as of July 2019, should be considered unstable and
+not entirely ready for general consumption. While many core features work
+correctly there are several important parts of Wikipedia articles that
+are difficult to read and require better simplification.*
 
 Information is extracted from Wikipedia by crawling or scraping their
 web pages. A better strategy would be to access their content database
@@ -314,9 +338,17 @@ references this note.
 
 **W2eb** generates notes and footnotes using the same heuristic which
 drops all images, tables and formatting. This can sometimes leave
-strange gaps in the footnot or note text.
+strange gaps in the footnote or note text.
 
-**W2eb** rearranges text in certain situations. An ereader presents
+Wikipedia generates references and footnotes with backlinks and places
+these at the end of articles. These should be harmonized with
+**w2eb**'s footnotes section.
+
+Wikipedia articles usually have a list of external references, these
+are a little awkward, they also should be somehow combined with
+**w2eb**'s footnote section.
+
+**W2eb** rearranges text in certain situations. An e-reader presents
 material in a more linear fashion than a web page. A Wikipedia page is
 mostly linear, but includes side bars, large tables, and other
 features. **W2eb**'s goal is to improve presentation through a simplified

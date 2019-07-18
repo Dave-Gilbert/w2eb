@@ -43,7 +43,7 @@ def MainLabelAnchSuff(opts, label_in):
 def MainRecursiveCall(opts, bl, url, ret_anch,
                 err, footnote, foot_title, foot_dict_list):
     """
-    @summary: Fetches footnotes and subarticles by calling main function
+    Fetches footnotes and subarticles by calling main function
     
     @return (err - any errors encountered as a string,
              foot_dict - footnote data stored in a dictionary)
@@ -56,7 +56,6 @@ def MainRecursiveCall(opts, bl, url, ret_anch,
      For footnotes, turning on the footnote flag causes us to write
      output in the current directories "footnote" directory. We also
      return the same data in a dictionary structure from main. 
-    
     """
         
     foot_dict = {}
@@ -151,7 +150,7 @@ def MainGetCachedFootSect(opts, foot_dict_list,
                        footnote, outdir, foot_title, url, sect_label_href_list,
                        sect_label_href_list_child):
     """
-    @summary: Look for foot_title data in both memory and disk cache
+    Look for foot_title data in both memory and disk cache
     
     @return (cache_hit - whether we found foot_title or not,
              foot_dict - the information for footnotes)
@@ -195,9 +194,9 @@ def MainGetCachedFootSect(opts, foot_dict_list,
 def MainGetHref(opts, foot_dict_list, anch, footnote,
                   foot_title, foot_dict, outdir, sect_dict, url):
     """
-    @summary: Return the href for footnotes and sections
+    Return the href for footnotes and sections
     
-    @return - (href - the html field for href=
+    @return: (href - the html field for href=
 
     @note: At this stage we have either found the reference as a footnote,
            or a full section. Whether it was in the cache or not doesn't
@@ -241,7 +240,7 @@ def MainGetHref(opts, foot_dict_list, anch, footnote,
 
 def MainRaiseAnchor(tag_href, ret_anch):
     """
-    @summary: Raise the anchor to a location shortly before the reference
+    Raise the anchor to a location shortly before the reference
     
     @note: Kindle often needs an id to appear a little before the text that
            it anchors. Put return id in previous sibling or parent if possible.
@@ -259,7 +258,7 @@ def MainRaiseAnchor(tag_href, ret_anch):
 
 def MainGenBaseId(opts, url):
     """
-    @summary: given either an url or an html file compute the base_id used to locate pages
+    Given either an url or an html file compute the base_id used to locate pages
     """
     
     
@@ -274,9 +273,8 @@ def MainGenBaseId(opts, url):
 def MainUpdateHTMLTag(opts, bl, tag_href, ret_anch, footnote, foot_title,
                         href, cache_hit, sect_label_href_list):
     """
-    @summary: - Modify footnote tag_href. For Sections build up list of href details.
+    Modify footnote tag_href. For Sections build up list of href details.
 
-                
     We add the return anchor to our href tag for both sections and footnotes.
     
     For footnotes we create a number in parenthesis which we append to the anchor.
@@ -347,7 +345,7 @@ def MainFinalChecksRetPsym(opts, foot_dict_list, footnote, foot_title, cache_hit
 
 def MainPickFootVsSect(opts, tag_href):
     """
-    @summary: Decide whether the tag will be processed as a section or a footnote
+    Decide whether the tag will be processed as a section or a footnote
     
     @return: (err - any detecte errors
               url - the url with any associated '#' anch removed
@@ -415,7 +413,7 @@ def MainUpdateMemoryCache(opts, url, outdir, footnote, foot_dict, foot_title, fo
                           sect_label_href_list,
                           sect_label_href_list_child, sect_label_href_list_child2):
     """
-    @summary: Update the cached footnotes and sections kept in memory.
+    Update the cached footnotes and sections kept in memory.
     
     @return: (foot_dict - structure describing a footnote
               sect_dict - structure describing a section)
@@ -461,7 +459,7 @@ def MainUpdateMemoryCache(opts, url, outdir, footnote, foot_dict, foot_title, fo
 def MainGetFootSect(opts, bl, tag_href, foot_dict_list, sect_label_href_list,
                      sect_label_href_list_child):
     """
-    @summary: based on an html tag and lists of cached url results resolve an url
+    Based on an html tag and lists of cached url results resolve an url
     
     @return: (err - any descriptive errors
               footnote - whether the tag points to a footnote or a section
@@ -524,7 +522,7 @@ def MainGetFootSect(opts, bl, tag_href, foot_dict_list, sect_label_href_list,
 def MainCheckUrlReachable(opts, bl, ok_i_urls, already_warned_url, tag_href,
                           slink, http404):
     """
-    @summary: - Use wget to test whether we can connect to an URL
+    Use wget to test whether we can connect to an URL
     
     @return (slink - removed link count,
              http404 - unreachable link count)
@@ -573,7 +571,7 @@ def MainCheckUrlReachable(opts, bl, ok_i_urls, already_warned_url, tag_href,
 def MainHandleErrs(opts, bl, tag_href, err, ok_i_urls, slink,
                     http404, psym, url_cache_hit, already_warned_url):
     """
-    @summary: Select a symbol to report progress and log any error messages that occur.
+    Select a symbol to report progress and log any error messages that occur.
     
     @return: (slink - count of links removed due to similarity to parent or brevity
               http404 - failed internet accesses
@@ -642,7 +640,7 @@ def MainHandleErrs(opts, bl, tag_href, err, ok_i_urls, slink,
 
 def MainLoadCache(opts, bl):
     """
-    @summary: Load Cache data from previous runs stored on our disk
+    Load Cache data from previous runs stored on our disk
     
     @return (ok_i_urls - a list of Internet addresses and whether they can be reached,
              foot_dict_list - a list of footnotes already processed)
@@ -777,7 +775,7 @@ def MainNotes(opts, bl):
 
 def MainWelcomeMsg(opts, st_time):
     """
-    @summary:  Print the welcom message for generating footnotes and sections
+    Print the welcom message for generating footnotes and sections
     """
 
     uPlog(opts, '')
@@ -860,8 +858,3 @@ def Main(opts):
     foot_dict_list, sect_label_href_list = MainSectionCreate(opts, st_time, bl, section_bname)
 
     return err, foot_dict_list, sect_label_href_list
-
-
-
-
-
