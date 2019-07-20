@@ -121,6 +121,12 @@ SUFFIX_OT = ['.ico', '.php', '.pdf', '.PDF']
 #
 IMAGE_AVOID = ['Special:CentralAutoLogin']
 
+#
+# There are a few bad links that always fail, just filter them 
+#
+LINK_AVOID = ['Special:BookSources']
+
+
 W2EBID = 'w2eb_base_id'
 W2EBRI = 'w2eb_ret_'
 #

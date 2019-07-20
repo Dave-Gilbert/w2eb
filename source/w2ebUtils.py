@@ -162,6 +162,19 @@ def uGetHtml(opts):
     return [err, bl, section_bname]
 
 
+def uGenRetAnch(opts, foot_title):
+    
+    ret_suff = uLabelDelWhite(foot_title)[:50]
+    #if '/' in ret_suff:
+    ret_suff = '_'.join(ret_suff.split('/'))
+    ret_suff = ret_suff.replace(' ', '_').strip()   
+    ret_suff = urllib.quote(uCleanChars(opts, ret_suff))
+
+    ret_anch = W2EBRI + '%d_%s' % (opts['footi'], ret_suff)
+    
+    return ret_anch
+
+
 def uClean(opts):
     """
     Cleanup old files, removed cached content, create directories.
@@ -180,28 +193,32 @@ def uClean(opts):
     
     cwd_msg = "\n\nUnable to uClean the current working directory.\n Try cd ..\n"
     
-    if opts['clean_book']:
+    if opts['clean_cache'] >= 3:
         assert not opts['bodir'] in cwd, cwd_msg 
         uSysCmd(opts, 'rm -r "' + opts['bodir'] + '"', False)
 
     uSysMkdir(opts, opts['bodir'])
+    
     if opts['parent'] == '':
-        uPlog(opts, '')
-        if opts['clean_book']:
-            uPlog(opts, "Removing all generated htmlfiles, footnotes, images, and equations.")
 
-    if opts['clean_cache']:
+        if opts['clean_cache'] >= 1:
+            uPlog(opts, '')
+            uSysCmd(opts, 'find "' + opts['bodir'] +'" -name \*.html -exec rm \{\} \;' , False)
+            uPlog(opts, "Removing generated html files, and failed urls from the cache.")
 
-        if opts['parent'] == '':
+        if opts['clean_cache'] >= 2:
+            uSysCmd(opts, 'rm "' + opts['bodir'] + '/footnotes/"*', False)
+            uPlog(opts, "Removing all notes and footnotes from the cache, all urls to be reverified.")
+
+        if opts['clean_cache'] >= 3:
+            uPlog(opts, "Removing all generated images, and equations.")
+
+        if opts['clean_cache'] >= 10:
+
             assert not opts['dcdir'] in cwd, cwd_msg
             uSysCmd(opts, "rm -r " + opts['dcdir'] , False)
             uPlog(opts, "Removing all data previously downloaded from the Internet")
-    
-    if opts['clean_html']:
-        if opts['parent'] == '':
-            uSysCmd(opts, 'find "' + opts['bodir'] +'" -name \*.html -exec rm \{\} \;' , False)
-            uPlog(opts, "Removing generated html files, and failed urls from the cache.")
-    
+
     uSysMkdir(opts, opts['bodir'] + '/images')
     uSysMkdir(opts, opts['bodir'] + '/footnotes')
 

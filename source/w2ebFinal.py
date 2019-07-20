@@ -30,10 +30,12 @@ def FinalPrintArticleStats(opts, im_tot, convert, sect_label_href_list, foot_dic
     nc = FinalNoteCount(foot_dict_list)
     
     if nc:
-        sfnotes += ", %d notes" % nc  
+        sfnotes += ", %d notes." % nc  
+    else:
+        sfnotes += '.'
 
     if sect_label_href_list:
-        sfnotes += ", Identified %d Subsections via %s heuristic" %\
+        sfnotes += "\nIdentified %d Subsections via %s heuristic." %\
         (len(sect_label_href_list), opts['stype'])
     uPlog(opts, sfnotes)
 

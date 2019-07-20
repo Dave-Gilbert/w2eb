@@ -26,19 +26,10 @@ from w2ebPic import PicGetImages
 from w2ebStartup import StartupReduceTags
 from w2ebSketch import SketchPage
 from w2ebSketch import SketchVsMySketch
+from w2ebLocalRefs import LocalReuse 
 
 from w2ebFinal import FinalMergeFootSectTOC
 
-
-def MainLabelAnchSuff(opts, label_in):
-
-    ret_suff = uLabelDelWhite(label_in)[:20]
-    #if '/' in ret_suff:
-    ret_suff = '_'.join(ret_suff.split('/'))
-    ret_suff = ret_suff.replace(' ', '_').strip()   
-    ret_suff = urllib.quote(uCleanChars(opts, ret_suff))
-
-    return ret_suff
 
 def MainRecursiveCall(opts, bl, url, ret_anch,
                 err, footnote, foot_title, foot_dict_list):
@@ -70,9 +61,7 @@ def MainRecursiveCall(opts, bl, url, ret_anch,
         'booknm': opts['booknm'],
         'stype': opts['stype'],
         'footsect_name': opts['footsect_name'],
-        'clean_html': opts['clean_html'], 
-        'clean_book': opts['clean_book'], 
-        'clean_cache': False, # only the root should clean the whole cache
+        'clean_cache': 0, # only the root should clean the whole cache
         'depth': opts['depth'] - 1, 
         'footnote': footnote,
         'notes': opt2_notes, 
@@ -277,32 +266,15 @@ def MainUpdateHTMLTag(opts, bl, tag_href, ret_anch, footnote, foot_title,
     We add the return anchor to our href tag for both sections and footnotes.
     
     For footnotes we create a number in parenthesis which we append to the anchor.
-    We cheat a little and use an underlined html tag so it matches the underline
-    for the hyperlinked url.
-    
-    We downloaded a section if ( opts['base_url'] in url and opts['depth'] > 0)
-    In that case we keep a note of the html_file, url, and section name. We
-    will clean up the references later when all the sections are appended.
-    
     """
-
-    if opts['depth'] == 0 and href[0:4] == 'http':
-        # XXX I think we just skip this... it will be handled later,
-        # but maybe it should be handled here?
-        return
 
     if footnote:
 
         tag_num = bl.new_tag("i")
         num = ' [' + ret_anch.split('_')[2] +']'  # XXX compute the ind from ret_anch
         tag_num.string = num
-        # if we append the number to href then it becomes part of the link and
-        # kindle *may* interpret it as a footnote. This doesn't work reliably,
-        # I'm not sure how to end the footnote. Until this is fixed we will 
-        # insert tag1 after tag_href. It should look the same but behave differently.
-        #
-        # Seems that changing the brackets may be the only way to disable this behaviour.
-        if False:
+
+        if True: # hardwired to include number as part of the link, but switchable
             tag_href.append(tag_num) # include num as part of link
         else:
             tag_href.insert_after(tag_num)
@@ -341,6 +313,35 @@ def MainFinalChecksRetPsym(opts, foot_dict_list, footnote, foot_title, cache_hit
     return psym
 
 
+def MainIsFootnote(opts, tag_href, url):
+    """
+    Decide if href points to a footnote, or not.
+    
+    @return: True if its a footnote
+    """
+    
+    footnote = True
+    
+    if opts['depth'] > 0:
+        if (opts['stype'][0] == 'url' and opts['base_url'] in url):
+            uPlogExtra(opts, "Identified SubSection based on url match.\n%s < %s\n"
+                       % (opts['base_url'], url), 2)
+            footnote = False
+        elif (opts['stype'][0] == 'bookname' and opts['booknm'].lower() in
+              url.lower()):
+            uPlogExtra(opts, "Identified SubSection based on book name match.\n%s < %s\n"
+                       % (opts['booknm'], url), 2)
+            footnote = False
+        elif (opts['stype'][0] == 'keyword'):
+            for word in opts['stype'][1:]:
+                if word.lower() in url.lower():
+                    uPlogExtra(opts, "Identified SubSection based on a keyword match.\n%s < %s\n"
+                               % (word, url), 2)
+                    footnote = False
+                    break
+    
+    return footnote
+
 
 def MainPickFootVsSect(opts, tag_href):
     """
@@ -362,35 +363,17 @@ def MainPickFootVsSect(opts, tag_href):
     err = ''
     anch = ''
     ret_anch = ''
-    
+    foot_dict = {}
     url = tag_href['href']
 
-    footnote = True
 
-    if opts['depth'] > 0:
-    
-        if (opts['stype'] == 'url' and opts['base_url'] in url):
-            uPlogExtra(opts, "Identified SubSection based on url match.\n%s < %s\n" %
-                      (opts['base_url'],  url),2)
-            footnote = False
-        elif (opts['stype'] == 'bookname' and opts['booknm'] in url):
-            uPlogExtra(opts, "Identified SubSection based on book name match.\n%s < %s\n" %
-                      (opts['booknm'],  url),2)
-            footnote = False
-        elif (opts['stype'] == 'bookword'):
-            
-            for word in opts['booknm'].split('_'):
-                if len(word) > 4 and word in url:
-                    uPlogExtra(opts, "Identified SubSection based on book word match.\n%s < %s\n" %
-                              (word,  url),2)
-                    footnote = False
-                    break
+    footnote = MainIsFootnote(opts, tag_href, url)
 
-    
     if '#' in url:
         anch = url.split('#')[1]
         url = url.split('#')[0]
     foot_title = uLabelDelWhite(uGetTextSafe(tag_href))
+
     if 'id' in tag_href and len(uLabelDelWhite(tag_href['id'])) > 0:
         ret_anch = tag_href['id']
         if len(foot_title) == 0:
@@ -398,14 +381,11 @@ def MainPickFootVsSect(opts, tag_href):
     elif len(foot_title) == 0:
         err = 'No footnote title for url: ' + url
         foot_title = ''
-    else:
-        ret_anch = W2EBRI + '%d_%s' % (opts['footi'], MainLabelAnchSuff(opts, foot_title))
 
-#    if not err:
-#        assert ret_anch[-1] != '_', "Badly formed return anchor: ret_anch = " +\
-#             ret_anch + ", foot_title = " + foot_title
+    if not err and not ret_anch:
+        ret_anch = uGenRetAnch(opts, foot_title)
 
-    return err, url, anch, footnote, foot_title, ret_anch
+    return err, url, anch, footnote, foot_title, ret_anch, foot_dict
 
 
 def MainUpdateMemoryCache(opts, url, outdir, footnote, foot_dict, foot_title, foot_dict_list,
@@ -454,7 +434,6 @@ def MainUpdateMemoryCache(opts, url, outdir, footnote, foot_dict, foot_title, fo
     return foot_dict, sect_dict
 
 
-
 def MainGetFootSect(opts, bl, tag_href, foot_dict_list, sect_label_href_list,
                      sect_label_href_list_child):
     """
@@ -468,35 +447,35 @@ def MainGetFootSect(opts, bl, tag_href, foot_dict_list, sect_label_href_list,
     
     cache_hit = False
 
-    err, url, anch, footnote, foot_title, ret_anch = MainPickFootVsSect(opts, tag_href)
+    err, url, anch, footnote, foot_title, ret_anch, foot_dict = \
+        MainPickFootVsSect(opts, tag_href)
 
-    if not err:
+    if not err and not foot_dict:
         outdir = opts['bodir'] + '/' + os.path.basename(url)
 
         cache_hit, foot_dict, sect_dict = MainGetCachedFootSect(opts,foot_dict_list,
                             footnote, outdir, foot_title, url, 
                             sect_label_href_list, sect_label_href_list_child)
 
-
-    if not err and cache_hit:
-        opts['chits'] = opts['chits'] + 1
+    if (not err and cache_hit) or foot_dict:
+        if cache_hit:
+            opts['chits'] = opts['chits'] + 1
         assert foot_dict or sect_dict, \
             "Cache hit did not produce any %s data for url %s" % (
                 'footnote' if footnote else 'section', url)
                 
     elif not err:
-        if opts['depth'] > 0:
-            err, foot_dict, sect_label_href_list_child2 = MainRecursiveCall(opts,
-                    bl, url, ret_anch, err, footnote, foot_title, foot_dict_list)
+        err, foot_dict, sect_label_href_list_child2 = MainRecursiveCall(opts,
+                bl, url, ret_anch, err, footnote, foot_title, foot_dict_list)
 
-            if not err:
-                foot_dict, sect_dict = MainUpdateMemoryCache(opts, url, outdir,
-                                   footnote, foot_dict, foot_title,
-                                   foot_dict_list, sect_label_href_list,
-                                   sect_label_href_list_child, sect_label_href_list_child2)
+        if not err:
+            foot_dict, sect_dict = MainUpdateMemoryCache(opts, url, outdir,
+                               footnote, foot_dict, foot_title,
+                               foot_dict_list, sect_label_href_list,
+                               sect_label_href_list_child, sect_label_href_list_child2)
 
-                assert foot_dict or sect_dict, \
-                        "No data for url " + url
+            assert foot_dict or sect_dict, \
+                    "No data for url " + url
 
     if not err:
         # if we have exceeded our depth, their may not be a reference
@@ -541,8 +520,14 @@ def MainCheckUrlReachable(opts, bl, ok_i_urls, already_warned_url, tag_href,
         err = ok_i_urls[url]
         url_cache_hit = True
     else:
-        err = uSysCmd(opts, 'wget -l 0 -t 1 -T 2  --spider "' + url + '"', False)
-        opts['wgets'] += 1
+        for bad_url_key in LINK_AVOID:
+            if bad_url_key in url:
+                err = 'Avoiding %s' % bad_url_key
+                break
+
+        if not err:
+            err = uSysCmd(opts, 'wget -l 0 -t 1 -T 2  --spider "' + url + '"', False)
+            opts['wgets'] += 1
 
     if not err:
         ok_i_urls[url] = ''
@@ -564,7 +549,6 @@ def MainCheckUrlReachable(opts, bl, ok_i_urls, already_warned_url, tag_href,
         already_warned_url.append(url)
 
     return err, url_cache_hit, slink, http404, psym
-
 
 
 def MainHandleErrs(opts, bl, tag_href, err, ok_i_urls, slink,
@@ -628,14 +612,12 @@ def MainHandleErrs(opts, bl, tag_href, err, ok_i_urls, slink,
             psym = '*'
             err = 'XXX ' + err
 
-
         if url not in already_warned_url or opts['debug'] > 2:
             err += '\n...' + url
             uPlogExtra(opts, 'Dropped footnote (' + psym +'): ' + err, 2)
             already_warned_url.append(url)
 
     return slink, http404, psym
-
 
 def MainLoadCache(opts, bl):
     """
@@ -654,7 +636,10 @@ def MainLoadCache(opts, bl):
         ok_i_urls = json.load(fp)
         fp.close()
 
-    if opts['clean_html']:
+    # if we are asked to clean up our cache, go through the list of previously
+    # visited urls and discard those that were the result of internet errors
+    # Keep previously verified urls, or urls that were known to be like the parent
+    if opts['clean_cache'] >= 1:
         old_ok_i_urls = ok_i_urls
         ok_i_urls = {}
         for item in old_ok_i_urls.items():
@@ -693,6 +678,9 @@ def MainLoadCache(opts, bl):
     return ok_i_urls, foot_dict_list 
 
 def MainNotes(opts, bl):
+    """
+    Entry point for collecting articles and footnotes.
+    """
     
     i = 0
     sect_label_href_list = []
@@ -723,16 +711,9 @@ def MainNotes(opts, bl):
             # so need to confirm that there still really is an 'href'            
             continue
 
-        if tag_href['href'][0] == '#':
-            # assume that the relative link is fine... we could verify it,
-            # but for now just leave it there.
-            continue
-
-        # tag refers to something, if it is an okay url then maybe fetch the data
-
         err, url_cache_hit, slink, http404, psym = MainCheckUrlReachable(opts, bl,
               ok_i_urls, already_warned_url, tag_href, slink, http404)
-            
+        
         if not err and uUrlOk(opts, tag_href['href'], opts['footsect_name']):
 
             err, footnote, cache_hit, psym = MainGetFootSect(opts,
@@ -774,7 +755,7 @@ def MainNotes(opts, bl):
 
 def MainWelcomeMsg(opts, st_time):
     """
-    Print the welcom message for generating footnotes and sections
+    Print the welcom message for generating sections
     """
 
     uPlog(opts, '')
@@ -809,7 +790,11 @@ def MainSectionCreate(opts, st_time, bl, section_bname):
 
     StartupReduceTags(opts, bl, section_bname)
     im_tot, convert = PicGetImages(opts, bl) # easy...
+    foot_dict_loc_list = LocalReuse(opts, bl)
     [sect_label_href_list, foot_dict_list, slink, http404] = MainNotes(opts, bl)
+
+    foot_dict_list += foot_dict_loc_list
+
 
     sect_label_href_list = FinalMergeFootSectTOC(opts, st_time, bl, section_bname,
             im_tot, convert, slink, http404, foot_dict_list, sect_label_href_list)

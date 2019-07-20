@@ -53,10 +53,9 @@ W2EB - A tool for converting Wikipedia articles into ebooks."""
         print """
     Usage:  w2eb.py  [opts] [-u <URL>] [-b <book>] 
         
-        -c        Erase .html files and retry URLs that previously failed.
-        -C        Erase generated files: .html, images, and footnotes.
-        -K        Erase all generated files and all cached downloads.
-                    Without c, C, or K, a run will rewrite root doc only.
+        -C <#>    Clean cache, 1> failed urls + html files, 2> generated footnotes,
+                  3> generated images, 4> generated equations  
+        -K        Kleen cache, all generated files and all cached downloads.
         -E        Export book to epub. Uses calibre for conversion.
         
         -i        No images 
@@ -86,8 +85,8 @@ W2EB - A tool for converting Wikipedia articles into ebooks."""
                     bookurl  - subsection url has book url as a substring
                     bookname - subsection url has book name as a substring
                                < default>
-                    bookword - subsection url has at least one 4 letter word
-                            from book name as substring
+                    keyword:<key_1>,<key_2>,...<key_n> - subsection has any one
+                               keys in the comma separated list as a substring
         
         -D <#>    Debug level. 0 = none, 1 = footnote only, 2 = failure only,
                     3 = all. Debug notes are included in the book by default.
@@ -115,9 +114,7 @@ def StartupParseCLI(op):
     """
     
     
-    clean_html = False
-    clean_book = False
-    clean_cache = False
+    clean_cache = 0
     wikidown = 0
     export = False
     url = ""
@@ -125,25 +122,26 @@ def StartupParseCLI(op):
     argc = 1
     depth = 1
     no_images = False
-    wspider = 0
     bw_images = False
     svg2png = False
     svgfigs = False
     debug = 1
-    stype = 'bookname'
+    stype = ['bookname']
     notes = 'some'
     
     for o, a in op:
         argc += 1
         if o == '-b':
-            booknm = a
+            booknm_orig = a
         elif o == '-B':
             bw_images = True
-        elif o == '-c':
-            clean_html = True
         elif o == '-C':
-            clean_html = True
-            clean_book = True
+            try:
+                clean_cache = int(a)
+            except:
+                StartupUsage('-C requires an integer in the range 1-3')
+            if clean_cache > 3 or clean_cache < 0:
+                StartupUsage('-C requires an integer in the range 1-3')
         elif o == '-d':
             try:
                 depth = int(a)
@@ -163,9 +161,7 @@ def StartupParseCLI(op):
         elif o == '-i':
             no_images = True
         elif o == '-K':
-            clean_html = True
-            clean_book = True
-            clean_cache = True
+            clean_cache = 10
         elif o == '-n':
             notes = 'never'
         elif o == '-N':
@@ -176,11 +172,11 @@ def StartupParseCLI(op):
             svgfigs = True
         elif o == '-S':
             if a == 'bookurl':
-                stype = 'url'
+                stype = ['bookurl']
             elif a == 'bookname':
-                stype = 'bookname'
-            elif a == 'bookword':
-                stype = 'bookword'
+                stype = ['bookname']
+            elif a[0:8] == 'keyword:':
+                stype = ['keyword'] + a[8:].split(',') 
             else:
                 StartupUsage('Unrecognized option for -S = %s. Use -h to get a list of valid options' % a)
         elif o == '-w':
@@ -190,8 +186,49 @@ def StartupParseCLI(op):
         else:
             StartupUsage('Option "%s" not supported for arg "%s"' % (o, a))
     
-    return svg2png, svgfigs, booknm, url, wikidown, clean_cache, debug, wspider,\
-        stype, clean_html, clean_book, depth, no_images, bw_images, export, notes
+    return svg2png, svgfigs, booknm_orig, url, wikidown, clean_cache, debug, \
+        stype, depth, no_images, bw_images, export, notes
+
+
+def StartupGuessBooknm(booknm, booknm_orig, bodir, logfile, debug):
+    """
+    We try to guess an url based on a bookname.
+    
+    @param booknm: The preferred version which has had .title() applied
+    @param booknm_orig: The exact version supplied on the CLI - user is right sometimes
+    
+    @return url and booknm
+    
+    """
+
+    check = "wget  -l 0 -t 3 -T 5 -o /dev/null --spider "  
+
+    # not sure why there are 3 kinds of 'print_versions...'
+    # but it seems to always be one of these
+    wspider = 0
+    
+    lf= {'logfile': logfile, 'debug': debug}
+    for booknm_guess in [booknm, booknm_orig]:
+        
+        urlp = "https://en.wikibooks.org/wiki/" + booknm_guess
+        urlw = "https://en.wikipedia.org/wiki/" + booknm_guess
+
+        for url in [urlp + "/Print_Version", urlp + "/Print_version",
+                    urlp + "/print_version", urlp, urlw]:
+        
+                if os.path.exists(bodir):
+                    uPlogExtra(lf, "Guessing url: " + url, 3)
+                err = os.system(check + url)
+                wspider += 1
+                
+                if not err:
+                    if os.path.exists(bodir):
+                        uPlogExtra(lf, "Resolved url", 3)
+                    return url, booknm_guess, wspider
+                    
+    StartupUsage('Unable to guess url from book name. Maybe there is no "Print_Version"\nUse -u instead.')
+
+    assert 0, "Shouldn't get here"
 
 def StartupGetOptions():
     """
@@ -205,7 +242,7 @@ def StartupGetOptions():
     """
     
     try:
-        op, args = getopt.getopt(sys.argv[1:], 'Eu:b:cCKd:D:nNwbphPsS:')
+        op, args = getopt.getopt(sys.argv[1:], 'Eu:b:C:Kd:D:nNwbphPsS:')
     except:
         StartupUsage("Error: unrecognized command line options: " +
               " ".join(sys.argv[1:]));
@@ -213,9 +250,10 @@ def StartupGetOptions():
     if len(args) > 0:
         StartupUsage('Trailing Options Not Processed:\n' + str(args))
 
-    svg2png, svgfigs, booknm, url, wikidown, clean_cache, debug, wspider, \
-        stype, clean_html, clean_book, depth, no_images, bw_images, export, notes, = \
-                                            StartupParseCLI(op)
+    svg2png, svgfigs, booknm_orig, url, wikidown, clean_cache, debug, \
+        stype, depth, no_images, bw_images, export, notes, = StartupParseCLI(op)
+
+    booknm = booknm_orig.title()
 
     if svg2png and svgfigs:
         StartupUsage('Cannot combine -P and -s')
@@ -253,30 +291,8 @@ def StartupGetOptions():
     #if we get this far try to make the output directory so we can log information
     
     if booknm and not url:
-        check = "wget  -l 0 -t 3 -T 5 -o /dev/null --spider "  
-        urlp = "https://en.wikibooks.org/wiki/" + booknm     
-        urlw = "https://en.wikipedia.org/wiki/" + booknm     
+        url, booknm, wspider = StartupGuessBooknm(booknm, booknm_orig, bodir, logfile, debug)
 
-        # not sure why there are 3 kinds of 'print_versions...'
-        # but it seems to always be one of these
-        
-        lf= {'logfile': logfile, 'debug': debug}
-        for url in [urlp + "/Print_Version", urlp + "/Print_version",
-                    urlp + "/print_version", urlp, urlw]:
-
-                if os.path.exists(bodir):
-                    uPlogExtra(lf, "Guessing url: " + url, 3)
-                err = os.system(check + url)
-                wspider += 1
-                
-                if not err:
-                    if os.path.exists(bodir):
-                        uPlogExtra(lf, "Resolved url", 3)
-                    break
-                    
-        if err:
-            StartupUsage('Unable to guess url from book name. Maybe there is no "Print_Version"\nUse -u instead.')
-                
     if url == "":
         StartupUsage("Use -u to define <URL>, or -b to define <Book>")  
     
@@ -284,9 +300,7 @@ def StartupGetOptions():
             'footsect_name': booknm,    # footnote or section name, initially the same as booknm
             'booknm': booknm,           # book name, may include '/' for sub-articles
             'stype': stype,
-            'clean_html': clean_html,   # find and erase all the html files, leave images, dirs etc.
-            'clean_book': clean_book,   # erase the book output directory, images dirs and all
-            'clean_cache': clean_cache, # erase the cach directory for the book, forces redownload
+            'clean_cache': clean_cache, # level at which to clean the cache
             'depth': depth,             # 0 = no sub articles, 1 = footnote sub article
             'footnote': False,           # whether this is a footnote, never set from CLI
             'notes': notes,
@@ -439,8 +453,6 @@ def StartupReduceTable(opts, bl):
         
         for itag in tag.find_all('img'):
             ph_tag.append(itag)
-             
-        
 
 def StartupReduceTags(opts, bl, ipath):
     """
@@ -529,39 +541,7 @@ def StartupReduceTags(opts, bl, ipath):
 
     for comment in bl.findAll(text=lambda text:isinstance(text, Comment)):
         comment.extract()
-    # why do we need the entire GNU license
 
-    StartupReduceProgress(opts,'gn')
-
-    gnu = bl.find('h1', id='GNU_Free_Documentation_License')
-    if not gnu:
-        gnu = bl.find('h2', id='GNU_Free_Documentation_License')
-    if not gnu:
-        gnu = bl.find('h3', id='GNU_Free_Documentation_License')
-    
-    if gnu:
-        gnu.name = 'h3'
-        tag = bl.new_tag('p')
-        tag.string="""Permission is granted to copy, distribute and/or modify this document
-  under the terms of the GNU Free Documentation License, Version 1.3
-  or any later version published by the Free Software Foundation;
-  with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
-  Texts.  A copy of the license is included in the section entitled ``GNU
-  Free Documentation License.``see http://www.gnu.org/copyleft/"""
-
-        gnu.insert_after(tag)
-
-    
-        tag = tag.next_sibling
-        tnext = tag
-        curr = tag
-         
-        while tnext:
-            curr = tnext
-            tnext = curr.next_sibling
-            if isinstance(curr, NavigableString):
-                continue
-            curr.decompose()
             
     StartupReduceProgress(opts,'\n')  # done... 
 

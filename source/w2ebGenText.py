@@ -13,7 +13,7 @@ import json
 from w2ebUtils import *
 from w2ebConstants import *
 
-def GenTextStripSquareBr(opts, par_text):
+def GenTextStripSquareBr(par_text):
     """
     Remove any reference like data surrounded by square brackets [*]
     """
@@ -42,7 +42,7 @@ def GenTextShortFoot(note0_in):
     """
     Generate the text for the short footnote, about MIN_WORDS long.
 
-    @return: A footnote style summary.
+    @return: A footnote style summary, possibly an incomplete sentence.
     """
 
     half_minw = MIN_WORDS / 2
@@ -52,8 +52,8 @@ def GenTextShortFoot(note0_in):
     note0 = ''
     for wc in range(0, len(note0_wlist)):
         word = note0_wlist[wc]
-        if word[-4:] == '</p>':
-            break 
+        note0 = note0 + ' ' + word
+        
         if word[-1:] in Punc1 and wc > 2 * half_minw:
             if word[-3:-2].isalpha():  # avoid single letter initials h.p. lovercraft
                 break
@@ -67,18 +67,174 @@ def GenTextShortFoot(note0_in):
         if wc > 8 * half_minw:
     #        print "found foo_max"
             break
-        note0 = note0 + ' ' + word
 
-    note0 = note0 + ' ' + word
-
-    if note0[-4:] == '</p>':
-        note0 = note0[:-4]
+    #note0 = note0 + ' ' + word
 
     return note0
 
+def GenTextFootRef(item):
+    """
+    Generate a reference for a footnote.
+    
+    @note: References in footnotes themselves can get messy quickly, so we
+    only allow them in reused footnotes from the original article. Also we
+    suppress them if they point to another footnote since we are in the process
+    of renaming all footnote anchors.
+    
+    @return: (ustr - something to use in place of the anchor tag)
+    """
+    
+    ustr = '<i>' + uGetTextSafe(item) + '</i>'
+    href = item['href']
+    
+    if 'http' in href[0:4]:
+        ustr = '<a href="%s">%s |i|</a>' % (item['href'], item.string)
+    elif '#' in href:
+        anch = href.split('#')[1]
+        if not 'cite_note' in anch: # probably we can't sort this out here XXX give up
+            ustr = '<a href="#%s">%s</a>' % (anch, item.string)
+
+    return ustr
+
+def GenTextWordsFromTags(head, allow_refs):
+    """
+    Translate a tag into a list of paragraphs, up to the first heading.
+    
+    @param allow_refs: Allow references to be included as part of the footnote
+    
+    @note: For footnotes generated from links to Wikipedia we include the
+    Wikipedia reference at the end. For footnotes that are reused from the
+    original we attempt to recycle them. XXX 
+        
+    @note: This function walks through the list of descendents searching for
+    at least MIN_WORDS to construct its first paragraph. If the first paragraph
+    is less than MIN_WORDS it will merge subsequent paragraphs.
+    
+    The search stops when NOTE_MAX_PAR paragraphs are reached, or when a major
+    heading is reached.
+    
+    If a major heading is encountered before we have even seen MIN_WORDS, then
+    
+    
+    @return: (words - the total number of words found,
+              note_list - a list of paragraphs to make notes or footnotes)
+    """
+
+    words = 0
+    note_list = []
+    part_string =''
+    sep = ''
+    prev_spec = False
+
+    search_list = ['p', 'h1','h2', 'div', 'span']
+
+    list_all = list(head.find_all(lambda x: x.name in search_list))
+    
+    if not list_all:
+        if head.name in search_list:
+            list_all = [head]
+        else:
+            return 0, []
+
+    for tag_pdh in list_all:
+
+        if tag_pdh.name in ['div', 'h1', 'h2']:
+            # if we don't have enough words, but are at a major division
+            # keep searching... 
+            if words < MIN_WORDS:
+                continue
+            # after finding the TOC normally we are done
+            if tag_pdh.has_attr('id') and tag_pdh['id'] == 'toc':
+                break
+
+        elif tag_pdh.name == 'p' or len(list_all) == 1:
+
+            for item in tag_pdh:
+
+                if item.name == 'a' and allow_refs:
+                    ustr = GenTextFootRef(item)
+                else:
+                    ustr = uGetTextSafe(item)
+                    ustr = GenTextStripSquareBr(ustr)
+                    
+                words += ustr.count(' ')
+                part_string = part_string + sep + ustr
+                sep = ' '
+
+        # we force the first paragraph to include at least MIN_WORDS
+        if tag_pdh.name == 'p':
+            if len(note_list) == 0 and words < MIN_WORDS:
+                continue
+
+            # each note_list item is a separate paragraph
+            note_list += [part_string]
+            part_string = ''
+    
+        if len(note_list) > NOTE_MAX_PAR:
+            # stop so we don't read a whole article
+            break
+    
+    if part_string:
+        note_list += [part_string]
 
 
-def GetTextMakeFootDict(opts, note):
+    return words, note_list
+
+#
+# Kindle has a footnote feature where the footnote pops up on the screen instead
+# of behaving like a link. The feature does not work consistently. Sometimes
+# there is no pop-up, at other times the popup is there, but it includes too many
+# footnotes.
+#
+# Popups seem to be triggered by references that include backlinks. Our backlink
+# is intentionally separated from our anchor to disable this feature. 
+#
+
+
+def GenTextLongAndShort(note_list, ret_anch, url, foot_title,
+                            notes, note0, num):
+    """
+    Footnotes include both a long and short version, generate both here
+    
+    @return: (shortnote - the short version, aka a footnote,
+              note_list - the long version, a list of paragraphs)
+    """
+
+    shortnote = '<p>'
+    shortnote += '<b id="' + ret_anch + '_foot">' + foot_title + num + '</b> '
+    shortnote += note0
+    shortnote += '<a href="' + '#' + ret_anch + '"> back</a>'
+
+    if notes == 'never':
+        if url:
+            shortnote += ' / more @ <a href="' + url + '">' + url + '</a></p>'
+        else:
+            shortnote += '</p>'
+
+        long_note_list = []
+
+    else:
+        shortnote += ' / <a href="' + '#' + ret_anch + '_long">more...</a></p>'
+
+        backlinklong = '<b id="' + ret_anch + '_long">' + foot_title + num + '</b> '
+        long_note_list = ['<p>' + backlinklong + note_list[0] + '</p>']
+        
+        for note in note_list[1:]:
+            long_note_list += ['<p>' + note + '</p>']
+
+        long_note_list += ['<p><a href="' + '#' + ret_anch + '"> back</a>']
+        if url:
+            long_note_list += [' / more @ <a href="' + url + '">' + url + '</a></p>']
+        else:
+            long_note_list += ['</p>']
+
+        long_note_list += ['<br />']
+        long_note_list += ['<p><hr width="' + str(int(WMAX * .8)) + '" align="center"></p>'] ## Ok idea, maybe later...
+
+    return shortnote, long_note_list
+
+
+def GenTextMakeFootDict(note_list, ret_anch, url, foot_title, notes):
     """
     Construct the foot dictionary from the raw text summary. Add backlink, number etc.
     
@@ -91,56 +247,25 @@ def GetTextMakeFootDict(opts, note):
     # keeping them together only sometimes enables it, and often the Kindle can't
     # seem to find the end of the footnote.
     
-    kindle_fnotes = False
-    
-    assert note[0].count('</p>'), "Need exactly one </p> in first line of footnote"
-    assert not kindle_fnotes, "Kindle style footnotes are not supported"
 
-    note0 = GenTextShortFoot(note[0])
-    foot_title = opts['footsect_name']
+    note0 = GenTextShortFoot(note_list[0])
 
-    num = ' [' + opts['ret_anch'].split('_')[2] + ']:'
-    assert opts['ret_anch'][0] != '#', "Badly formed ret_anch"
+    num = ' [' + ret_anch.split('_')[2] + ']:'
+    assert ret_anch[0] != '#', "Badly formed ret_anch"
 
-    if kindle_fnotes:
-        # we think kindle footnotes are activated when the backreference lives in
-        # the same tag as the id....
-        shortnote = '<p>'
-        shortnote += '<a href="' + '#' + opts['ret_anch'] + '"'
-        shortnote += '" id="' + opts['ret_anch'] + '_foot">' + foot_title + num + '</a> '
-    else:
-        shortnote = '<p>'
-        shortnote += '<b id="' + opts['ret_anch'] + '_foot">' + foot_title + num + '</b> '
-        # Kindle is eager to do things wrong... frustrating...
-        #shortnote += '<a href="' + '#' + opts['ret_anch'] +'">'
-        #shortnote += foot_title + '</a>: '
-    shortnote += note0
-    if not kindle_fnotes:
-        # works but is ugly XXX
-        shortnote += '<a href="' + '#' + opts['ret_anch'] + '"> back</a>  / '
-        None
-    
-    if opts['notes'] == 'never':
-        shortnote += ' more @ <a href="' + opts['url'] + '">' + opts['url'] + '</a></p>'
-        note = []
-    else:
-        shortnote += ' <a href="' + '#' + opts['ret_anch'] + '_long">more...</a></p>'
-        backlinklong = '<b id="' + opts['ret_anch'] + '_long">' + foot_title + num + '</b> '
-        note[0] = '<p>' + backlinklong + note[0]
-        note = note + ['<p><a href="' + '#' + opts['ret_anch'] + '"> back</a> /  more @ ']
-        note = note + ['<a href="' + opts['url'] + '">' + opts['url'] + '</a></p>']
-        note = note + ['<br />']
-        note += ['<p><hr width="' + str(int(WMAX * .8)) + '" align="center"></p>'] ## Ok idea, maybe later...
+    shortnote, note_list = GenTextLongAndShort(note_list, ret_anch, url,
+                                foot_title, notes, note0, num)
 
     # basic foot dictionary definition...
     foot_dict = {}
     foot_dict['short_foot'] = shortnote
-    foot_dict['long_foot'] = note
+    foot_dict['long_foot'] = note_list
     foot_dict['foot_title'] = foot_title
-    foot_dict['ret_anch'] = opts['ret_anch']
+    foot_dict['ret_anch'] = ret_anch
     foot_dict['msg'] = 0
     
     return foot_dict
+
 
 def GenTextFootNote(opts, bl):
     """
@@ -161,62 +286,15 @@ def GenTextFootNote(opts, bl):
     # for example: https://en.wikibooks.org/wiki/Special:Categories
     # Lets erase the output file, treat it as a bust
     
-    tag = bl.find('div', class_='mw-parser-output')
+    head = bl.find('div', class_='mw-parser-output')
     
-    err = None
-    
-    words = 0
-    
-    if not tag:
+    err = ''
+        
+    if not head:
         err = 'bad_footnote: Can not find class=mw-parser-output in wiki text.'
         return err, {}
     
-    note = []
-
-    max_par = NOTE_MAX_PAR
-    par_ind = 0
-    
-    first_par = True
-    first_string =''
-    for item in tag:
-
-        tag = item.name
-
-        if tag in ['div', 'h1', 'h2']:
-            if item.has_attr('id') and item['id'] == 'toc':
-                # usually a full footnote can be found before the wikipedia toc,
-                # sometimes the footnote isn't enough though. If we have found
-                # the toc keep reading, at least 5 paragraphs.
-                
-                if words < MIN_WORDS:
-                    # don't quit just yet. Keep going
-                    # and see if we can find a little more text
-                    # after the toc, but keep it limited
-                    max_par = NOTE_MAX_PAR / 2
-                else:           
-                    break
-        
-        elif tag in ['p', 'b', 'i', 'u', 'pre', 'code', 'tt', 'center']:
-
-            ustr = item.get_text()
-            ustr = GenTextStripSquareBr(opts, ustr)
-            words += ustr.count(' ')
-            first_string = first_string + ' ' + ustr
-                    
-            if first_par:
-                if words < MIN_WORDS:   # we need at least MIN_WORDS before paragraph 1 ends
-                    first_string.replace('</p>',' ')
-                    continue
-                else:
-                    first_par = False
-                    note = note + [first_string + '</p>']  # prefix created later
-            else:
-                par_ind += 1
-                note = note + ['<p>' + ustr + '</p>']
-    
-        if par_ind > max_par:
-            # stop so we don't read a whole article
-            break
+    words, note_list = GenTextWordsFromTags(head, False)
     
     if words < MIN_WORDS:
 
@@ -224,16 +302,18 @@ def GenTextFootNote(opts, bl):
         uPlog(opts, 'Short footnote. Found %d words, need at least %d words.' %
              (words, MIN_WORDS))
         if words > 0:        
-            uPlog(opts, '\n', first_string, '\n')
+            uPlog(opts, '\n', note_list[0], '\n')
         return err, None
-
-    if first_par:
-        note = note + [first_string + '</p>']  # prefix created late
-    note = note + ['<p></p>']
     
-    foot_dict = GetTextMakeFootDict(opts, note)
+    notes = opts['notes']
+    foot_title = opts['footsect_name']
+    ret_anch = opts['ret_anch']
+    url = opts['url']
+    
+    foot_dict = GenTextMakeFootDict(note_list, ret_anch, url, foot_title, notes)
 
     return err, foot_dict
+
 
 def GenTextSummarizeFootNote(opts, bl):
     """
