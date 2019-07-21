@@ -27,6 +27,7 @@ from w2ebStartup import StartupReduceTags
 from w2ebSketch import SketchPage
 from w2ebSketch import SketchVsMySketch
 from w2ebLocalRefs import LocalReuse 
+from w2ebLocalRefs import LocalRaiseAnchor 
 
 from w2ebFinal import FinalMergeFootSectTOC
 
@@ -226,23 +227,6 @@ def MainGetHref(opts, foot_dict_list, anch, footnote,
 
     return err, href
 
-def MainRaiseAnchor(tag_href, ret_anch):
-    """
-    Raise the anchor to a location shortly before the reference
-    
-    @note: Kindle often needs an id to appear a little before the text that
-           it anchors. Put return id in previous sibling or parent if possible.
-
-    """
-
-    if (tag_href.previous_sibling and not isinstance(tag_href.previous_sibling, NavigableString) and 
-        not tag_href.previous_sibling.has_attr('id')):
-        tag_href.previous_sibling['id'] = ret_anch
-    elif not tag_href.parent.has_attr('id'):
-        tag_href.parent['id'] = ret_anch
-    else:
-        tag_href['id'] = ret_anch
-
 
 def MainGenBaseId(opts, url):
     """
@@ -279,7 +263,7 @@ def MainUpdateHTMLTag(opts, bl, tag_href, ret_anch, footnote, foot_title,
         else:
             tag_href.insert_after(tag_num)
 
-        MainRaiseAnchor(tag_href, ret_anch)
+        LocalRaiseAnchor(tag_href, ret_anch)
 
     else:
         # we don't do anything special for section hrefs (should we?)

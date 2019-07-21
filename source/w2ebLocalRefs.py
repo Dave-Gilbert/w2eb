@@ -10,9 +10,90 @@
 
 import sys
 
+from bs4 import NavigableString
+
 from w2ebUtils import *
 from w2ebGenText import GenTextWordsFromTags
 from w2ebGenText import GenTextMakeFootDict
+
+def LocalRaiseAnchor(tag_href, ret_anch):
+    """
+    Raise the anchor to a location shortly before the reference
+    
+    @note: Kindle often needs an id to appear a little before the text that
+           it anchors. Put return id in previous sibling or parent if possible.
+
+    """
+
+    if (tag_href.previous_sibling and not isinstance(tag_href.previous_sibling, NavigableString) and 
+        not tag_href.previous_sibling.has_attr('id')):
+        tag_href.previous_sibling['id'] = ret_anch
+    elif not tag_href.parent.has_attr('id'):
+        tag_href.parent['id'] = ret_anch
+    else:
+        tag_href['id'] = ret_anch
+
+
+def LocalReuseArticleFnoteCache(opts, tag_href, foot_dict_list):
+    """
+    Keep a list of already visited footnotes, check for the original ref
+    
+    @return: T/F whether the reference was found in the existing list.
+    """
+
+    found = False
+    anch = tag_href['href'].split('#')[1] 
+
+    assert anch[0:9] == 'cite_note', "bad href " + tag_href['href']
+        
+    for foot_dict in foot_dict_list:
+        if anch == foot_dict['orig_anch']:
+            found = True
+            tag_href.string = foot_dict['foot_title']
+            tag_href['href'] = '#' + foot_dict['ret_anch'] + '_foot'
+            uPlogExtra(opts,"Reassigning local anchor %s to %s" % 
+                       (anch, foot_dict['ret_anch']), 2)
+
+            LocalRaiseAnchor(tag_href, foot_dict['ret_anch'])
+
+    return found
+
+
+
+def LocalGenFootDict(opts, tag_href, foot_title,
+                     anch, tag_note, tag_cont, ret_anch, number):
+    """
+    Generate the foot note dictionary
+    
+    @return: (err - any errors,
+              foot_dict - a footnote dictionary)
+    """
+
+    foot_dict = {}
+    err = ''
+    
+    if number: # Most wikipedia footnotes are just numbers, but not all...
+        tag_href.string = '[' + str(opts['footi']) + ']'
+        foot_title = ''
+    words, note_list = GenTextWordsFromTags(tag_cont, True)
+    if note_list:
+        foot_dict = GenTextMakeFootDict(note_list, ret_anch, '', 
+            foot_title, 'never')
+        foot_dict['orig_anch'] = anch
+        opts['footi'] += 1
+        if not number:
+            tag_href.string = foot_title
+        tag_href['href'] = '#' + ret_anch + '_foot'
+        tag_note.decompose()
+        uPlogExtra(opts, "Reassigning local anchor %s to %s" % (anch, ret_anch), 2)
+
+        LocalRaiseAnchor(tag_href, ret_anch)
+
+    else:
+        tag_href.name = 'i'
+        err = "Unable to Reassign local anchor %s" % anch
+
+    return err, foot_dict
 
 def LocalReuseArticleFnote(opts, bl, tag_href):
     """
@@ -35,14 +116,13 @@ def LocalReuseArticleFnote(opts, bl, tag_href):
     
     if not tag_note:
         err = 'Cant find wikipedia local reference #' + anch
+
     if not err:
         tag_cont = tag_note.find('span', class_='reference-text')
         tag_parent = tag_note.parent
         if not tag_cont:
             err = 'Cant find wikipedia reference-text #' + anch
-    if not err:
-        tag_cont.prettify(formatter="html")
-
+    
     if not err:
     
         assert 1, "Use code from w2ebGenText for this section"
@@ -61,26 +141,8 @@ def LocalReuseArticleFnote(opts, bl, tag_href):
         except Exception:
             None
         
-        if number:
-            # Most wikipedia footnotes are just numbers, but not all... 
-            tag_href.string = '[' + str(opts['footi']) + ']'
-            foot_title = ''
-            
-        words, note_list = GenTextWordsFromTags(tag_cont, True)
-        
-        notes = 'never'
-        if note_list:
-            foot_dict = GenTextMakeFootDict(note_list, ret_anch, '',
-                                            foot_title, 'never')
-            opts['footi'] += 1
-            tag_href.string = foot_title
-            tag_href['href'] = '#' + ret_anch + '_foot'
-            tag_note.decompose()
-        
-            uPlogExtra(opts,"Reassigning local anchor %s to %s" % (anch, ret_anch), 2)
-        else:
-            tag_href.name = 'i'
-            err = "Unable to Reassign local anchor %s" % anch
+        err, foot_dict = LocalGenFootDict(opts, tag_href, foot_title,
+                                     anch, tag_note, tag_cont, ret_anch, number)
         
     return err, foot_dict, tag_parent
 
@@ -134,16 +196,21 @@ def LocalReuse(opts, bl):
     
     for tag_href in bl.find_all(lambda x: LocalAndRecognized(opts, x)):
 
-        err, foot_dict, tag_parent = LocalReuseArticleFnote(opts, bl, tag_href)
-
-        if not err:            
-            foot_dict_list.append(foot_dict)
+        if LocalReuseArticleFnoteCache(opts, tag_href, foot_dict_list):
             psym = 'r'
             r += 1
-            parent = tag_parent
         else:
-            uPlogExtra(opts, err, 2)
-            psym = '-'
+            err, foot_dict, tag_parent = LocalReuseArticleFnote(opts, bl, tag_href) 
+    
+            if not err:            
+                foot_dict_list.append(foot_dict)
+                psym = 'R'
+                r += 1
+                if tag_parent:
+                    parent = tag_parent
+            else:
+                uPlogExtra(opts, err, 2)
+                psym = '-'
 
         if i % 25 == 0:
             p_total_est_time = uPrintProgress(opts, st_time, i,
@@ -153,7 +220,8 @@ def LocalReuse(opts, bl):
         i = i + 1
         sys.stdout.flush()
 
-    tag_parent.decompose()
+    if tag_parent:
+        tag_parent.parent.decompose()
 
     uPlog(opts, '\nReassigned %d footnotes' % r)
     sys.stdout.flush()
