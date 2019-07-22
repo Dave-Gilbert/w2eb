@@ -31,10 +31,8 @@ def Startup():
     opts = StartupGetOptions()
     uSysCmd(opts, 'rm -r "' + opts['bodir'] + '/wiki_log.txt"', False)
     opts['parent'] = ''         # name of the parent, empty in the CLI case
-    opts['parent_fp'] = ''      # unused, development, XXX consider removing
-    opts['parent_fpc'] = 0      # unused, development, XXX consider removing
     opts['parent_sketch'] = ''  # a description of the parent. See Sketch fns.
-    opts['ret_anch'] = ''       # the return anchor for this footnote
+    opts['id_anch'] = ''        # the anchor for this footnote
     opts['footi'] = 1           # the footnote counter
     
     return opts
@@ -119,6 +117,7 @@ def StartupParseCLI(op):
     export = False
     url = ""
     booknm = ''
+    booknm_orig = ''
     argc = 1
     depth = 1
     no_images = False
@@ -266,6 +265,8 @@ def StartupGetOptions():
             booknm = uSubstrBt(url,'/wiki/','/Print_Version')
         if not booknm:
             booknm = uSubstrBt(url,'/wiki/','/print_Version')
+        if not booknm:
+            booknm = os.path.dirname(url)
     
     if not booknm:
         StartupUsage('Need a book name. Either use an explicit "-b" or pick a different url.')
@@ -292,6 +293,8 @@ def StartupGetOptions():
     
     if booknm and not url:
         url, booknm, wspider = StartupGuessBooknm(booknm, booknm_orig, bodir, logfile, debug)
+    else:
+        wspider = 0
 
     if url == "":
         StartupUsage("Use -u to define <URL>, or -b to define <Book>")  
@@ -312,6 +315,7 @@ def StartupGetOptions():
             'svgfigs': svgfigs,         # use .svg for figures rather than .png
             'logfile': logfile,
             'chits': 0,                 # number of cache hits
+            'stats_r': 0,               # reused footnotes from original article
             'wgets': wspider,           # number of times we fetched from the web
             'export': export,
             'debug': debug,

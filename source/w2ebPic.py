@@ -70,8 +70,8 @@ def PicGetImage(opts, url, image_file):
             copyfile(srcfile, opts['bodir'] + '/' + image_file)
         except Exception as e:
             uPlogFile(opts, opts['dcdir'] + '/images/wget_log.txt', 1)
-            uPlogExtra(opts, "Exception: " + uCleanChars(opts, str(e)), 1)
-            err = 'Image name has messy control characters ' + uCleanChars(opts, fname)
+            uPlogExtra(opts, "Exception: " + uCleanChars(str(e)), 1)
+            err = 'Image name has messy control characters ' + uCleanChars(fname)
             # Sometimes wget garbles the dowloaded file name in a way that we can't guesss.
             # The right fix involves testing for messy strings prior to
             # download, and then specifying some safe version of the string later on...

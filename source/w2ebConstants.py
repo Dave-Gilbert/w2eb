@@ -8,8 +8,6 @@
 @version:      0.3
 """
 
-from w2ebUtils import *
-
 #
 # All output is stored under the following directory
 #
@@ -129,6 +127,7 @@ LINK_AVOID = ['Special:BookSources']
 
 W2EBID = 'w2eb_base_id'
 W2EBRI = 'w2eb_ret_'
+W2EB_BLM = 'W2EB_BACK_LINK_LIST_GOES_HERE'
 #
 # I'm still struggling with this on. Basic example:
 # x=u'\x139'

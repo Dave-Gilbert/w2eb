@@ -14,8 +14,6 @@ import traceback
 import time
 import sys
 
-from bs4 import NavigableString
-
 from w2ebUtils import *
 from w2ebConstants import *
 
@@ -28,12 +26,11 @@ from w2ebSketch import SketchPage
 from w2ebSketch import SketchVsMySketch
 from w2ebLocalRefs import LocalReuse 
 from w2ebLocalRefs import LocalRaiseAnchor 
-
+from w2ebLocalRefs import LocalGenFootLabel
 from w2ebFinal import FinalMergeFootSectTOC
 
 
-def MainRecursiveCall(opts, bl, url, ret_anch,
-                err, footnote, foot_title, foot_dict_list):
+def MainRecursiveCall(opts, bl, url, footnote, foot_title, foot_dict_list):
     """
     Fetches footnotes and subarticles by calling main function
     
@@ -49,7 +46,8 @@ def MainRecursiveCall(opts, bl, url, ret_anch,
      output in the current directories "footnote" directory. We also
      return the same data in a dictionary structure from main. 
     """
-        
+
+    err = ''
     foot_dict = {}
 
     opt2_notes = opts['notes']
@@ -72,13 +70,12 @@ def MainRecursiveCall(opts, bl, url, ret_anch,
         'bw_images': opts['bw_images'],
         'svg2png': opts['svg2png'],
         'svgfigs': opts['svgfigs'],
-        'ret_anch': ret_anch, 
         'parent': opts['section_bname'],
-        'parent_fpc': 0, 
         'parent_sketch': opts['my_sketch'], 
         'logfile': opts['logfile'], 
         'chits': 0,
         'wgets': 0,
+        'stats_r': 0,
         'footi': opts['footi'],
         'export': False,
         'wikidown': opts['wikidown'],
@@ -86,10 +83,6 @@ def MainRecursiveCall(opts, bl, url, ret_anch,
 
     if footnote:
         opt2['footsect_name'] = foot_title 
-
-    # only the top level parent allows children to write to sys.stdout
-    if opts['parent']:
-        opt2['parent_fp'] = None
 
     if opts['debug'] > 0: # we want to stop if debugging is on 
         if footnote:
@@ -114,7 +107,7 @@ def MainRecursiveCall(opts, bl, url, ret_anch,
             traceback.print_exc()
             fp.close()
                 
-            err = 'exception ' + uCleanChars(opts, repr(e))
+            err = 'exception ' + uCleanChars(repr(e))
             err.replace(' ', '_')
 
     # if wikidown is nonzero our child will increment it if necessary
@@ -126,12 +119,13 @@ def MainRecursiveCall(opts, bl, url, ret_anch,
             items_merged = uMergeFootUniq(foot_dict_list, foot_dict_list2)
             uPlogExtra(opts, "Footnote items merged = %d." % items_merged, 2)
 
-    opts['chits'] = opts['chits'] + opt2['chits']
-    opts['wgets'] = opts['wgets'] + opt2['wgets']
-    opts['wikidown'] = opt2['wikidown']
-    opts['footi'] = opt2['footi']
+    # several counters are incremented in the child process,
+    # we need to agregrate those.
+    opts['chits']   = opts['chits'] + opt2['chits']
+    opts['wgets']   = opts['wgets'] + opt2['wgets']
+    opts['footi']   = opt2['footi']
+    opts['stats_r'] = opt2['stats_r'] + opt2['stats_r']
 
-    
     return err, foot_dict, sect_label_href_list
 
 
@@ -156,7 +150,7 @@ def MainGetCachedFootSect(opts, foot_dict_list,
 
             if foot_dict['msg'] == 0:
                 uPlogExtra(opts, 'Cache hit: ' + foot_dict['foot_title']
-                               +', id="#' + foot_dict['ret_anch'] + '_foot"', 3)
+                               +', id="#' + foot_dict['id_anch'] + '_foot"', 3)
                 # only mention a found footnote one time.
                 foot_dict['msg'] = 1
 
@@ -217,7 +211,7 @@ def MainGetHref(opts, foot_dict_list, anch, footnote,
         if not foot_dict and opts['depth'] == 0:
             href = url
         else:
-            href = '#' + foot_dict['ret_anch']  + '_foot'
+            href = '#' + foot_dict['id_anch']  + '_foot'
 
     if not err:
         assert href , "Should have found an href, or not called this fn.\n" + \
@@ -242,8 +236,7 @@ def MainGenBaseId(opts, url):
 
     return base_id
 
-def MainUpdateHTMLTag(opts, bl, tag_href, ret_anch, footnote, foot_title,
-                        href, cache_hit, sect_label_href_list):
+def MainUpdateHTMLTag(opts, bl, tag_href, foot_dict, href):
     """
     Modify footnote tag_href. For Sections build up list of href details.
 
@@ -252,10 +245,9 @@ def MainUpdateHTMLTag(opts, bl, tag_href, ret_anch, footnote, foot_title,
     For footnotes we create a number in parenthesis which we append to the anchor.
     """
 
-    if footnote:
-
+    if foot_dict:
         tag_num = bl.new_tag("i")
-        num = ' [' + ret_anch.split('_')[2] +']'  # XXX compute the ind from ret_anch
+        num = LocalGenFootLabel(foot_dict)
         tag_num.string = num
 
         if True: # hardwired to include number as part of the link, but switchable
@@ -263,7 +255,9 @@ def MainUpdateHTMLTag(opts, bl, tag_href, ret_anch, footnote, foot_title,
         else:
             tag_href.insert_after(tag_num)
 
-        LocalRaiseAnchor(tag_href, ret_anch)
+        # the last element of ret_anch_all will be this return anchor
+
+        LocalRaiseAnchor(tag_href, foot_dict)
 
     else:
         # we don't do anything special for section hrefs (should we?)
@@ -336,20 +330,17 @@ def MainPickFootVsSect(opts, tag_href):
               anch - empty or the urls anchor
               footnote - boolean, True if a footnote, false if a section
               foot_title - The name of the footnote or section
-              ret_anch - The return anchor. Also used as the base for footnote id.
+              id_anch - The base string for constructing anchors.
               
-    @note ret_anch has multiple functions. It is the id for this tag, hence the
-          "return anchor" or the location that footnote will link to bring us
+    @note id_anch has multiple functions. It is the base id for this tag,
+          hence the location that footnote will link to bring us
           back to the text. It is also the id for the footnote with the suffix
           "_foot" appened to it. This provides us with unique bidirectional linkage.
     """
 
     err = ''
     anch = ''
-    ret_anch = ''
-    foot_dict = {}
     url = tag_href['href']
-
 
     footnote = MainIsFootnote(opts, tag_href, url)
 
@@ -358,18 +349,11 @@ def MainPickFootVsSect(opts, tag_href):
         url = url.split('#')[0]
     foot_title = uLabelDelWhite(uGetTextSafe(tag_href))
 
-    if 'id' in tag_href and len(uLabelDelWhite(tag_href['id'])) > 0:
-        ret_anch = tag_href['id']
-        if len(foot_title) == 0:
-            foot_title = uLabelDelWhite(tag_href['id'])
-    elif len(foot_title) == 0:
+    if len(foot_title) == 0:
         err = 'No footnote title for url: ' + url
         foot_title = ''
 
-    if not err and not ret_anch:
-        ret_anch = uGenRetAnch(opts, foot_title)
-
-    return err, url, anch, footnote, foot_title, ret_anch, foot_dict
+    return err, url, anch, footnote, foot_title
 
 
 def MainUpdateMemoryCache(opts, url, outdir, footnote, foot_dict, foot_title, foot_dict_list,
@@ -431,26 +415,27 @@ def MainGetFootSect(opts, bl, tag_href, foot_dict_list, sect_label_href_list,
     
     cache_hit = False
 
-    err, url, anch, footnote, foot_title, ret_anch, foot_dict = \
-        MainPickFootVsSect(opts, tag_href)
+    err, url, anch, footnote, foot_title = MainPickFootVsSect(opts, tag_href)
 
-    if not err and not foot_dict:
+    if not err:
         outdir = opts['bodir'] + '/' + os.path.basename(url)
 
         cache_hit, foot_dict, sect_dict = MainGetCachedFootSect(opts,foot_dict_list,
                             footnote, outdir, foot_title, url, 
                             sect_label_href_list, sect_label_href_list_child)
 
-    if (not err and cache_hit) or foot_dict:
-        if cache_hit:
-            opts['chits'] = opts['chits'] + 1
+    if (not err and cache_hit):
+        opts['chits'] = opts['chits'] + 1
         assert foot_dict or sect_dict, \
             "Cache hit did not produce any %s data for url %s" % (
                 'footnote' if footnote else 'section', url)
-                
+
     elif not err:
         err, foot_dict, sect_label_href_list_child2 = MainRecursiveCall(opts,
-                bl, url, ret_anch, err, footnote, foot_title, foot_dict_list)
+                bl, url, footnote, foot_title, foot_dict_list)
+
+        if footnote and not err:
+            assert foot_dict['ret_anch_all'], "missing ret_anch_all" + str(foot_dict)
 
         if not err:
             foot_dict, sect_dict = MainUpdateMemoryCache(opts, url, outdir,
@@ -462,7 +447,9 @@ def MainGetFootSect(opts, bl, tag_href, foot_dict_list, sect_label_href_list,
                     "No data for url " + url
 
     if not err:
-        # if we have exceeded our depth, their may not be a reference
+        if foot_dict and cache_hit:
+            uGenRetAnch(opts, foot_dict, foot_title)
+
         err, href = MainGetHref(opts, foot_dict_list, anch, footnote,
                                   foot_title, foot_dict, outdir, sect_dict, url)
 
@@ -470,8 +457,8 @@ def MainGetFootSect(opts, bl, tag_href, foot_dict_list, sect_label_href_list,
             assert os.path.exists(href), "Cannot find file %s" % href
         
     if not err:
-        MainUpdateHTMLTag(opts, bl, tag_href, ret_anch, footnote,
-                           foot_title, href, cache_hit, sect_label_href_list)
+        MainUpdateHTMLTag(opts, bl, tag_href, foot_dict, href)
+        
     psym = ''
     if not err:
 
@@ -651,6 +638,7 @@ def MainLoadCache(opts, bl):
     for foot_file in foot_file_list:
         fp = open(foot_file, 'r')
         foot_dict = json.load(fp)
+        foot_dict['ret_anch_all'] = [] # must clear this field for proper behaviour
         fp.close()
         foot_dict_list += [foot_dict]
 
@@ -794,10 +782,7 @@ def Main(opts):
     foot_dict_list = []
     foot_dict = {}
     sect_label_href_list = []
-    
-    opts['footsect_name'] = opts['footsect_name']
-    opts['bodir'] = opts['bodir']
-        
+
     assert not opts['footnote'], "Main does not generate footnotes, only sections. See GenTextGetFootNote" 
 
     uClean(opts)

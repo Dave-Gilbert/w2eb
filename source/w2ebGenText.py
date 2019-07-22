@@ -9,33 +9,39 @@
 """
 
 import json
+import sys
 
 from w2ebUtils import *
 from w2ebConstants import *
+
+from BeautifulSoup import NavigableString
+from BeautifulSoup import Tag
+
+import bs4.element
 
 def GenTextStripSquareBr(par_text):
     """
     Remove any reference like data surrounded by square brackets [*]
     """
     
-    par_text = par_text
+    if not par_text:
+        return ''
     
-    if not par_text:
-        return ''
-    par_text = par_text.strip()
-    if not par_text:
-        return ''
-    par_text = ' '.join(par_text.split())  # strips \n \t etc. but not ' '
+    out_text = par_text
+    done = False
 
-    if not par_text:
-        return ''
-    # There is probably a better way to do this, but for now
-    # just explicitly kill the first 50 numerical references.
-    for i in range(0,50):
-        par_text = par_text.replace('[' + str(i) + ']', '')
-
+    while not done:
+        done = True
+        ind_l = out_text.find('[')
+        ind_r = out_text.find(']')
         
-    return par_text
+        if ind_l > 0 and ind_r > 0 and ind_l < ind_r:
+            out_text = out_text[:ind_l] + out_text[ind_r + 1:]
+            done = False
+
+    out_text = ' '.join(out_text.split())  # strips \n \t etc. but not ' '
+
+    return out_text
 
 
 def GenTextShortFoot(note0_in):
@@ -88,13 +94,69 @@ def GenTextFootRef(item):
     href = item['href']
     
     if 'http' in href[0:4]:
-        ustr = '<a href="%s">%s |i|</a>' % (item['href'], item.string)
+        ustr = '<a href="%s">%s |i|</a>' % (item['href'],
+            uGetTextSafe(item))
     elif '#' in href:
         anch = href.split('#')[1]
         if not 'cite_note' in anch: # probably we can't sort this out here XXX give up
-            ustr = '<a href="#%s">%s</a>' % (anch, item.string)
+            ustr = '<a href="#%s">%s</a>' % (anch,
+             uGetTextSafe(item))
 
     return ustr
+
+def GenTexTag2Str(allow_refs, tag_pdh, part_string, sep):
+    """
+    Build up the partial string by appending the rendering of the current tag
+    
+    @return - words  updated word count
+            - part_string  modified partial string
+    """
+    
+    ustr = ''
+
+    if not isinstance(tag_pdh, bs4.element.Tag) or not tag_pdh.name:
+
+        ustr = uGetTextSafe(tag_pdh)
+        ustr = GenTextStripSquareBr(tag_pdh)
+
+    elif tag_pdh.name in ['span', 'cite', 'p']:
+
+        for item in tag_pdh:
+            
+            part_string, sep = GenTexTag2Str(allow_refs, item, part_string, sep)
+            
+            continue
+
+    elif tag_pdh.name in ['i', 'b', 'u', 'small']: 
+
+            ustr = uGetTextSafe(tag_pdh)
+            ustr = GenTextStripSquareBr(ustr)
+
+    elif tag_pdh.name == 'a':
+
+        if allow_refs:
+            ustr = GenTextFootRef(tag_pdh)
+        else:
+            ustr = uGetTextSafe(tag_pdh)
+
+#    elif not tag_pdh.name:
+
+#        ustr = uGetTextSafe(tag_pdh)
+#        ustr = GenTextStripSquareBr(tag_pdh)
+    elif tag_pdh.name in ['style', 'link', 'sup', 'br', 'sub']:
+        # discard these explicitly
+        ustr =''
+    else:
+        # XXX an unknown tag... should perhaps be investigated
+        None
+        
+    if ustr:
+        part_string = part_string + sep + ustr    # XXX not sure we want sep
+        sep = ' '
+
+
+    return part_string, sep
+
 
 def GenTextWordsFromTags(head, allow_refs):
     """
@@ -120,25 +182,25 @@ def GenTextWordsFromTags(head, allow_refs):
               note_list - a list of paragraphs to make notes or footnotes)
     """
 
+    render_list = ['p', 'a', 'i', 'b', 'u', 'span', 'cite'] # tags to render
+    endsearch_list = ['h1','h2']
+    search_list = endsearch_list + render_list
+
+    if head.name in ['span', 'cite']:
+        list_all = [head]
+    else:
+        list_all = list(head.find_all(lambda x: x.name in ['h1','h2', 'p']))
+    
     words = 0
     note_list = []
     part_string =''
     sep = ''
-    prev_spec = False
-
-    search_list = ['p', 'h1','h2', 'div', 'span']
-
-    list_all = list(head.find_all(lambda x: x.name in search_list))
-    
-    if not list_all:
-        if head.name in search_list:
-            list_all = [head]
-        else:
-            return 0, []
 
     for tag_pdh in list_all:
 
-        if tag_pdh.name in ['div', 'h1', 'h2']:
+       # print "PPPt=", tag_pdh.name
+
+        if tag_pdh.name in endsearch_list:
             # if we don't have enough words, but are at a major division
             # keep searching... 
             if words < MIN_WORDS:
@@ -147,36 +209,28 @@ def GenTextWordsFromTags(head, allow_refs):
             if tag_pdh.has_attr('id') and tag_pdh['id'] == 'toc':
                 break
 
-        elif tag_pdh.name == 'p' or len(list_all) == 1:
+        else:
 
-            for item in tag_pdh:
-
-                if item.name == 'a' and allow_refs:
-                    ustr = GenTextFootRef(item)
-                else:
-                    ustr = uGetTextSafe(item)
-                    ustr = GenTextStripSquareBr(ustr)
-                    
-                words += ustr.count(' ')
-                part_string = part_string + sep + ustr
-                sep = ' '
+            part_string, sep = GenTexTag2Str(allow_refs, tag_pdh,
+                                        part_string, sep)
 
         # we force the first paragraph to include at least MIN_WORDS
         if tag_pdh.name == 'p':
-            if len(note_list) == 0 and words < MIN_WORDS:
+            if len(note_list) == 0 and part_string.count(' ') < MIN_WORDS:
                 continue
 
-            # each note_list item is a separate paragraph
             note_list += [part_string]
+            words += part_string.count(' ')
             part_string = ''
+            sep = ''
     
         if len(note_list) > NOTE_MAX_PAR:
             # stop so we don't read a whole article
             break
     
     if part_string:
+        words += part_string.count(' ')
         note_list += [part_string]
-
 
     return words, note_list
 
@@ -191,7 +245,7 @@ def GenTextWordsFromTags(head, allow_refs):
 #
 
 
-def GenTextLongAndShort(note_list, ret_anch, url, foot_title,
+def GenTextLongAndShort(note_list, id_anch, url, foot_title,
                             notes, note0, num):
     """
     Footnotes include both a long and short version, generate both here
@@ -201,28 +255,29 @@ def GenTextLongAndShort(note_list, ret_anch, url, foot_title,
     """
 
     shortnote = '<p>'
-    shortnote += '<b id="' + ret_anch + '_foot">' + foot_title + num + '</b> '
+    shortnote += '<b id="' + id_anch + '_foot">' + foot_title + num + '</b> '
     shortnote += note0
-    shortnote += '<a href="' + '#' + ret_anch + '"> back</a>'
+    #shortnote += '<a href="' + '#' + id_anch + '"> back</a>'
+    shortnote += W2EB_BLM
 
     if notes == 'never':
         if url:
             shortnote += ' / more @ <a href="' + url + '">' + url + '</a></p>'
         else:
             shortnote += '</p>'
-
         long_note_list = []
 
     else:
-        shortnote += ' / <a href="' + '#' + ret_anch + '_long">more...</a></p>'
+        shortnote += ' / <a href="' + '#' + id_anch + '_long">more...</a></p>'
 
-        backlinklong = '<b id="' + ret_anch + '_long">' + foot_title + num + '</b> '
+        backlinklong = '<b id="' + id_anch + '_long">' + foot_title + num + '</b> '
         long_note_list = ['<p>' + backlinklong + note_list[0] + '</p>']
         
         for note in note_list[1:]:
             long_note_list += ['<p>' + note + '</p>']
 
-        long_note_list += ['<p><a href="' + '#' + ret_anch + '"> back</a>']
+        #long_note_list += ['<p><a href="' + '#' + id_anch + '"> back</a>']
+        long_note_list += ['<p>' + W2EB_BLM]
         if url:
             long_note_list += [' / more @ <a href="' + url + '">' + url + '</a></p>']
         else:
@@ -234,7 +289,7 @@ def GenTextLongAndShort(note_list, ret_anch, url, foot_title,
     return shortnote, long_note_list
 
 
-def GenTextMakeFootDict(note_list, ret_anch, url, foot_title, notes):
+def GenTextMakeFootDict(opts, note_list, url, foot_title, notes):
     """
     Construct the foot dictionary from the raw text summary. Add backlink, number etc.
     
@@ -250,18 +305,22 @@ def GenTextMakeFootDict(note_list, ret_anch, url, foot_title, notes):
 
     note0 = GenTextShortFoot(note_list[0])
 
-    num = ' [' + ret_anch.split('_')[2] + ']:'
-    assert ret_anch[0] != '#', "Badly formed ret_anch"
 
-    shortnote, note_list = GenTextLongAndShort(note_list, ret_anch, url,
-                                foot_title, notes, note0, num)
+    foot_dict = {}
+
+    uGenRetAnch(opts, foot_dict, foot_title)
+
+    num = ' [' + foot_dict['id_anch'].split('_')[2] + ']:'
+
+    shortnote, note_list = GenTextLongAndShort(note_list, foot_dict['id_anch'],
+                                url, foot_title, notes, note0, num)
 
     # basic foot dictionary definition...
-    foot_dict = {}
+
     foot_dict['short_foot'] = shortnote
     foot_dict['long_foot'] = note_list
     foot_dict['foot_title'] = foot_title
-    foot_dict['ret_anch'] = ret_anch
+    foot_dict['orig_anch'] = ''
     foot_dict['msg'] = 0
     
     return foot_dict
@@ -276,7 +335,7 @@ def GenTextFootNote(opts, bl):
                         - 'short_foot' short versions of a footnote
                         - 'long_foot' long versions of a footnote
                         - 'foot_title' name of the footnote, usually the link
-                        - 'ret_anch' return anchor for the footnote
+                        - 'id_anch' return anchor for the footnote
                         - 'msg' whether a debug message has been generated)
     """
      
@@ -307,10 +366,9 @@ def GenTextFootNote(opts, bl):
     
     notes = opts['notes']
     foot_title = opts['footsect_name']
-    ret_anch = opts['ret_anch']
     url = opts['url']
     
-    foot_dict = GenTextMakeFootDict(note_list, ret_anch, url, foot_title, notes)
+    foot_dict = GenTextMakeFootDict(opts, note_list, url, foot_title, notes)
 
     return err, foot_dict
 
@@ -324,7 +382,7 @@ def GenTextSummarizeFootNote(opts, bl):
     
     err, foot_dict = GenTextFootNote(opts, bl)
     if foot_dict:
-        fp = open(opts['base_bodir'] + '/footnotes/' + opts['ret_anch'] + '.json', 'w')
+        fp = open(opts['base_bodir'] + '/footnotes/' + foot_dict['id_anch'] + '.json', 'w')
         if fp:
             json.dump(foot_dict, fp)
             fp.close()

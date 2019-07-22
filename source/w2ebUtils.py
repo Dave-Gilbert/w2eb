@@ -8,10 +8,13 @@
 @version:      0.3
 """
 
+# VERSION = 0.3
+
 import unicodedata
 import os
 import urllib
 import time
+import string
 
 from bs4 import BeautifulSoup
 
@@ -44,8 +47,8 @@ def uGetTextSafe(curr):
     
     @return: Return any text found, or the empty string if there is no text.
     """
-    
-    
+
+
 #     text_out = ''
 #     if isinstance(curr, NavigableString):
 #         text_out = str(curr).strip()
@@ -146,7 +149,7 @@ def uGetHtml(opts):
             err = 'URL is okay, but could not find .html file. See ' + opts['url']
 
     if not err and htmlfile:
-        section_bname = urllib.unquote(uCleanChars(opts, os.path.basename(htmlfile)))
+        section_bname = urllib.unquote(uCleanChars(os.path.basename(htmlfile)))
 
         assert htmlfile
         with open(htmlfile) as fp:
@@ -162,17 +165,40 @@ def uGetHtml(opts):
     return [err, bl, section_bname]
 
 
-def uGenRetAnch(opts, foot_title):
+def uGenRetAnch(opts, foot_dict, foot_title):
+    """
+    Add return anchor to foot_dict, increment footi if necessary.
     
-    ret_suff = uLabelDelWhite(foot_title)[:50]
-    #if '/' in ret_suff:
-    ret_suff = '_'.join(ret_suff.split('/'))
-    ret_suff = ret_suff.replace(' ', '_').strip()   
-    ret_suff = urllib.quote(uCleanChars(opts, ret_suff))
+    @note The same footnote is often referenced multiple times. We create a
+    list of return anchors and add them to the foot dict. This function makes
+    the new return anchor, adds it to the list.
+    
+    @note id_anch should be used to construct destination ids, 
+    """
 
-    ret_anch = W2EBRI + '%d_%s' % (opts['footi'], ret_suff)
-    
-    return ret_anch
+    if not 'id_anch' in foot_dict: 
+        ret_suff = uLabelDelWhite(foot_title)[:50]
+        #if '/' in ret_suff:
+        ret_suff = '_'.join(ret_suff.split('/'))
+        ret_suff = ret_suff.replace(' ', '_').strip()   
+        ret_suff = urllib.quote(uCleanChars(ret_suff))
+        
+        if ret_suff:
+            id_anch = W2EBRI + '%d_%s' % (opts['footi'], ret_suff)
+        else:
+            id_anch = W2EBRI + '%d' % opts['footi']
+            
+
+        foot_dict['id_anch'] = id_anch
+        opts['footi'] += 1
+        foot_dict['ret_anch_all'] = []
+
+    # add a trailing index, as there are often duplicates
+
+    let = string.ascii_lowercase[len(foot_dict['ret_anch_all'])]
+    ret_anch = foot_dict['id_anch'] + '_' + let
+
+    foot_dict['ret_anch_all'].append(ret_anch)
 
 
 def uClean(opts):
@@ -227,7 +253,7 @@ def uClean(opts):
     uSysMkdir(opts, opts['dcdir'] + '/footnotes')
 
 
-def uBurn2Ascii(opts, str_in):
+def uBurn2Ascii(str_in):
     """
     hack: we force conversion when standard filters fail, with ugly results
     """
@@ -246,13 +272,10 @@ def uBurn2Ascii(opts, str_in):
         else:
             str_out += chr(ba[i])
     
-    uPlogExtra(opts, "Replaced bad characters with '_'. Check " + str(bad_chrs), 1)
-    uPlogExtra(opts, "XXX mangled string is now" + str_out, 1)
-
     return str_out
 
 
-def uCleanChars(opts, str_in):
+def uCleanChars(str_in):
     """
     This function ought only be called if we are seeing unhandled exceptions
     It creates as many problems as it solves, hence the noise. 
@@ -275,7 +298,7 @@ def uCleanChars(opts, str_in):
         None
     
     if not done: # try again with burnedascii as our input
-        burnedascii = uBurn2Ascii(opts, str_in)
+        burnedascii = uBurn2Ascii(str_in)
         burneduni = unicode(burnedascii, 'unicode-escape')
         str_out = unicodedata.normalize('NFKD', burneduni).encode('ascii','replace')
     
@@ -290,7 +313,7 @@ def uPlogExtra(opts, o_string, dbg):
         return
     
     ofp = open(opts['logfile'], "a")
-    ofp.write(uCleanChars(opts, o_string + '\n'))
+    ofp.write(uCleanChars(o_string + '\n'))
     ofp.close()
 
 def uPlogFile(opts, filename, dbg):
@@ -345,20 +368,20 @@ def uPlogCr(opts, cr, *msgs):
     sep = ''
     o_string = ''
     for word in msgs:
-        o_string = uCleanChars(opts, o_string + sep + word)
+        o_string = uCleanChars(o_string + sep + word)
         sep = ' '
 
     if opts['debug'] > 0:
         ofp = open(opts['logfile'], "a")
         if cr:
-            ofp.write(uCleanChars(opts, o_string + '\n'))
+            ofp.write(uCleanChars(o_string + '\n'))
         ofp.close()
 
     if cr and not opts['footnote']:
-        print uCleanChars(opts, o_string)
+        print uCleanChars(o_string)
 
     if not cr and not opts['footnote']:
-        print uCleanChars(opts, o_string),
+        print uCleanChars(o_string),
 
 
 
@@ -452,7 +475,7 @@ def uSysCmd(opts, cmdstr, catch_errors):
     try:
         code = os.system(cmdstr)
     except Exception as e:
-        syserr = 'failed: ' + uCleanChars(opts, cmdstr) + ' ' + str(e)
+        syserr = 'failed: ' + uCleanChars(cmdstr) + ' ' + str(e)
         if catch_errors:
             uPlog(opts, '\n\n' + syserr + '\n\n')
             uPlog(opts, e)
@@ -489,12 +512,12 @@ def uSysCmdOut(opts, cmdstr, catch_errors):
 
     except Exception as e:
         if catch_errors:
-            uPlog(opts, '\n\nfailed: ' + uCleanChars(opts, cmdstr) + '\n\n')
+            uPlog(opts, '\n\nfailed: ' + uCleanChars(cmdstr) + '\n\n')
             uPlog(opts, e)
             raise
         syserr = 1
 
-        assert not (syserr and catch_errors), '\n\nfailed: ' + uCleanChars(opts, cmdstr)
+        assert not (syserr and catch_errors), '\n\nfailed: ' + uCleanChars(cmdstr)
     
     return outlines
 

@@ -30,7 +30,10 @@ def FinalPrintArticleStats(opts, im_tot, convert, sect_label_href_list, foot_dic
     nc = FinalNoteCount(foot_dict_list)
     
     if nc:
-        sfnotes += ", %d notes." % nc  
+        sfnotes += ", %d notes" % nc
+        
+    if opts['stats_r']:
+        sfnotes += ", %d recycled footnotes." % opts['stats_r']  
     else:
         sfnotes += '.'
 
@@ -142,14 +145,12 @@ def FinalAddSections(opts, bl, sect_label_href_list):
         else:
             final_section_list.append(section)
 
-
             # if there are any h1 headings demote all headings by 1
             
             if sl.find('h1'):
                 for lvl in [3,2,1]:
                     for heading in sl.find_all('h' + str(lvl)):
                         heading.name = 'h' + str(lvl + 1)
-                        
             # Make our new chapter heading
 
             uPlog(opts, '...Including Section: "'+ section['foot_title'].title() + '"')
@@ -174,6 +175,7 @@ def FinalAddSections(opts, bl, sect_label_href_list):
     
     return final_section_list
 
+
 def FinalNoteCount(foot_dict_list):
     """
     Count the number of full notes.
@@ -188,6 +190,67 @@ def FinalNoteCount(foot_dict_list):
             
     return tnotes
 
+def FinalFixFirstRefLabel(bl, foot_dict_list): 
+    """
+    Append 'a' for multi reference footnotes
+    
+    @note: When we generate a footnote for the first time we don't know
+    if it will have multiple references, so we just guess that it won't.
+    This function finds those foonotes, and appends a 'a' to their name.
+    """
+    for foot_dict in foot_dict_list:
+        if len(foot_dict['ret_anch_all']) > 1:
+            ref = '#' + foot_dict['id_anch'] + '_foot'
+            tag_href = bl.find('a', href=ref)
+            if not tag_href:
+                print "PPP", "Couldn't find one of our own footnotes " + ref
+            else:
+                if tag_href.string:
+                    tag_href.string = tag_href.string.replace(']','a]')
+                    
+                else:
+                    tag_i = tag_href.find('i')
+                    if tag_i:
+                        if tag_i.string:
+                            tag_i.string = tag_i.string.replace(']','a]')
+                        else:
+                            print "PPP", "Couldn't find Italic text for footnote" + ref
+                            
+                    else:
+                        print "PPP", "Couldn't find text for footnote" + ref
+
+
+def FinalBackLinks(foot_dict):
+    """
+    Generate the backlinks for each footnote.
+    
+    @note: Most footnotes will be referred to once, but it is not unusual
+    for a footnote to have multiple referents. We need to provide an
+    appropriate backlink mechanism so we can return to any one of them.
+    
+    @retun an html string with a list of links
+    """
+
+    if len(foot_dict['ret_anch_all']) == 1:
+        # common case:
+        ret_anch = foot_dict['ret_anch_all'][0]
+        blstr = ' ... <a href="' + '#' + ret_anch + '">back</a>'
+    else:
+        # complicated case:
+        blstr = ' ... back ['
+        sep = ''
+        for ret_anch in foot_dict['ret_anch_all']:
+            r_id = ret_anch[-1]
+            blstr += sep
+            blstr += '<a href="' + '#' + ret_anch + '">'
+            blstr += r_id + '</a>'
+            sep = ', '
+            
+        blstr += ']'
+
+    return blstr
+
+
 def FinalAddFootnotes(opts, bl, foot_dict_list):
     """
     Append the foot note dictionary list at the end of the book.
@@ -197,7 +260,6 @@ def FinalAddFootnotes(opts, bl, foot_dict_list):
     @param foot_dict_list: A list of footnotes in dictionary format
         
     """
-    
 
     if not foot_dict_list:
         return
@@ -225,15 +287,18 @@ def FinalAddFootnotes(opts, bl, foot_dict_list):
     
     foot_dict_list.sort(key = lambda x: x['foot_title'].lower())
     
-    for item in foot_dict_list:
+    for foot_dict in foot_dict_list:
         # if we number our backlinks then they too are footnotes... ug. 
-        num = '[' + item['ret_anch'].split('_')[2] +']'
-        ftext = item['short_foot'].replace('<p><a','<p>' + num + '<a')
+        num = '[' + foot_dict['id_anch'].split('_')[2] +']'
+        ftext = foot_dict['short_foot'].replace('<p><a','<p>' + num + '<a')
+        
+        ftext = ftext.replace(W2EB_BLM, FinalBackLinks(foot_dict))
         
         short_foot = BeautifulSoup(ftext, 'html.parser')
         foot_note_section.append(short_foot)
 
-    top_note = bl.new_tag('h2', id='wiki2epub_' + opts['footsect_name'] + '_notes')
+    top_note = bl.new_tag('h2', id='wiki2epub_' + opts['footsect_name'] +
+                          '_notes')
 
     if FinalNoteCount(foot_dict_list):
 
@@ -241,14 +306,16 @@ def FinalAddFootnotes(opts, bl, foot_dict_list):
         top_note['class'] = 'section'
         foot_note_section.append(top_note)
         
-        for item in foot_dict_list:
+        for foot_dict in foot_dict_list:
             
             foot_long =''
-            for par in item['long_foot']:
+            for par in foot_dict['long_foot']:
+                par = par.replace(W2EB_BLM, FinalBackLinks(foot_dict))
                 foot_long = foot_long + par
     
             note = BeautifulSoup(foot_long, 'html.parser')
             foot_note_section.append(note)
+
 
 def FinalAddDebugHeadings(opts, bl):
 
@@ -278,6 +345,7 @@ def FinalAddDebugHeadings(opts, bl):
     dbg_end['class'] = 'section'
 
     head.append(dbg_end) 
+
 
 def FinalAddDebugEntries(opts, bl):
     """
@@ -309,7 +377,7 @@ def FinalAddDebugEntries(opts, bl):
             try:
                 dbg_data2.string += line
             except:
-                dbg_data2.string += uCleanChars(opts, line)
+                dbg_data2.string += uCleanChars(line)
         
         dbg_section.append(dbg_data2)
         
@@ -523,6 +591,8 @@ def FinalMergeFootSectTOC(opts, st_time, bl, section_bname, im_tot, convert,
     if opts['parent'] == '':
         final_sect_label_href_list = FinalAddSections(opts, bl, sect_label_href_list)
         FinalAddFootnotes(opts, bl, foot_dict_list)
+        FinalFixFirstRefLabel(bl, foot_dict_list) 
+        
         while TocRemoveOldToc(opts, bl) == '':
             old_toc += 1
         
