@@ -58,7 +58,7 @@ Wikipedia's Aardvark article: [https://en.wikipedia.org/wiki/Aardvark](https://e
 
 **W2EB**'s epub version: [Aardvark - w2eb.epub](https://github.com/Dave-Gilbert/w2eb/blob/master/demo/Aardvark%20-%20w2eb.epub)
 
-**W2EB**'s mobi version: [Aardvark - w2eb 0721_0013.mobi](https://github.com/Dave-Gilbert/w2eb/blob/master/demo/Aardvark%20-%20w2eb.mobi)
+**W2EB**'s mobi version: [Aardvark - w2eb.mobi](https://github.com/Dave-Gilbert/w2eb/blob/master/demo/Aardvark%20-%20w2eb.mobi)
 
 ## Why Wikipedia? - What about the *Rest* of the Web?
 
