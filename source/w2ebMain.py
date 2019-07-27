@@ -577,7 +577,10 @@ def MainHandleErrs(opts, bl, tag_href, err, ok_i_urls, slink,
             psym = '/'
         else:
             # This shouldn't happen.
-            tag_href.name = 'del'
+            if opts['debug'] >= 2:
+                tag_href.name = 'del'
+            else:
+                tag_href.name = 'i'
             del tag_href['href']
             ok_i_urls[url] = err
             psym = '*'

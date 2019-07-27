@@ -195,7 +195,21 @@ def uGenRetAnch(opts, foot_dict, foot_title):
 
     # add a trailing index, as there are often duplicates
 
-    let = string.ascii_lowercase[len(foot_dict['ret_anch_all'])]
+    ind = len(foot_dict['ret_anch_all'])
+    if ind < len(string.letters):
+        let = string.letters[ind]
+    elif ind >= len(string.letters) and ind < len(string.letters)**2:
+        # Really... more than 52 refs to the same footnote
+        # have seen this, so define it thusly
+        l1 = ind % len(string.letters)
+        l2 = ind / len(string.letters)
+        
+        let = string.letters[l1] + string.letters[l2]
+        
+    else:
+        # should never happen
+        let = 'ZZ'
+        
     ret_anch = foot_dict['id_anch'] + '_' + let
 
     foot_dict['ret_anch_all'].append(ret_anch)
@@ -298,6 +312,8 @@ def uCleanChars(str_in):
         None
     
     if not done: # try again with burnedascii as our input
+        if not str_in:
+            return ''
         burnedascii = uBurn2Ascii(str_in)
         burneduni = unicode(burnedascii, 'unicode-escape')
         str_out = unicodedata.normalize('NFKD', burneduni).encode('ascii','replace')

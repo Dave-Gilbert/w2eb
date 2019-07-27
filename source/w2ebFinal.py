@@ -109,11 +109,7 @@ def FinalAddSections(opts, bl, sect_label_href_list):
     if not sect_label_href_list:
         return
     
-    head = bl.find('div', class_='mw-content-ltr')
-    
-    assert head, 'Unable to find root of html text, mw-parser-output'
-    
-    head = list(head.contents)[0]
+    head = bl.find('div', class_='mw-parser-output')
     #         
     subsections = bl.new_tag('div')
     subsections['class'] ='subsections_' + opts['footsect_name']
@@ -264,12 +260,7 @@ def FinalAddFootnotes(opts, bl, foot_dict_list):
     if not foot_dict_list:
         return
 
-    #head = bl.find('div', class_='mw-parser-output')
-    head = bl.find('div', class_='mw-content-ltr')
-    
-    assert head, 'Unable to find root of html text, mw-parser-output'
-    
-    head = list(head.contents)[0]
+    head = bl.find('div', class_='mw-parser-output')
     #         
     foot_note_section = bl.new_tag('div')
     foot_note_section['class'] ='footnotes_' + opts['footsect_name']
@@ -326,9 +317,7 @@ def FinalAddDebugHeadings(opts, bl):
     if opts['debug'] == 0:
         return
 
-    head = bl.find('div', class_='mw-content-ltr')
-    assert head, 'Unable to find root of html text, mw-parser-output'
-    head = list(head.contents)[0]
+    head = bl.find('div', class_='mw-parser-output')
     #         
     dbg_section = bl.new_tag('div')
     dbg_section['class'] ='debug_' + opts['footsect_name']
@@ -337,7 +326,6 @@ def FinalAddDebugHeadings(opts, bl):
     dbg_head = bl.new_tag('h1', id='wiki2epub_' + opts['footsect_name'] + '_debug')
     dbg_head.string='Debug Logs'
     dbg_head['class'] = 'section'
-
     dbg_section.append(dbg_head)
 
     dbg_end = bl.new_tag('h1', id='wiki2epub_' + opts['footsect_name'] + '_debug_end')
@@ -589,12 +577,12 @@ def FinalMergeFootSectTOC(opts, st_time, bl, section_bname, im_tot, convert,
     toc_links = 0
     old_toc = 0
     if opts['parent'] == '':
+        while TocRemoveOldToc(opts, bl) == '':
+            old_toc += 1
+
         final_sect_label_href_list = FinalAddSections(opts, bl, sect_label_href_list)
         FinalAddFootnotes(opts, bl, foot_dict_list)
         FinalFixFirstRefLabel(bl, foot_dict_list) 
-        
-        while TocRemoveOldToc(opts, bl) == '':
-            old_toc += 1
         
         FinalAddDebugHeadings(opts, bl)
         toc_links = TocMake(opts, bl)

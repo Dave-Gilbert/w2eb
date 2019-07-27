@@ -15,8 +15,11 @@ import sys
 from bs4 import Comment
 from bs4 import NavigableString
 
-from w2ebUtils import *
+from w2ebGenText import GenTexTag2Str
 
+
+from w2ebUtils import *
+from __builtin__ import False
 
 def Startup():
     """
@@ -415,48 +418,161 @@ def StartupReduceMessyTags(opts, bl):
     # ugly things near the end of the doc
     StartupReduceProgress(opts, 'ft')
     for tag in bl.find_all('div', id='footer'):
-        if isinstance(tag, NavigableString):
-            continue
+        #if isinstance(tag, NavigableString):
+        #    continue
         tag.decompose()
     
     StartupReduceProgress(opts, 'pf')
     for tag in bl.find_all('div', class_='printfooter'):
-        if isinstance(tag, NavigableString):
-            continue
+        #if isinstance(tag, NavigableString):
+        #    continue
         tag.decompose()
     
     StartupReduceProgress(opts, 'cl')
     for tag in bl.find_all('div', class_='catlinks'):
-        if isinstance(tag, NavigableString):
-            continue
+#        if isinstance(tag, NavigableString):
+#            continue
+        tag.decompose()
+
+    StartupReduceProgress(opts, 'ha')
+    for tag in bl.find_all('div', role='note'):
+        #if isinstance(tag, NavigableString):
+        #    continue
         tag.decompose()
     
     StartupReduceProgress(opts, 'hi')
     for tag in bl.find_all('div', id='mw-hidden-catlinks'):
-        if isinstance(tag, NavigableString):
-            continue
+        #if isinstance(tag, NavigableString):
+        #    continue
         tag.decompose()
+
+    StartupReduceProgress(opts, 'ss')
+    for tag in bl.find_all('table', class_='mbox-small plainlinks sistersitebox'):
+        #if isinstance(tag, NavigableString):
+        #    continue
+        tag.decompose()
+
+
+def StartupTableToList(opts, bl, info_table, new_info_list):
+    """
+    Convert a table to a list
     
-def StartupReduceTable(opts, bl):
+    @note: Tables don't render very well on the Kindle, so we convert them
+    to bullet point lists. 
+    """
+    prev_tag = None
+
+    for tr_tag in info_table.find_all(lambda x: x.name in ['tr']):
+        
+        part_string = ''
+        sep = ''
+        
+        if isinstance(tr_tag, NavigableString):
+            part_string = uGetTextSafe(tr_tag)
+
+        else:        
+            for hd_tag in tr_tag.find_all(lambda x: x.name in ['th', 'td']):
+    
+                part_string, sep = GenTexTag2Str(opts, 'yes_noi', True, hd_tag,
+                                                 part_string, sep)
+
+        if len(part_string) < 2:
+            uPlogExtra(opts,"Unparsed Row in Table:" + str(hd_tag), 2)
+            continue
+
+        if hd_tag.name == 'th':
+            h4_tag = bl.new_tag('b')
+            new_info_list.append(h4_tag)
+            h4_cont = BeautifulSoup(part_string, "html.parser")
+            h4_tag.append(h4_cont)
+                        
+        if hd_tag.name == 'td':
+            if prev_tag != 'td':
+                ul_tag =  bl.new_tag('ul')
+                new_info_list.append(ul_tag)
+            li_tag = bl.new_tag('li')
+            ul_tag.append(li_tag)
+            li_cont = BeautifulSoup(part_string, "html.parser")
+            li_tag.append(li_cont)
+            
+        prev_tag = hd_tag.name
+
+    return
+
+
+def StartupReduceTableInfobox(opts, bl):
     """
     Rerender Wikipedia's summary table, keeping images.
+    
+    @note: replace the table, which appears immediately after the title,
+    with the first image we find in the table. We move the rest of the table
+    to after the first paragraph and we convert it into a bullet list, which
+    renders a little bit more consistently on a kindle.
     
     @note: This function should try to preserve other elements from 
     the opening table. TODO.
     """
     
+    StartupReduceProgress(opts, 'ti')
+    # We expect that there will be only one infobox. 
+
+    info_table = bl.find(lambda x: x.name=='table' and x.has_attr('class')
+                           and 'infobox' in x['class'])
+
+    if not info_table:
+        uPlogExtra(opts, "Cannot find the infobox data.", 1)
+    if info_table:
+        itag = info_table.find('img')
+        if itag:
+            ib_tag = bl.new_tag('center')
+            ib_tag['id'] = 'Orig_InfoBoxLoc'
+            info_table.insert_before(ib_tag)
+            itag.extract()
+            ib_tag.append(itag)
+
+        info_table.extract()
+
+        # find the first non-special paragraph entry
+        par = bl.find(lambda x: x.name == 'p' and not x.has_attr('class'))
+
+        if par:
+            new_info_list = bl.new_tag('div')
+            new_info_list['id'] = 'w2eb_infobox'
+            
+            StartupTableToList(opts, bl, info_table, new_info_list)
+            par.insert_after(new_info_list)
+            info_table.decompose()
+
+        else:
+            uPlogExtra(opts, "Cannot find a place for the infobox data.", 1)
+            # if we can't find a paragraph there is something very wrong
+            # with the page, just drop the info box in that case
+
+    info_table = bl.find(lambda x: x.name=='table' and x.has_attr('class')
+                           and 'infobox' in x['class'])
+    if info_table:
+        uPlogExtra(opts, "Unexpectedly found a second infobox.", 1)
+    
+
+def StartupReduceTableAll(opts, bl):
+    """
+    Convert all tables to bullet lists
+    
+    @note: The kindle has problems rendering big tables. Simplify them.
+    """
+
     StartupReduceProgress(opts, 'ta')
     
-    for tag in bl.find_all('table', class_='infobox biota'):
+    for info_table in bl.find_all(lambda x: x.name=='table'):
 
-        ph_tag = bl.new_tag('div')
-        ph_tag['id'] = 'location of infobox biota'
-        tag.insert_before(ph_tag)
-        
-        tag.extract()
-        
-        for itag in tag.find_all('img'):
-            ph_tag.append(itag)
+        if isinstance(info_table, NavigableString):
+            continue
+
+        new_info_list = bl.new_tag('div')
+        StartupTableToList(opts, bl, info_table, new_info_list)
+        info_table.replace_with(new_info_list)
+        # new_info_list.decompose()
+
 
 def StartupReduceTags(opts, bl, ipath):
     """
@@ -524,8 +640,6 @@ def StartupReduceTags(opts, bl, ipath):
     
     StartupReduceMessyTags(opts, bl)
     
-    StartupReduceTable(opts, bl)
-    
     # have found some messy stuff at the end of documents that starts with
     # a tag of the class hiddenStructure. Blow it away
 
@@ -546,6 +660,9 @@ def StartupReduceTags(opts, bl, ipath):
     for comment in bl.findAll(text=lambda text:isinstance(text, Comment)):
         comment.extract()
 
-            
+    StartupReduceTableInfobox(opts, bl)
+
+    StartupReduceTableAll(opts, bl)
+                
     StartupReduceProgress(opts,'\n')  # done... 
 

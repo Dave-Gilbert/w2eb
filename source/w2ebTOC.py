@@ -159,6 +159,7 @@ def TocCandidate(tag):
 def TocFindHead(opts, bl, create_default):
 
     # this is the official wikipedia table of contents tool.
+    head = None
 
     par = 0
     for head in bl.find_all(TocCandidate):

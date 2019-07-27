@@ -11,13 +11,19 @@
 """
 
 import sys
+import signal
 
 from w2ebStartup import Startup
 from w2ebMain import Main
 
+def signal_handler(sig, frame):
+        print '\n\nCaught Ctrl+C...\nexiting.'
+        sys.exit(1)
 
 if __name__ == '__main__':
 
+    signal.signal(signal.SIGINT, signal_handler)
+    
     opts = Startup()
     err, foot_dict_list, sect_label_href_list = Main(opts)
     if err:

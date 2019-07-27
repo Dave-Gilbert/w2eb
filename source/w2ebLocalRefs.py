@@ -15,7 +15,6 @@ from bs4 import NavigableString
 from w2ebUtils import *
 from w2ebGenText import GenTextWordsFromTags
 from w2ebGenText import GenTextMakeFootDict
-from __builtin__ import False
 
 def LocalRaiseAnchor(tag_href, foot_dict):
     """
@@ -68,7 +67,7 @@ def LocalReuseArticleFnoteDuplicate(opts, tag_href, foot_dict_list):
 
             tag_href['href'] = '#' + foot_dict['id_anch'] + '_foot'
             uPlogExtra(opts,"Reassigning local anchor %s to %s" % 
-                       (anch, foot_dict['id_anch']), 2)
+                       (anch, foot_dict['id_anch']), 3)
 
 
             LocalRaiseAnchor(tag_href, foot_dict)
@@ -105,7 +104,7 @@ def LocalGenFootDict(opts, tag_href, foot_title,
     if number: # Most wikipedia footnotes are just numbers, but not all...
         tag_href.string = '[' + str(opts['footi']) + ']'
         foot_title = ''
-    words, note_list = GenTextWordsFromTags(tag_cont, True)
+    words, note_list = GenTextWordsFromTags(opts, tag_cont, 'yes_i')
     if note_list:
         foot_dict = GenTextMakeFootDict(opts, note_list, '', foot_title, 'never')
         foot_dict['orig_anch'] = anch
@@ -121,7 +120,7 @@ def LocalGenFootDict(opts, tag_href, foot_title,
         tag_href['href'] = '#' + foot_dict['id_anch'] + '_foot'
         tag_note.decompose()
         uPlogExtra(opts, "Reassigning local anchor %s to %s" % 
-                   (anch, foot_dict['id_anch']), 2)
+                   (anch, foot_dict['id_anch']), 3)
 
         LocalRaiseAnchor(tag_href, foot_dict)
 
@@ -259,13 +258,17 @@ def LocalReuse(opts, bl):
         i = i + 1
         sys.stdout.flush()
 
+    # get rid of old Footnote Label
+    fhead = bl.find('h2',id="Footnotes")
+    if fhead:
+        fhead.decompose() 
 
-    if tag_parent and tag_parent.previous_sibling:
-        if tag_parent.previous_sibling.name == 'h2':
-            tag_parent.previous_sibling.decompose() 
+        # remove some old footnote wrapper tags
+        #if tag_parent.parent:
+        #    tag_parent.parent.decompse()
 
-    #if tag_parent:
-    #    tag_parent.parent.decompose()
+    else:
+        uPlogExtra(opts,"Cannot remove old Footnote heading",2)
 
     if i:
         sys.stdout.flush()

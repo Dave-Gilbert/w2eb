@@ -78,9 +78,11 @@ def GenTextShortFoot(note0_in):
 
     return note0
 
-def GenTextFootRef(item):
+def GenTextFootRef(opts, item, yes_i):
     """
     Generate a reference for a footnote.
+    
+    @param yes_i: Whether the internet 'i' shows up in the text 
     
     @note: References in footnotes themselves can get messy quickly, so we
     only allow them in reused footnotes from the original article. Also we
@@ -89,22 +91,42 @@ def GenTextFootRef(item):
     
     @return: (ustr - something to use in place of the anchor tag)
     """
+
+
+
+    a_text = uGetTextSafe(item)
+
+    if not item.find('img') and not a_text:
+        if not a_text:
+            return ''
     
     ustr = '<i>' + uGetTextSafe(item) + '</i>'
-    href = item['href']
+    if item.has_attr('href'):
+        href = item['href']
+        
+        if 'http' in href[0:4]:
+            if yes_i: # we are done parsing if we allow adding the internet 'i'
     
-    if 'http' in href[0:4]:
-        ustr = '<a href="%s">%s |i|</a>' % (item['href'],
-            uGetTextSafe(item))
-    elif '#' in href:
-        anch = href.split('#')[1]
-        if not 'cite_note' in anch: # probably we can't sort this out here XXX give up
-            ustr = '<a href="#%s">%s</a>' % (anch,
-             uGetTextSafe(item))
+                label = uGetTextSafe(item)
+                if label:
+                    ustr = '<a href="%s">%s |i|</a>' % (item['href'], label)
+    
+            else:
+                # break the item by changing its name to 'div', BW would say not to
+                item.name = 'div'
+                label, sep = GenTexTag2Str(opts, False, True, item, '', '')
+    
+                ustr = '<a href="%s">%s</a>' % (item['href'], label)
+    
+        elif '#' in href:
+            anch = href.split('#')[1]
+            if not 'cite_note' in anch: # probably we can't sort this out here XXX give up
+                ustr = '<a href="#%s">%s</a>' % (anch,
+                 uGetTextSafe(item))
 
     return ustr
 
-def GenTexTag2Str(allow_refs, tag_pdh, part_string, sep):
+def GenTexTag2Str(opts, allow_refs, allow_img, tag_pdh, part_string, sep):
     """
     Build up the partial string by appending the rendering of the current tag
     
@@ -113,52 +135,60 @@ def GenTexTag2Str(allow_refs, tag_pdh, part_string, sep):
     """
     
     ustr = ''
+    tnm = tag_pdh.name
 
     if not isinstance(tag_pdh, bs4.element.Tag) or not tag_pdh.name:
 
         ustr = uGetTextSafe(tag_pdh)
         ustr = GenTextStripSquareBr(tag_pdh)
 
-    elif tag_pdh.name in ['span', 'cite', 'p']:
+    elif tnm in ['span', 'cite', 'p', 'li', 'td', 'th', 'div' ]:
 
         for item in tag_pdh:
-            
-            part_string, sep = GenTexTag2Str(allow_refs, item, part_string, sep)
-            
+
+            part_string, sep = GenTexTag2Str(opts, allow_refs, allow_img, item,
+                                                part_string, sep)
             continue
 
-    elif tag_pdh.name in ['i', 'b', 'u', 'small']: 
+    elif tnm in ['i', 'b', 'u', 'small']: 
 
             ustr = uGetTextSafe(tag_pdh)
-            ustr = GenTextStripSquareBr(ustr)
+            ustr = '<%s>' % tnm + GenTextStripSquareBr(ustr) + '</%s>' % tnm 
 
-    elif tag_pdh.name == 'a':
+    elif tnm == 'a':
 
-        if allow_refs:
-            ustr = GenTextFootRef(tag_pdh)
+        if not allow_refs:
+            ustr = uGetTextSafe(tag_pdh)
+        elif allow_refs == 'yes_i':
+            ustr = GenTextFootRef(opts, tag_pdh, True)
+        elif allow_refs == 'yes_noi':
+            ustr = GenTextFootRef(opts, tag_pdh, False)
         else:
-            ustr = uGetTextSafe(tag_pdh)
+            assert 0, "Illegal value for allow_refs:" + str(allow_refs)
 
-#    elif not tag_pdh.name:
+    elif tnm == 'img':
 
-#        ustr = uGetTextSafe(tag_pdh)
-#        ustr = GenTextStripSquareBr(tag_pdh)
-    elif tag_pdh.name in ['style', 'link', 'sup', 'br', 'sub']:
+        if allow_img:
+            ustr = '<center>' + str(tag_pdh) + '</center>'
+        else:
+            if opts['debug'] >= 2:
+                ustr = '{' + os.path.basename(tag_pdh['src']) + '}'
+
+    elif tnm in ['style', 'link', 'sup', 'sub', 'br']:
         # discard these explicitly
         ustr =''
     else:
-        # XXX an unknown tag... should perhaps be investigated
-        None
+        uPlogExtra(opts, "Unrecognized tag found during parsing: " +
+                    tag_pdh.name, 3)
         
     if ustr:
         part_string = part_string + sep + ustr    # XXX not sure we want sep
         sep = ' '
 
-
     return part_string, sep
 
 
-def GenTextWordsFromTags(head, allow_refs):
+def GenTextWordsFromTags(opts, head, allow_refs):
     """
     Translate a tag into a list of paragraphs, up to the first heading.
     
@@ -211,7 +241,7 @@ def GenTextWordsFromTags(head, allow_refs):
 
         else:
 
-            part_string, sep = GenTexTag2Str(allow_refs, tag_pdh,
+            part_string, sep = GenTexTag2Str(opts, allow_refs, False, tag_pdh,
                                         part_string, sep)
 
         # we force the first paragraph to include at least MIN_WORDS
@@ -353,7 +383,7 @@ def GenTextFootNote(opts, bl):
         err = 'bad_footnote: Can not find class=mw-parser-output in wiki text.'
         return err, {}
     
-    words, note_list = GenTextWordsFromTags(head, False)
+    words, note_list = GenTextWordsFromTags(opts, head, False)
     
     if words < MIN_WORDS:
 
