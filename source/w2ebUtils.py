@@ -20,6 +20,25 @@ from bs4 import BeautifulSoup
 
 from w2ebConstants import *
 
+WGET_OPTS = """ \
+ --timeout=10 \
+ --tries=2 \
+ --html-extension \
+ --restrict-file-names=unix \
+ --page-requisites \
+ -k \
+ --no-parent \
+ --backups=0 \
+ --level=0 \
+ """
+
+# identifiers that we use to identify internal tags
+
+W2EBID = 'w2eb_base_id'
+W2EBRI = 'w2eb_ret_'
+W2EB_BLM = 'W2EB_BACK_LINK_LIST_GOES_HERE'
+
+
 def uSubstrBt(Str, pre, post):
     """
     Get the substring between two other strings

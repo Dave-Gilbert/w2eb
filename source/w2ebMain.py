@@ -29,6 +29,10 @@ from w2ebLocalRefs import LocalRaiseAnchor
 from w2ebLocalRefs import LocalGenFootLabel
 from w2ebFinal import FinalMergeFootSectTOC
 
+# There are a few bad links that always fail, just filter them 
+#
+LINK_AVOID = ['Special:BookSources']
+
 
 def MainRecursiveCall(opts, bl, url, footnote, foot_title, foot_dict_list):
     """

@@ -12,7 +12,13 @@ import sys
 from shutil import copyfile
 
 from w2ebUtils import *
-from w2ebConstants import * 
+from w2ebConstPic import * 
+
+# There are a few bad images that we see regularly... 
+#
+IMAGE_AVOID = ['Special:CentralAutoLogin']
+
+TMP_DIR = '/tmp/'
 
 def PicGetImage(opts, url, image_file):
     """
@@ -290,19 +296,25 @@ def PicConvertImage(opts, image_url, image_file, suff):
         png_conv = convcmd + png_bw
         jpg_conv = convcmd + jpg_bw
 
+    pid = str(os.getpid())
+
     if suff in IMAGE_FIG:
-        err = uSysCmd(opts, png_conv + '-resize ' + IM_SCALEperc + resize + '-quality 75 ' +
-                '"' + opts['bodir'] + '/' + image_file + '" /tmp/conv.png', False)
+        err = uSysCmd(opts, png_conv + '-resize ' + IM_SCALEperc + resize + 
+                      '-quality 75 ' + '"' + opts['bodir'] + '/' + image_file +
+                      '" ' +TMP_DIR + '/conv_' + pid + '.png', False)
         if not err:
             uSysMkdir(opts, os.path.dirname(opts['bodir'] + '/' + image_file))
-            err = uSysCmd(opts, 'mv /tmp/conv.png "' + opts['bodir'] + '/' + image_file + '"', False)
+            err = uSysCmd(opts, 'mv ' + TMP_DIR + '/conv_' + pid + '.png "' +
+                          opts['bodir'] + '/' + image_file + '"', False)
 
     elif suff in IMAGE_PIC:
-        err = uSysCmd(opts, jpg_conv + '-resize ' + IM_SCALEperc + resize + '-quality 75 ' +
-                '"' + opts['bodir'] + '/' + image_file + '" /tmp/conv.jpg', False)
+        err = uSysCmd(opts, jpg_conv + '-resize ' + IM_SCALEperc + resize +
+                      '-quality 75 ' + '"' + opts['bodir'] + '/' + image_file +
+                      '" ' + TMP_DIR + '/conv_' + 'pid' + '.jpg', False)
         if not err:
             uSysMkdir(opts, os.path.dirname(opts['bodir'] + '/' + image_file)) # XXX may be unnecessary...
-            err = uSysCmd(opts, 'mv /tmp/conv.jpg "' + opts['bodir'] + '/' + image_file + '"', False)
+            err = uSysCmd(opts, 'mv ' + TMP_DIR + '/conv_' + pid + '.jpg "' +
+                          opts['bodir'] + '/' + image_file + '"', False)
 
     if not err:
         suff = PicImType(suff)

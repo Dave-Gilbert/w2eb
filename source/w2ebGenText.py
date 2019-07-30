@@ -19,6 +19,16 @@ from BeautifulSoup import Tag
 
 import bs4.element
 
+# We collect as many as MAX_PAR pargraphs for the detailed note section
+
+NOTE_MAX_PAR = 10
+
+# A footnote link must have at least this many words to be included.
+# we start looking for a natural end from here, i.e. a period or paragraph
+
+MIN_WORDS = 15
+
+
 def GenTextStripSquareBr(par_text):
     """
     Remove any reference like data surrounded by square brackets [*]

@@ -17,13 +17,13 @@ from bs4 import NavigableString
 
 from w2ebGenText import GenTexTag2Str
 
-
 from w2ebUtils import *
-from __builtin__ import False
 
-def Startup():
+def Startup(basedir):
     """
     Called for command line startup, sets the opts dict from the CLI.
+    
+    @param basedir: The directory that all output is stored under 
     
     @note: 
     Several fields in the opts structure are only used by recursive calls and
@@ -31,7 +31,7 @@ def Startup():
     call must leave the 'parent' field empty, all others must define it.
     """
 
-    opts = StartupGetOptions()
+    opts = StartupGetOptions(basedir)
     uSysCmd(opts, 'rm -r "' + opts['bodir'] + '/wiki_log.txt"', False)
     opts['parent'] = ''         # name of the parent, empty in the CLI case
     opts['parent_sketch'] = ''  # a description of the parent. See Sketch fns.
@@ -240,7 +240,7 @@ def StartupGuessBooknm(booknm, booknm_orig, bodir, logfile, debug):
 
     assert 0, "Shouldn't get here"
 
-def StartupGetOptions():
+def StartupGetOptions(base_dir):
     """
     Get command line options from the user
         

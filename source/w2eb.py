@@ -16,6 +16,13 @@ import signal
 from w2ebStartup import Startup
 from w2ebMain import Main
 
+#
+# All output is stored under the following directory
+#
+
+BASE_DIR = '/home/gilbert/Projects_Recent/wiki_books'
+
+
 def SignalHandlerCtrlC(sig, frame):
     """
     A signal handler for Ctrl+C. Exit and print a message.
@@ -30,7 +37,7 @@ if __name__ == '__main__':
 
     signal.signal(signal.SIGINT, SignalHandlerCtrlC)
     
-    opts = Startup()
+    opts = Startup(BASE_DIR)
     err, foot_dict_list, sect_label_href_list = Main(opts)
     if err:
         sys.exit(1)

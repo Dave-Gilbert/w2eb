@@ -11,10 +11,14 @@
 
 from bs4 import NavigableString
 
-
 from w2ebUtils import *
-from w2ebConstants import *
+from w2ebConstPunc import *
 
+# When searching for a Table of contents we prefer old TOC locations, or 
+# headings that say TOC. If we don't see anything like this after several
+# paragraphs we simply insert our TOC at the beginning.#
+
+TOC_MAX_PAR = 10
 
 
 def TocShortLabel(heading_str):
