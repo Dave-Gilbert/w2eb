@@ -16,13 +16,19 @@ import signal
 from w2ebStartup import Startup
 from w2ebMain import Main
 
-def signal_handler(sig, frame):
+def SignalHandlerCtrlC(sig, frame):
+    """
+    A signal handler for Ctrl+C. Exit and print a message.
+    
+    @note: Without this often a subshell catches the Ctrl C and the script
+    won't terminate
+    """
         print '\n\nCaught Ctrl+C...\nexiting.'
         sys.exit(1)
 
 if __name__ == '__main__':
 
-    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGINT, SignalHandlerCtrlC)
     
     opts = Startup()
     err, foot_dict_list, sect_label_href_list = Main(opts)

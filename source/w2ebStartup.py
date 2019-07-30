@@ -111,6 +111,8 @@ def StartupParseCLI(op):
     """
     Establish defaults for CLI options, parse op list.
     
+    @param op: options from call to getopt
+    
     @return: A collection of booleans, strings, and integers.
     """
     
@@ -198,6 +200,12 @@ def StartupGuessBooknm(booknm, booknm_orig, bodir, logfile, debug):
     
     @param booknm: The preferred version which has had .title() applied
     @param booknm_orig: The exact version supplied on the CLI - user is right sometimes
+    @param bodir: Book output dir, were processed book output files are written
+    @param logfile: output data for error log
+    @param debug: current debug level
+    
+    @note most functions just take 'opts' as their first argument, however
+    during startup the opts structure is not yet fully established.
     
     @return url and booknm
     
@@ -235,12 +243,12 @@ def StartupGuessBooknm(booknm, booknm_orig, bodir, logfile, debug):
 def StartupGetOptions():
     """
     Get command line options from the user
-    
-    @return: The global structure opts. 
-    
+        
     @note: opts is passed by name as the first argument to many functions,
     which allows reference to global state of page generation. opts includes
     important variables like the output directory name, and the source url name.
+
+    @return: The global structure opts. 
     """
     
     try:
@@ -334,6 +342,11 @@ TAG_FMSG = 'Fixing Tags:'
 def StartupReduceProgress(opts, ma):
     """
     progress indicator for tag reduction.
+    
+    @param opts: dictionary of shared CLI parameters. See StartupGetOptions()
+    @param ma: two character string printed to screen to indicate progress 
+    
+    @param opts
     """
 
     if opts['clen'] > 68:
@@ -349,6 +362,9 @@ def StartupReduceProgress(opts, ma):
 def StartupReduceMessyTags(opts, bl):
     """
     Remove complex HTML that can't be rendered on a Kindle
+    
+    @param opts: dictionary of common CLI parameters. See StartupGetOptions()
+    @param bl:  Beautiful Soup representation of an HTML web page.
     
     @note: 
     Wikipedia pages include a lot of details that can't be easily rendered
@@ -457,8 +473,13 @@ def StartupTableToList(opts, bl, info_table, new_info_list):
     """
     Convert a table to a list
     
+    @param opts: dictionary of common CLI parameters. See StartupGetOptions()
+    @param bl:  Beautiful Soup representation of an HTML web page.
+    @param info_table: a soup representation of a table
+    @param new_info_list: the root tag of the new list representation 
+    
     @note: Tables don't render very well on the Kindle, so we convert them
-    to bullet point lists. 
+    to bullet point lists.
     """
     prev_tag = None
 
@@ -503,6 +524,9 @@ def StartupTableToList(opts, bl, info_table, new_info_list):
 def StartupReduceTableInfobox(opts, bl):
     """
     Rerender Wikipedia's summary table, keeping images.
+
+    @param opts: dictionary of common CLI parameters. See StartupGetOptions()
+    @param bl:  Beautiful Soup representation of an HTML web page.
     
     @note: replace the table, which appears immediately after the title,
     with the first image we find in the table. We move the rest of the table
@@ -557,7 +581,10 @@ def StartupReduceTableInfobox(opts, bl):
 def StartupReduceTableAll(opts, bl):
     """
     Convert all tables to bullet lists
-    
+
+    @param opts: dictionary of common CLI parameters. See StartupGetOptions()
+    @param bl:  Beautiful Soup representation of an HTML web page.
+
     @note: The kindle has problems rendering big tables. Simplify them.
     """
 
@@ -574,9 +601,12 @@ def StartupReduceTableAll(opts, bl):
         # new_info_list.decompose()
 
 
-def StartupReduceTags(opts, bl, ipath):
+def StartupReduceTags(opts, bl):
     """
     Remove as many tags as possible
+    
+    @param opts: dictionary of common CLI parameters. See StartupGetOptions()
+    @param bl:  Beautiful Soup representation of an HTML web page.
 
     @note: 
     wikipedia recommends downloading portions of its database

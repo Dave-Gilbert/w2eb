@@ -763,7 +763,7 @@ def MainSectionCreate(opts, st_time, bl, section_bname):
     foot_dict_list = []
     foot_dict = {}
 
-    StartupReduceTags(opts, bl, section_bname)
+    StartupReduceTags(opts, bl)
     im_tot, convert = PicGetImages(opts, bl) # easy...
     foot_dict_loc_list = LocalReuse(opts, bl)
     [sect_label_href_list, foot_dict_list, slink, http404] = MainNotes(opts, bl)

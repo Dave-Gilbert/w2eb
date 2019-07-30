@@ -20,8 +20,21 @@ from w2ebTOC import TocRemoveOldToc
 from w2ebSketch import SketchPage
 from w2ebSketch import SketchVsMySketch
 
-def FinalPrintArticleStats(opts, im_tot, convert, sect_label_href_list, foot_dict_list,
-                      slink, http404, ilink, blink):
+def FinalPrintArticleStats(opts, im_tot, convert, sect_label_href_list,
+                           foot_dict_list, slink, http404, ilink, blink):
+    """
+    Print statistics for figures, footnotes, subsections, links and network access.
+
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param im_tot: Total number of images
+    @param convert: Total number of image conversions
+    @param sect_label_href_list: List of sections by label and href
+    @param foot_dict_list: List of footnotes represented by dictionaries
+    @param slink: Number of bad links removed, often due to similarity with parent
+    @param http404: Number of unreachable links
+    @param ilink: Internet references
+    @param blink: Book links, or internal page references
+    """
 
     uPlog(opts, "\nFound", str(im_tot), "Figures,", "Converted", str(convert), "Figures")
 
@@ -67,6 +80,22 @@ def FinalHrefAll(tag_href):
 
 def FinalPrintStats(opts, bl, im_tot, convert, sect_label_href_list, foot_dict_list,
                      slink, http404, toc_links, old_toc, st_time, ipath): 
+    """
+    Print main parent statistics, compute a few simple stats, like ilink and blink. 
+    
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param bl:  Beautiful Soup representation of an HTML web page.
+    @param im_tot: Total number of images
+    @param convert: Total number of image conversions
+    @param sect_label_href_list: List of sections by label and href
+    @param foot_dict_list: List of footnotes represented by dictionaries
+    @param slink: Number of bad links removed, often due to similarity with parent
+    @param http404: Number of unreachable links
+    @param toc_links: Table of contents links to sections
+    @param old_toc: Number of told table of contents removed
+    @param st_time: Start time
+    @param ipath: Output file path
+    """
 
     ilink = 0
     blink = 0
@@ -97,6 +126,10 @@ def FinalAddSections(opts, bl, sect_label_href_list):
     
     """
     Add the collected sections to the end of the book
+    
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param bl:  Beautiful Soup representation of an HTML web page.
+    @param sect_label_href_list: List of sections by label and href
     
     @note: 
     
@@ -175,7 +208,9 @@ def FinalAddSections(opts, bl, sect_label_href_list):
 def FinalNoteCount(foot_dict_list):
     """
     Count the number of full notes.
-    
+
+    @param foot_dict_list: List of footnotes represented by dictionaries
+
     @note: Not every foot_dict includes a long form note. Only some
     will. Count those that do.
     """
@@ -189,7 +224,10 @@ def FinalNoteCount(foot_dict_list):
 def FinalFixFirstRefLabel(bl, foot_dict_list): 
     """
     Append 'a' for multi reference footnotes
-    
+
+    @param bl:  Beautiful Soup representation of an HTML web page.
+    @param foot_dict_list: List of footnotes represented by dictionaries
+
     @note: When we generate a footnote for the first time we don't know
     if it will have multiple references, so we just guess that it won't.
     This function finds those foonotes, and appends a 'a' to their name.
@@ -219,7 +257,9 @@ def FinalFixFirstRefLabel(bl, foot_dict_list):
 def FinalBackLinks(foot_dict):
     """
     Generate the backlinks for each footnote.
-    
+
+    @param foot_dict_list: List of footnotes represented by dictionaries
+
     @note: Most footnotes will be referred to once, but it is not unusual
     for a footnote to have multiple referents. We need to provide an
     appropriate backlink mechanism so we can return to any one of them.
@@ -312,6 +352,10 @@ def FinalAddDebugHeadings(opts, bl):
 
     """
     Add debug headings prior to entries here so they appear in TOC
+
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param bl:  Beautiful Soup representation of an HTML web page.
+
     """
     
     if opts['debug'] == 0:
@@ -338,6 +382,9 @@ def FinalAddDebugHeadings(opts, bl):
 def FinalAddDebugEntries(opts, bl):
     """
     The dubug log is kept in a file named wiki_log, include it in the ebook
+
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param bl:  Beautiful Soup representation of an HTML web page.
     """
 
     if opts['debug'] == 0:
@@ -373,7 +420,10 @@ def FinalAddDebugEntries(opts, bl):
 def FinalReduceSimilarAnchors(opts, bl, url):
     """
     Find all references to URL and make them local, preserving anchors
-    
+
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param bl:  Beautiful Soup representation of an HTML web page.
+    @param url: The references that we are looking for 
     """
     
     #
@@ -420,6 +470,11 @@ def FinalReduceSimilarAnchors(opts, bl, url):
 def FinalReduceHtmlRefs2Anchors(opts, bl, final_section_list):
     """
     Find all references to html files and convert them to anchors
+    
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param bl:  Beautiful Soup representation of an HTML web page.
+    @param final_section_list: List of sections by label and href, final version
+ 
     
     @note: There are a few ways we can miss these during previous processing.
     
@@ -498,7 +553,10 @@ def FinalReduceHtmlRefs2Anchors(opts, bl, final_section_list):
 def FinalReduceHtmlRefs2AnchorsFinal(opts, bl):
     """
     Find all references to html files and convert them to anchors or remove them
-    
+
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param bl:  Beautiful Soup representation of an HTML web page.
+ 
     @note: There are a few ways we can miss these during previous processing.
     
     We might find
@@ -566,7 +624,18 @@ def FinalMergeFootSectTOC(opts, st_time, bl, section_bname, im_tot, convert,
                           slink, http404, foot_dict_list, sect_label_href_list):
     """
     Merge the main text with footnotes, sections, TOC, and debug logs.
-    
+
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param st_time: Start time
+    @param bl:  Beautiful Soup representation of an HTML web page.
+    @param section_bname: Basename for the section, i.e. filename w.o. path
+    @param im_tot: Total number of images
+    @param convert: Total number of image conversions
+    @param slink: Number of bad links removed, often due to similarity with parent
+    @param http404: Number of unreachable links
+    @param foot_dict_list: List of footnotes represented by dictionaries
+    @param sect_label_href_list: List of sections by label and href
+
     @return: (sect_label_href_list - a list of sections)
     """
 

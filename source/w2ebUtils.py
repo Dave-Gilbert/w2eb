@@ -292,7 +292,14 @@ def uBurn2Ascii(str_in):
 def uCleanChars(str_in):
     """
     This function ought only be called if we are seeing unhandled exceptions
-    It creates as many problems as it solves, hence the noise. 
+    It creates as many problems as it solves, hence the noise.
+    
+    @param str_in: Input string with unprintable characters.
+
+    @note: Unprintable characters may be replaced by '?'. 
+
+    
+    @return: str_out - A printable string.
     """
     
     str_out = ''
@@ -324,6 +331,16 @@ def uCleanChars(str_in):
 def uPlogExtra(opts, o_string, dbg):
     """
     Appends a string to our regular log file, skips stdout
+
+    @param opts: dictionary of common CLI parameters. See StartupGetOptions()
+    @param o_string: String to be written to the log
+    @param dbg: Severity at which to print the message. 
+
+    @note: 4 severities are supported
+        - 0 No messages logged 
+        - 1 Serious errors 
+        - 2 Minor errors and warnings
+        - 3 Success messages
     """
     if dbg > opts['debug']:
         return
@@ -335,7 +352,18 @@ def uPlogExtra(opts, o_string, dbg):
 def uPlogFile(opts, filename, dbg):
     """
     Include additional file in log
+    
+    @param opts: dictionary of common CLI parameters. See StartupGetOptions()
+    @param filename: file to be included in the log
+    @param dbg: Severity at which to print the message. 
+
+    @note: 4 severities are supported
+        - 0 No messages logged 
+        - 1 Serious errors 
+        - 2 Minor errors and warnings
+        - 3 Success messages
     """
+
     if dbg > opts['debug']:
         return
 
@@ -366,12 +394,23 @@ def uPlogFile(opts, filename, dbg):
 def uPlog(opts, *msgs):
     """
      print to stdout and log, by default add a carriage return
+     
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param msgs: a comma seperated list of messages
+    
+    @note: This is the default logging call for user visible progress messages
+           These same messages are included in the log.
     """
+    
+
     uPlogCr(opts, True, *msgs)
 
 def uPlogNr(opts, *msgs):
     """
     Print to stdout only. Don't add a carriage return
+
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param msgs: a comma seperated list of messages
     """
 
     uPlogCr(opts, False, *msgs)
@@ -379,6 +418,13 @@ def uPlogNr(opts, *msgs):
 def uPlogCr(opts, cr, *msgs):
     """
     Writes messages to both wiki_log.txt and stdout. cr toggles stdout only with continuatin
+
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param cr: whether or not to pass in a carriage return
+    @param msgs: a comma seperated list of messages
+    
+    @note: This function is does the work, but is mainly called by either uPlog
+           or uPlogNr
     """
 
     sep = ''
@@ -402,6 +448,20 @@ def uPlogCr(opts, cr, *msgs):
 
 
 def uGetFlistFromDir(ls_dir, prefix, ext, must_get):
+    """
+    Get a file listing from a directory
+    
+    @param ls_dir: The directory path.
+    @param prefix: The file name prefix.
+    @param ext: The file name extension
+    @param must_get: Whether to raise an exception if the listing fails
+
+    @note this command is similar to: ls <ls_dir>/<prefix>*.<ext>
+          the values returned exclude any subdirectories.
+
+    @return: ofiles - a list of files
+    """
+    
     
     
     ofiles = []
@@ -432,6 +492,7 @@ def uGet1HtmlFile(opts, ls_dir, must_get):
     """
     Get the name of the first .html file in the directory.
     
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()   
     @param ls_dir - directory to check
     @param must_get - whether multiple entries are tollerated. They shouldn't be.
     
@@ -464,6 +525,9 @@ def uSysMkdir(opts, dirname):
     """
     Emulate mkdir -p behaviour, create all subidirs unless the exist
     
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param dirname: The directory to create
+    
     """
     
     if os.path.exists(dirname) and os.path.isdir(dirname):
@@ -482,6 +546,15 @@ def uSysMkdir(opts, dirname):
 # def sys_cp(opts, ...)
 
 def uSysCmd(opts, cmdstr, catch_errors):
+    """
+    Create a subshell and run a command.
+    
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param cmdstr: The command to run
+    @param catch_errors: Whether or not to raise an exception on error
+    
+    @return: syserr - a string version of the error message, or empty string on succ
+    """
 
     code = 0
     syserr = None
