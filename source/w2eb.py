@@ -30,8 +30,8 @@ def SignalHandlerCtrlC(sig, frame):
     @note: Without this often a subshell catches the Ctrl C and the script
     won't terminate
     """
-        print '\n\nCaught Ctrl+C...\nexiting.'
-        sys.exit(1)
+    print '\n\nCaught Ctrl+C...\nexiting.'
+    sys.exit(1)
 
 if __name__ == '__main__':
 

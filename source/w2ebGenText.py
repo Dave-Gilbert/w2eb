@@ -12,7 +12,6 @@ import json
 import sys
 
 from w2ebUtils import *
-from w2ebConstants import *
 
 from BeautifulSoup import NavigableString
 from BeautifulSoup import Tag

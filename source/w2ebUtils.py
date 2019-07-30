@@ -18,8 +18,6 @@ import string
 
 from bs4 import BeautifulSoup
 
-from w2ebConstants import *
-
 WGET_OPTS = """ \
  --timeout=10 \
  --tries=2 \

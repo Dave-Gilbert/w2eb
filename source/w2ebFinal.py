@@ -11,7 +11,6 @@
 import time
 
 from w2ebUtils import *
-from w2ebConstants import *
 
 from bs4 import BeautifulSoup
 

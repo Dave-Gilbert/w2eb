@@ -16,6 +16,6 @@
 Punc1 = ['.','?','!']           # good way to end a sentence
 Punc2 = [',', ':', ';']        # less good
 Punc_lb = [')',']','}','>']       #
-Punc3 = Punclb
+Punc3 = Punc_lb
 Punc_rb = ['(','[','{','<']
 Punc4 = ['@','#','$','/','\\', '%','^','&','*'] + Punc_rb
