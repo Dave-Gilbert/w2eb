@@ -31,6 +31,10 @@ MIN_WORDS = 15
 def GenTextStripSquareBr(par_text):
     """
     Remove any reference like data surrounded by square brackets [*]
+    
+    @param par_text: A string representing a paragraph
+    
+    @return: Simplified paragraph text
     """
     
     if not par_text:
@@ -56,6 +60,8 @@ def GenTextStripSquareBr(par_text):
 def GenTextShortFoot(note0_in):
     """
     Generate the text for the short footnote, about MIN_WORDS long.
+
+    @param note0_in: The first paragraph pulled out of an article, usually several sentences long.
 
     @return: A footnote style summary, possibly an incomplete sentence.
     """
@@ -87,10 +93,12 @@ def GenTextShortFoot(note0_in):
 
     return note0
 
-def GenTextFootRef(opts, item, yes_i):
+def GenTextFootRef(opts, tag_href, yes_i):
     """
     Generate a reference for a footnote.
     
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param tag_href: B Soup object representing a tag with an "href" attribute
     @param yes_i: Whether the internet 'i' shows up in the text 
     
     @note: References in footnotes themselves can get messy quickly, so we
@@ -102,42 +110,50 @@ def GenTextFootRef(opts, item, yes_i):
     """
 
 
+    a_text = uGetTextSafe(tag_href)
 
-    a_text = uGetTextSafe(item)
-
-    if not item.find('img') and not a_text:
+    if not tag_href.find('img') and not a_text:
         if not a_text:
             return ''
     
-    ustr = '<i>' + uGetTextSafe(item) + '</i>'
-    if item.has_attr('href'):
-        href = item['href']
+    ustr = '<i>' + uGetTextSafe(tag_href) + '</i>'
+    if tag_href.has_attr('href'):
+        href = tag_href['href']
         
         if 'http' in href[0:4]:
             if yes_i: # we are done parsing if we allow adding the internet 'i'
     
-                label = uGetTextSafe(item)
+                label = uGetTextSafe(tag_href)
                 if label:
-                    ustr = '<a href="%s">%s |i|</a>' % (item['href'], label)
+                    ustr = '<a href="%s">%s |i|</a>' % (tag_href['href'], label)
     
             else:
-                # break the item by changing its name to 'div', BW would say not to
-                item.name = 'div'
-                label, sep = GenTexTag2Str(opts, False, True, item, '', '')
+                # break the tag_href by changing its name to 'div', BW would say not to
+                tag_href.name = 'div'
+                label, sep = GenTexTag2Str(opts, False, True, tag_href, '', '')
     
-                ustr = '<a href="%s">%s</a>' % (item['href'], label)
+                ustr = '<a href="%s">%s</a>' % (tag_href['href'], label)
     
         elif '#' in href:
             anch = href.split('#')[1]
             if not 'cite_note' in anch: # probably we can't sort this out here XXX give up
                 ustr = '<a href="#%s">%s</a>' % (anch,
-                 uGetTextSafe(item))
+                 uGetTextSafe(tag_href))
 
     return ustr
 
 def GenTexTag2Str(opts, allow_refs, allow_img, tag_pdh, part_string, sep):
     """
     Build up the partial string by appending the rendering of the current tag
+    
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param allow_refs: Boolean, whether we allow references in the string
+    @param allow_img: Boolean, whether we allow images to appear in the string
+    @param tag_pdh: B Soup object, of many possible types, paragraph, divisor, etc.
+    @param part_string: any incomplete string evaluated so far
+    @param sep: seperator
+    
+    @note: This function may be called recursively for certain tags
     
     @return - words  updated word count
             - part_string  modified partial string
@@ -200,7 +216,9 @@ def GenTexTag2Str(opts, allow_refs, allow_img, tag_pdh, part_string, sep):
 def GenTextWordsFromTags(opts, head, allow_refs):
     """
     Translate a tag into a list of paragraphs, up to the first heading.
-    
+
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param head: B Soup tag with potentially a number of children
     @param allow_refs: Allow references to be included as part of the footnote
     
     @note: For footnotes generated from links to Wikipedia we include the
@@ -289,8 +307,16 @@ def GenTextLongAndShort(note_list, id_anch, url, foot_title,
     """
     Footnotes include both a long and short version, generate both here
     
+    @param note_list: list of strings, each string represents a paragraph of a footnote
+    @param id_anch: The id attribute, or anchor used to link to the footnote
+    @param url: A reference for complete information
+    @param foot_title: string, the label identifying the footnote
+    @param notes: if == 'never', only generate the footnote, not the long note
+    @param note0: string, the shortened text of the footnote, about MAX_WORDS long
+    @param num: integer, the number associated with the footnote
+    
     @return: (shortnote - the short version, aka a footnote,
-              note_list - the long version, a list of paragraphs)
+              long_note_list - the long version, a list of paragraphs)
     """
 
     shortnote = '<p>'
@@ -331,6 +357,12 @@ def GenTextLongAndShort(note_list, id_anch, url, foot_title,
 def GenTextMakeFootDict(opts, note_list, url, foot_title, notes):
     """
     Construct the foot dictionary from the raw text summary. Add backlink, number etc.
+
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param note_list: list of strings, each string represents a paragraph of a footnote
+    @param url: A reference for complete information
+    @param foot_title: string, the label identifying the footnote
+    @param notes: if == 'never', only generate the footnote, not the long note
     
     @return: foot_dict - a structure with several standard entries
     """
@@ -368,6 +400,9 @@ def GenTextMakeFootDict(opts, note_list, url, foot_title, notes):
 def GenTextFootNote(opts, bl):
     """
     Generate the text for footnotes, both long and short.
+
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param bl:  Beautiful Soup representation of an HTML web page.
     
     @return: (err - any error,
               foot_dict - a structure with 4 fields
@@ -415,6 +450,9 @@ def GenTextFootNote(opts, bl):
 def GenTextSummarizeFootNote(opts, bl):
     """
     Summarize the article represented by bl. Save a representation in the footnote dir.
+
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param bl:  Beautiful Soup representation of an HTML web page.
     
     @return (err, or a dictionary of footnote items)
     """
@@ -432,6 +470,15 @@ def GenTextSummarizeFootNote(opts, bl):
     return err, foot_dict
 
 def GenTextGetFootNote(opts):
+    """
+    Footnotes are derived from entire articles, use the global fields in opts to generate a summary
+
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+
+    @return - err: None on success, a descriptive error otherwise
+            - foot_dict: Dictionary structure defining a footnote and note
+    """
+    
     
     st_time = time.time()
     foot_dict = {}

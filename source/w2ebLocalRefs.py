@@ -19,6 +19,9 @@ from w2ebGenText import GenTextMakeFootDict
 def LocalRaiseAnchor(tag_href, foot_dict):
     """
     Raise the anchor to a location shortly before the reference
+
+    @param tag_href: B Soup object representing a tag with an "href" attribute
+    @param foot_dict: Dictionary storing details for notes and footnotes
     
     @note: Kindle often needs an id to appear a little before the text that
            it anchors. Put return id in previous sibling or parent if possible.
@@ -42,9 +45,13 @@ def LocalRaiseAnchor(tag_href, foot_dict):
 def LocalReuseArticleFnoteDuplicate(opts, tag_href, foot_dict_list):
     """
     Keep a list of already visited footnotes, check for the original ref
+
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param tag_href: B Soup object representing a tag with an "href" attribute
+    @param foot_dict_list: List of footnotes represented by dictionaries
     
     @return: T/F whether the reference was found in the existing list.
-    """
+    """--+++++
 
     found = False
     
@@ -78,6 +85,10 @@ def LocalReuseArticleFnoteDuplicate(opts, tag_href, foot_dict_list):
 def LocalGenFootLabel(foot_dict):
     """
     Make the number in parenthesis that appears beside a footnote
+    
+    @param foot_dict: Dictionary storing details for notes and footnotes
+
+    @return: a string with a number in square brackets, i.e. '[<int>]'
     """
 
     let = foot_dict['ret_anch_all'][-1][-1]
@@ -93,6 +104,12 @@ def LocalGenFootDict(opts, tag_href, foot_title,
                      anch, tag_note, tag_cont, number):
     """
     Generate the foot note dictionary
+
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param tag_href: B Soup object representing a tag with an "href" attribute
+    @param foot_title: The name or string reference to a footnote
+    @param anch: The anchor or reference to a footnote
+    @param tag_note: B Soup object representing the footnote
     
     @return: (err - any errors,
               foot_dict - a footnote dictionary)

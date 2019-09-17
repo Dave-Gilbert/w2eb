@@ -73,7 +73,10 @@ def FinalPrintArticleStats(opts, im_tot, convert, sect_label_href_list,
 
 def FinalHrefAll(tag_href):
     """
-    @summary: True if tag is an anchor that refers to text in this page or elsewhere
+    True if tag is an anchor that refers to text in this page or elsewhere
+    
+    @param tag_href: B Soup object representing a tag with an "href" attribute
+    
     """
     return uHrefOk(tag_href, False)
 
@@ -122,7 +125,6 @@ def FinalPrintStats(opts, bl, im_tot, convert, sect_label_href_list, foot_dict_l
 
 
 def FinalAddSections(opts, bl, sect_label_href_list):
-    
     """
     Add the collected sections to the end of the book
     
@@ -348,7 +350,6 @@ def FinalAddFootnotes(opts, bl, foot_dict_list):
 
 
 def FinalAddDebugHeadings(opts, bl):
-
     """
     Add debug headings prior to entries here so they appear in TOC
 

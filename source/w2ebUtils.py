@@ -58,28 +58,30 @@ def uSubstrBt(Str, pre, post):
     return rval
 
 
-def uGetTextSafe(curr):
+def uGetTextSafe(bsoup_obj):
     """
-    Beautiful Soup objects often have text, but not always.
+    Return the text for a Beautiful Soup object. They often have text, but not always. Dont crash.
+    
+    @param bsoup_obj: B soup object
     
     @return: Return any text found, or the empty string if there is no text.
     """
 
 
 #     text_out = ''
-#     if isinstance(curr, NavigableString):
-#         text_out = str(curr).strip()
+#     if isinstance(bsoup_obj, NavigableString):
+#         text_out = str(bsoup_obj).strip()
 #     else:
-#         if curr:
+#         if bsoup_obj:
 #             try:
-#                 if len(curr.contents) == 1:
-#                     text_out = curr.string
+#                 if len(bsoup_obj.contents) == 1:
+#                     text_out = bsoup_obj.string
 #                 else:
-#                     text_out = str(curr.get_text())
+#                     text_out = str(bsoup_obj.get_text())
 #             except Exception as e:
-#                 print len(curr.contents)
+#                 print len(bsoup_obj.contents)
 #                 print "XXX caught get_text exception", e
-#                 print curr
+#                 print bsoup_obj
 #             
 #     return text_out
     
@@ -96,23 +98,23 @@ def uGetTextSafe(curr):
     # destroy does say that it removes the tag, then destroys it... not sure.
     # I tried explicitly extracting tags before destroying them, that didn't work... 
     
-    curr_str = ''
+    ostr = ''
     
     try:
-        for string in curr.strings:
+        for string in bsoup_obj.strings:
             try:
-                curr_str += string
+                ostr += string
             except:        
                 None
     except:
-        if curr_str == '':
+        if ostr == '':
             try:
-                curr_str = curr.string
+                ostr = bsoup_obj.string
             except:
                 # I am confused, and don't get this object.
                 None
 
-    return curr_str.strip()
+    return ostr.strip()
 
 
 def uGetHtml(opts):
@@ -185,6 +187,10 @@ def uGetHtml(opts):
 def uGenRetAnch(opts, foot_dict, foot_title):
     """
     Add return anchor to foot_dict, increment footi if necessary.
+
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param foot_dict: Dictionary storing details for notes and footnotes
+    @param foot_title: The name or string reference to a footnote         
     
     @note The same footnote is often referenced multiple times. We create a
     list of return anchors and add them to the foot dict. This function makes
@@ -235,6 +241,8 @@ def uGenRetAnch(opts, foot_dict, foot_title):
 def uClean(opts):
     """
     Cleanup old files, removed cached content, create directories.
+    
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
     """
     
     del_msg = "XXXX What are we trying to delete? Everything? THIS IS A BAD BUG...XXXX"
@@ -287,6 +295,8 @@ def uClean(opts):
 def uBurn2Ascii(str_in):
     """
     hack: we force conversion when standard filters fail, with ugly results
+    
+    @param str_in: input string
     """
 
     ba = bytearray(str_in)
@@ -479,8 +489,6 @@ def uGetFlistFromDir(ls_dir, prefix, ext, must_get):
     @return: ofiles - a list of files
     """
     
-    
-    
     ofiles = []
     
     if must_get:
@@ -598,10 +606,21 @@ def uSysCmd(opts, cmdstr, catch_errors):
     return syserr
 
 def uSysCmdOut(opts, cmdstr, catch_errors):
-    # don't have a good way to capture stderr messages. popen is deprecated
-    # you are suppose to use some other commands... needs research time to fix.
-    # there are other ways to launch processes in python. 
+    """
+    Launch a command in a subshell. Catch errors if necessary.
 
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param cmdstr: The command to be executed in a single string
+    @param catch_errors: Boolean, whether an exception is raised on error
+    
+    @return: The output from the command as a list of strings    
+    
+    @note
+    This fn does not have a good way to capture stderr messages. popen is deprecated.
+    This function should be rewritten. There are also built-in fns for many standard Unix
+    operations, and those are better options than using this fn. 
+    """
+    
     syserr = 0
     if not catch_errors:
         cmdstr = cmdstr  + ' lies 2>/dev/null'
@@ -628,7 +647,15 @@ def uSysCmdOut(opts, cmdstr, catch_errors):
     return outlines
 
 def uSysCmdOut1(opts, cmdstr, catch_errors):
+    """
+    Launch a command in a subshell. Catch errors if necessary, return the fist line of output only.
+
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param cmdstr: The command to be executed in a single string
+    @param catch_errors: Boolean, whether an exception is raised on error
     
+    @return: The first line of output from the command.     
+    """
     rval = uSysCmdOut(opts, cmdstr, catch_errors)
     
     if rval:
@@ -636,6 +663,13 @@ def uSysCmdOut1(opts, cmdstr, catch_errors):
     return ''
 
 def uStrTimeSMH(secs):
+    """
+    Convert seconds into hours or mins or seconds depending on argument size
+    
+    @param secs: Integer representing seconds
+    
+    @return: a string representation of duration including spedified units 
+    """
     
     if secs < 180:
         retval = "%3d secs" % int(secs)
@@ -647,7 +681,10 @@ def uStrTimeSMH(secs):
     return retval
 
 def uPrintProgress(opts, st_time, im_tot, im_all, p_total_est_time):
+    """
     
+    """
+
     perc = int(100 * im_tot / im_all)                
     t2 = time.time()
     
