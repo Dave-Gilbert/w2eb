@@ -14,6 +14,8 @@ def SketchHeading(heading):
     """
     Generate a normalized Version of a Heading 
     
+    @param heading: The heading to convert
+    
     @note: Convert a title like '1.0 Important Dates' to a normalized format
     which ignores all symbols, punctuation and upper and lower case
     """
@@ -31,6 +33,8 @@ def SketchHeading(heading):
 def SketchParagraph(paragraph):
     """
     Generate a normalized Version of a Paragraph
+    
+    @param paragraph: the full text of the paragraph
     
     @note: Take the first 8 words in a paragraph and normalize them by
     ignoring all symbols, punctuation and upper and lower case.
@@ -55,6 +59,8 @@ def SketchPage(bl):
     """
     Combines heading and paragraph sketches in a single union
     
+    @param bl:  Beautiful Soup representation of an HTML web page.
+    
     @return: (sketch - a rough summary of a pages content)
     """
     
@@ -74,7 +80,10 @@ def SketchPage(bl):
 
 def SketchVsMySketch(parent_sketch, my_sketch):
     """
-    Compare two page sketches.
+    Compare two page sketches
+    
+    @param parent_sketch: summary of parent article
+    @param my_sketch: summary of current article
     
     @return: None if they are different, a score if similarity is > 75%
     """

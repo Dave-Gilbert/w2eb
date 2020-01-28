@@ -44,9 +44,10 @@ def Startup(basedir):
 def StartupUsage(err):
     """
     Print the usage message. This is our basic documentation.
+    
+    @param err: empty string for usage, other for error
     """
     
-
     print """
 W2EB - A tool for converting Wikipedia articles into ebooks."""
 
@@ -75,6 +76,7 @@ W2EB - A tool for converting Wikipedia articles into ebooks."""
         -b <nm>   The name of the e-book. Wikipedia urls are usually short
                     and use the url basename as a version of the article name.
                     If -u is not supplied, guess a url based on the bookname.
+        -o <dir>  The output directory to write files to
               
         -d <#>    depth, 0 for no subarticles. Default is 1.
         -n        Never include notes, only allow footnotes
@@ -106,7 +108,6 @@ W2EB - A tool for converting Wikipedia articles into ebooks."""
     assert 0, "Failed to exit"
 
 
-
 def StartupParseCLI(op):
     """
     Establish defaults for CLI options, parse op list.
@@ -116,7 +117,7 @@ def StartupParseCLI(op):
     @return: A collection of booleans, strings, and integers.
     """
     
-    
+    basedir = ''
     clean_cache = 0
     wikidown = 0
     export = False
@@ -170,6 +171,8 @@ def StartupParseCLI(op):
             notes = 'never'
         elif o == '-N':
             notes = 'always'
+        elif o == '-o':
+            basedir = a
         elif o == '-P':
             svg2png = True
         elif o == '-s':
@@ -190,7 +193,7 @@ def StartupParseCLI(op):
         else:
             StartupUsage('Option "%s" not supported for arg "%s"' % (o, a))
     
-    return svg2png, svgfigs, booknm_orig, url, wikidown, clean_cache, debug, \
+    return basedir, svg2png, svgfigs, booknm_orig, url, wikidown, clean_cache, debug, \
         stype, depth, no_images, bw_images, export, notes
 
 
@@ -243,6 +246,8 @@ def StartupGuessBooknm(booknm, booknm_orig, bodir, logfile, debug):
 def StartupGetOptions(base_dir):
     """
     Get command line options from the user
+    
+    @param base_dir: default root output directory
         
     @note: opts is passed by name as the first argument to many functions,
     which allows reference to global state of page generation. opts includes
@@ -252,7 +257,7 @@ def StartupGetOptions(base_dir):
     """
     
     try:
-        op, args = getopt.getopt(sys.argv[1:], 'Eu:b:C:Kd:D:nNwbphPsS:')
+        op, args = getopt.getopt(sys.argv[1:], 'Eu:b:C:Kd:D:nNowbphPsS:')
     except:
         StartupUsage("Error: unrecognized command line options: " +
               " ".join(sys.argv[1:]));
@@ -260,8 +265,11 @@ def StartupGetOptions(base_dir):
     if len(args) > 0:
         StartupUsage('Trailing Options Not Processed:\n' + str(args))
 
-    svg2png, svgfigs, booknm_orig, url, wikidown, clean_cache, debug, \
+    basedir, svg2png, svgfigs, booknm_orig, url, wikidown, clean_cache, debug, \
         stype, depth, no_images, bw_images, export, notes, = StartupParseCLI(op)
+
+    if basedir != '.':
+        base_dir = basedir
 
     booknm = booknm_orig.title()
 
@@ -284,8 +292,8 @@ def StartupGetOptions(base_dir):
 
     # we can't do much without a bookname
     
-    bodir = BASE_DIR + '/book/' + booknm
-    dcdir = BASE_DIR + '/dcache/' + booknm
+    bodir = base_dir + '/book/' + booknm
+    dcdir = base_dir + '/dcache/' + booknm
     logfile = bodir + '/' + 'wiki_log.txt'
     
     if os.path.exists(logfile):
@@ -341,12 +349,10 @@ TAG_FMSG = 'Fixing Tags:'
 
 def StartupReduceProgress(opts, ma):
     """
-    progress indicator for tag reduction.
+    print progress indicator for tag reduction
     
     @param opts: dictionary of shared CLI parameters. See StartupGetOptions()
     @param ma: two character string printed to screen to indicate progress 
-    
-    @param opts
     """
 
     if opts['clen'] > 68:

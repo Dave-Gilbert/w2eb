@@ -548,7 +548,7 @@ def uGet1HtmlFile(opts, ls_dir, must_get):
 
 def uSysMkdir(opts, dirname):
     """
-    Emulate mkdir -p behaviour, create all subidirs unless the exist
+    Emulate mkdir -p behaviour, create all subidirs unless they exist
     
     @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
     @param dirname: The directory to create
@@ -682,7 +682,14 @@ def uStrTimeSMH(secs):
 
 def uPrintProgress(opts, st_time, im_tot, im_all, p_total_est_time):
     """
+    Print the current progress so far, return estimated time left
     
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param st_time: start time
+    @param im_tot: items processed so far
+    @param im_all: count of all items
+    @param p_total_est_time: previous estimate for total time
+    @return: an estimate in seconds of the remaining time
     """
 
     perc = int(100 * im_tot / im_all)                
@@ -706,12 +713,12 @@ def uPrintProgress(opts, st_time, im_tot, im_all, p_total_est_time):
         
     return p_total_est_time
 
-
 def uLabelDelWhite(label_in):
     """
     Converts all whitespace between words into a single space.
 
-    @return:
+    @param label_in: text to be reduced, often a label
+    @return: reduced line
 
     @note: Good for reducing text that might include carriage returns to a single line.
     """
@@ -736,7 +743,9 @@ def uFindSectHref(opts, url_hfile, sect_label_href_list):
     """
     use url_hfile to lookup sections by either html file name or http: url
     
-    @return section dictionary
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param url_hfile: Either a web URL or HTML file name
+    @return: section dictionary matching the URL or file.
     """
 
     global G_our_print_version_file
@@ -775,13 +784,13 @@ def uFindSectHref(opts, url_hfile, sect_label_href_list):
 
     return None
 
-
 def uUrlOk(opts, url, footsect_name):
     """
     Limit our search to wikipedia articles
     
-    @param url
-    @param footsect_name
+    @param url: url to check
+    @param footsect_name: the footnote section name
+    @return: whether or not the article appears to be within our limit
     """
        
     # don't download exactly ourselves
@@ -804,8 +813,8 @@ def uHrefOk(tag_href, exclude_internal):
     """
     Verify that soup tag is an anchor with an href and other properties
     
-    @param tag_href -- a soup tag
-    @param exclude_internal -- Whether or not to allow internal references
+    @param tag_href: B Soup object representing a tag with an "href" attribute
+    @param exclude_internal: whether or not to allow internal references
     
     This function is used as part of a BeautifulSoup find_all() call to
     filter out tags that we will or wont try to make into footnotes.
@@ -845,14 +854,17 @@ def uHrefOk(tag_href, exclude_internal):
 def uHrefRemote(tag_href):
     """
     True if tag is an anchor that refers to a remote footnote or section
+    
+    @param tag_href: B Soup object representing a tag with an "href" attribute
     """
     return uHrefOk(tag_href, True)
-
 
 def uFindFootDict(foot_title, foot_dict_list):
     """
     Look up foot_title in a list of foot dictionaries.
     
+    @param foot_tite: a footnote title
+    @param foot_dict_list: List of footnotes represented by dictionaries
     @return: None if not found, o.w. a footnote dictionary
     """
 
@@ -865,6 +877,11 @@ def uFindFootDict(foot_title, foot_dict_list):
 def uMergeSectUniq(opts, sect_label_href_list, sect_label_href_list2):
     """
     Merge two section lists, include unique items only
+    
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param sect_label_href_list: a list of section labels
+    @param sect_label_href_list2: a second list of section labels
+    @return: merged list
     """
     items_merged = 0
     if sect_label_href_list:
@@ -879,6 +896,10 @@ def uMergeSectUniq(opts, sect_label_href_list, sect_label_href_list2):
 def uMergeFootUniq(foot_dict_list, foot_dict_list2):
     """
     Merge two footnote lists, include unique items only
+    
+    @param foot_dict_list: first footnote list
+    @param foot_dict_list2: second footnote list
+    @return: a new footnote list with unique items
     """
     items_merged = 0
     if foot_dict_list2:
@@ -889,12 +910,16 @@ def uMergeFootUniq(foot_dict_list, foot_dict_list2):
     
     return items_merged
 
-def uSaveFile(opts, ipath, olist):
+def uSaveFile(opts, opath, olist):
     """
     Save our new html file
+
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param opath: Path to write output to
+    @param olist: List of html output 
     """
 
-    ofile = open(ipath, "w+")
+    ofile = open(opath, "w+")
     
     ln = 0
     for oline in olist:

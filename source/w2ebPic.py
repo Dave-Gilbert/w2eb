@@ -23,6 +23,10 @@ TMP_DIR = '/tmp/'
 def PicGetImage(opts, url, image_file):
     """
     Fetch image file from "url" save to output file name "image_file"
+    
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param url: url containing image
+    @param image_file: where to write the file    
     """
             
     err = ''
@@ -91,6 +95,9 @@ def PicGetSvgDims(opts, str_line):
     """
     Read the dimensions of an SVG file
     
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param str_line: string portion of SVG file that contains the parameters, 
+    
     @return: (retval - a string encoding <w>x<h>)
     """
     
@@ -146,6 +153,19 @@ def PicGetSvgDims(opts, str_line):
     return retval
 
 def PicFixPixelDims(bl, img_tag):
+    """
+    Scale an image so it fits reasonably on our device
+    
+    @param bl:  Beautiful Soup representation of an HTML web page.
+    @param img_tag: B Soup representation of an HTML img tag
+
+    @note:
+    Sometimes the image has lots of resolution but the 
+    Page specifies it to be really small.
+    
+    If the reported image width is >> MIN_IMAGE_W >> display  width
+    then adjust accordingly. 
+    """
         
     if not img_tag.has_attr('width') or not img_tag.has_attr('height'):
         return
@@ -153,11 +173,6 @@ def PicFixPixelDims(bl, img_tag):
     wstr = img_tag['width']
     hstr = img_tag['height']
 
-    # sometimes the image has lots of resolution but the 
-    # page specifies it to be really small.
-    
-    # if the reported image width is >> MIN_IMAGE_W >> display  width
-    # then adjust accordingly. 
 
     im_scale = IM_SCALEpx
 
@@ -209,6 +224,15 @@ resize = ' -resize "' + str(WMAX) + 'x' + str(HMAX) + '>" '
 convcmd = 'convert -background "#FFFFFF" -flatten '
 
 def PicConvertSVGcmd(opts, image_file, dosvg2png):
+    """
+    Convert a SVG file to a PNG file
+    
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param image_file: the base file name of the image.
+    @return: error string if any, null otherwise
+    
+    @note: spawns the external convert command
+    """
     
     fp_im = open(opts['bodir'] + '/' + image_file, 'r')
     l1 = fp_im.readline()
@@ -249,6 +273,17 @@ def PicConvertSVGcmd(opts, image_file, dosvg2png):
     return err
 
 def PicConvertSVG(opts, image_file, image_url, convert, dosvg2png):
+    """
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param image_file: the base file name of the image.
+    @param convert: number of images converted so far
+    @param dosvg2png: convert svg to png files
+    
+    @return: error if any
+    
+    @note: if the file has already been converted, then don't do anything
+    unless dosvg2png is set. If file hasn't been downloaded, then fetch it.
+    """
 
     err = ''
     # math .svg files never use the .svg extension. I don't know why.
@@ -283,8 +318,13 @@ def PicConvertSVG(opts, image_file, image_url, convert, dosvg2png):
                 
     return err, image_file, convert
 
-def PicConvertImage(opts, image_url, image_file, suff):
-    
+def PicConvertImage(opts, image_file, suff):
+    """
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param image_file: the base file name of the image.
+    @param suff: the image file suffix
+    @return: error if any, a single character version of suff
+    """
     
     # sometimes we fail to get the file. The most common reason
     # is complicated escape sequences. XXX should fix
@@ -480,7 +520,7 @@ def PicGetImages(opts, bl):
             if not os.path.isfile(opts['bodir'] + '/' + image_file):
                 err = PicGetImage(opts, image_url, image_file)
                 if not err:
-                    err, image_type = PicConvertImage(opts, image_url, image_file, suff)
+                    err, image_type = PicConvertImage(opts, image_file, suff)
                 if not err:
                     convert = convert + 1
                     uPlogNr(opts, image_type.upper())

@@ -22,6 +22,15 @@ TOC_MAX_PAR = 10
 
 
 def TocShortLabel(heading_str):
+    """
+    Construct a simplified heading for the table of contents
+    
+    @param heading_str: a string to be used for a table of contents heading
+    @return: a string suitable for a TOC entry
+    
+    @note: Strings shorter than 40 characters or so are used as-is.
+    We tinker with other strings by searching for more natural end points.
+    """
         
     rval = heading_str.strip()
 
@@ -65,8 +74,15 @@ def TocShortLabel(heading_str):
 def TocGetH1H2(hlist, hdlist, curr, head):
     """
     Verify curr and if okay add to our list of tags.
+    
+    @param hlist: a list of heading entries, based on h1/h2 HTML tags
+    @param hdlist: a list of ids associated with the heading, for jump points
+    @param curr: the current candidate for TOC entry
+    @param head: the old TOC label
+    @return: a revised [hlist, hdlist] pair
     """
        
+    # Shouldn't happen...   
     if isinstance(curr, NavigableString):
         return [hlist, hdlist]
     
@@ -98,7 +114,7 @@ def TocGetH1H2(hlist, hdlist, curr, head):
         
         entry = {'lvl': curr.name,
                  'heading': curr_str,
-                 'tag':curr}
+                 'tag': curr}
 
         # Makes it easy for Calibre to build a TOC
         # but Kindle makes a mess when there are too many levels
@@ -113,7 +129,14 @@ def TocGetH1H2(hlist, hdlist, curr, head):
     return [hlist, hdlist]
 
 def TocMakeAndLinkTags(opts, bl, toc_list, hlist):
+    """
+    Translate the TOC entries from list format to Beautiful Soup format
     
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param bl:  Beautiful Soup representation of an HTML web page.    
+    @param toc_list: Beautiful Soup representation of TOC, in/out
+    @param hlist: list of processed heading stored as htags
+    """
     # add the toc items
     
     lvl = 'h1'
@@ -140,6 +163,12 @@ def TocMakeAndLinkTags(opts, bl, toc_list, hlist):
         uPlogExtra(opts, "Toc - adding " + lvl + ' ' + TocShortLabel(htag['heading']), 3)
 
 def TocCandidate(tag):
+    """
+    Decide if a tag is a TOC candidate or not
+    
+    @param tag: B. Soup tag
+    @return: True if we have found a tag which could be the table of contents
+    """
     
     toc_headings = ['table_of_contents', 'table of contents', 'contents', 'toc']
     
@@ -161,6 +190,14 @@ def TocCandidate(tag):
     return False
 
 def TocFindHead(opts, bl, create_default):
+    """
+    Find the beginning of article in the Wikipedia tree
+    
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param bl:  Beautiful Soup representation of an HTML web page.
+    @param create_default: Set to True to create a TOC head even if we can't find one
+    @return: head tag
+    """
 
     # this is the official wikipedia table of contents tool.
     head = None
@@ -197,8 +234,11 @@ def TocFindHead(opts, bl, create_default):
 def TocRemoveOldToc(opts, bl):
     """
     Find and remove any old Table of Contents listings in the document
-    
+
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param bl:  Beautiful Soup representation of an HTML web page.    
     @note: This function destroys original content
+    @return: Error string
     """
 
     mode = 0
@@ -259,6 +299,13 @@ def TocRemoveOldToc(opts, bl):
     return ''
 
 def TocMake(opts, bl):
+    """
+    Make a table of contents for the current page
+    
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param bl:  Beautiful Soup representation of an HTML web page. 
+    @return: total number of table of contents entries found
+    """
 
     toc = bl.find('div', class_='toc_wiki2epub')
 

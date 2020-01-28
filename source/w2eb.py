@@ -20,12 +20,15 @@ from w2ebMain import Main
 # All output is stored under the following directory
 #
 
-BASE_DIR = '/home/gilbert/Projects_Recent/wiki_books'
-
+BASE_DIR = '/home/gilbert/Projects_Recent/wiki_books'  # XXX for debugging, my personal output dir
+# BASE_DIR = '.'
 
 def SignalHandlerCtrlC(sig, frame):
     """
     A signal handler for Ctrl+C. Exit and print a message.
+    
+    @param sig: ignored
+    @param frame: ignored
     
     @note: Without this often a subshell catches the Ctrl C and the script
     won't terminate
