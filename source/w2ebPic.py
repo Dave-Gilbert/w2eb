@@ -362,9 +362,13 @@ def PicConvertImage(opts, image_file, suff):
     return err, suff
 
 
-def PicIdentifyImageType(image_url, image_file, opts):
+def PicIdentifyImageType(opts, image_url, image_file):
     """
     Use the unix file command to identify images
+
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param image_url: the image file http location
+    @param image_file: the base file name of the image.
     
     @return link the file to a renamed version with a meaningful .<ext>
     """
@@ -399,6 +403,10 @@ def PicIdentifyImageType(image_url, image_file, opts):
 def PicGetUrlFileName(opts, img_tag):
     """
     extract from the tag the image url, and a file name to save it to
+    
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param img_tag: B Soup structure of HTML img tag
+    @return: image URL, image file name
     """
 
     # default image url
@@ -449,6 +457,12 @@ def PicGetUrlFileName(opts, img_tag):
     return [image_url, image_file]
 
 def estimate_runtime(bl):
+    """
+    Count all the images in the page, estimate a run time
+    @param bl:  Beautiful Soup representation of an HTML web page.
+    @return: estimated time in seconds, total number of images, total math eqs
+    
+    """
 
     im_all = 0
     im_math = 0
@@ -464,15 +478,25 @@ def estimate_runtime(bl):
     
     return [p_total_est_time, im_all, im_math]
     
-
-
 def PicImType(suff):
+    """
+    Convert image suffix to a single character
+    
+    @param suff: a suffix, prefixed by '.' or not
+    """
     
     if suff[0] == '.':
         return suff[1]
     return suff[0]
     
 def PicGetImages(opts, bl):
+    """
+    Get all the images for the current web page, convert to PNG if necessary 
+    
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param bl:  Beautiful Soup representation of an HTML web page.
+    @return count of images in the system, number that were converted
+    """
 
     im_tot = 0
     convert = 0           
@@ -511,7 +535,7 @@ def PicGetImages(opts, bl):
 
         if suff not in IMAGE_FIG + IMAGE_PIC + IMAGE_SVG and not '/math/render/svg/' in image_file:
             
-            image_file = PicIdentifyImageType(image_url, image_file, opts)
+            image_file = PicIdentifyImageType(opts, image_url, image_file)
             suff = image_file[-4:]
         
         if suff in IMAGE_FIG + IMAGE_PIC:

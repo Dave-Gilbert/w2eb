@@ -110,6 +110,8 @@ def LocalGenFootDict(opts, tag_href, foot_title,
     @param foot_title: The name or string reference to a footnote
     @param anch: The anchor or reference to a footnote
     @param tag_note: B Soup object representing the footnote
+    @param tag_cont: B Soug tag 
+    @param number: Boolean, whether the footnote is a number or some other symbol
     
     @return: (err - any errors,
               foot_dict - a footnote dictionary)

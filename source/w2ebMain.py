@@ -37,6 +37,13 @@ def MainRecursiveCall(opts, bl, url, footnote, foot_title, foot_dict_list):
     """
     Fetches footnotes and subarticles by calling main function
     
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param bl:  Beautiful Soup representation of an HTML web page.
+    @param url: Url to download footnotes / new sections from
+    @param footnote: Boolean, whether or not to generate a footnote
+    @param foot_title: The name of the footnote
+    @param foot_dict_list - a list of footnotes already processed
+    
     @return (err - any errors encountered as a string,
              foot_dict - footnote data stored in a dictionary)
              
@@ -57,7 +64,7 @@ def MainRecursiveCall(opts, bl, url, footnote, foot_title, foot_dict_list):
     if not footnote and opts['depth'] <= 1 and opts['notes'] == 'some':
             opt2_notes = 'never'
 
-    opt2 = {'url':url,
+    opt2 = {'url': url,
         'base_url': opts['base_url'],       # base_url + '/' + booknm == url
         'base_bodir': opts['base_bodir'],
         'booknm': opts['booknm'],
@@ -137,9 +144,18 @@ def MainGetCachedFootSect(opts, foot_dict_list,
                        sect_label_href_list_child):
     """
     Look for foot_title data in both memory and disk cache
-    
-    @return (cache_hit - whether we found foot_title or not,
-             foot_dict - the information for footnotes)
+
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param foot_dict_list: List of footnotes represented by dictionaries
+    @param footnote: Boolean, whether or not to generate a footnote
+    @param outdir: The output directory that .html files are written to
+    @param foot_title: The name or string reference to a footnote
+    @param url: Url to download footnotes / new sections from    
+    @param sect_label_href_list: List of sections by label and href
+    @param sect_label_href_list_child: List of sections found in the children
+
+    @return: (cache_hit - whether we found foot_title or not,
+              foot_dict - the information for footnotes)
 
     """
     cache_hit = False
@@ -181,6 +197,16 @@ def MainGetHref(opts, foot_dict_list, anch, footnote,
                   foot_title, foot_dict, outdir, sect_dict, url):
     """
     Return the href for footnotes and sections
+    
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param foot_dict_list: List of footnotes represented by dictionaries
+    @param anch: the html anchor for defining jumplinks in id=<anch>
+    @param footnote: Boolean, whether or not to generate a footnote
+    @param foot_title: The name or string reference to a footnote
+    @param foot_dict: Dictionary storing details for notes and footnotes
+    @param outdir: The output directory that .html files are written to
+    @param sect_dict: Dictionary of items describing a section
+    @param url: Url to download footnotes / new sections from
     
     @return: (href - the html field for href=
 
@@ -228,6 +254,11 @@ def MainGetHref(opts, foot_dict_list, anch, footnote,
 def MainGenBaseId(opts, url):
     """
     Given either an url or an html file compute the base_id used to locate pages
+    
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param url: Url to download footnotes / new sections from
+    
+    @return: A unique identifier based on the URL and our uniqe code W2EBID
     """
     
     
@@ -243,8 +274,13 @@ def MainUpdateHTMLTag(opts, bl, tag_href, foot_dict, href):
     """
     Modify footnote tag_href. For Sections build up list of href details.
 
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param bl:  Beautiful Soup representation of an HTML web page.
+    @param foot_dict: Dictionary storing details for notes and footnotes    
+    @param tag_href: B Soup object representing a tag with an "href" attribute    
+
+    @note
     We add the return anchor to our href tag for both sections and footnotes.
-    
     For footnotes we create a number in parenthesis which we append to the anchor.
     """
 
@@ -270,6 +306,17 @@ def MainUpdateHTMLTag(opts, bl, tag_href, foot_dict, href):
 
 
 def MainFinalChecksRetPsym(opts, foot_dict_list, footnote, foot_title, cache_hit, foot_dict):
+    """Check that the necessary variables are being constructed correctly
+    
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param foot_dict_list: List of footnotes represented by dictionaries
+    @param footnote: Boolean, whether or not to generate a footnote
+    @param foot_title: The name or string reference to a footnote
+    @param cache_hit: Whether the footnote was found in the disk cache
+    @param foot_dict: Dictionary storing details for notes and footnotes
+    
+    @return: a printable symbol to indicate the progress
+    """
 
     if footnote and opts['depth'] > 0:
         assert foot_title and uFindFootDict(foot_title, foot_dict_list) , \
@@ -297,6 +344,10 @@ def MainFinalChecksRetPsym(opts, foot_dict_list, footnote, foot_title, cache_hit
 def MainIsFootnote(opts, tag_href, url):
     """
     Decide if href points to a footnote, or not.
+    
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()    
+    @param tag_href: B Soup object representing a tag with an "href" attribute
+    @param url: Url to download footnotes / new sections from    
     
     @return: True if its a footnote
     """
@@ -327,13 +378,16 @@ def MainIsFootnote(opts, tag_href, url):
 def MainPickFootVsSect(opts, tag_href):
     """
     Decide whether the tag will be processed as a section or a footnote
+
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param tag_href: B Soup object representing a tag with an "href" attribute    
     
     @return: (err - any detecte errors
               url - the url with any associated '#' anch removed
               anch - empty or the urls anchor
               footnote - boolean, True if a footnote, false if a section
               foot_title - The name of the footnote or section
-              id_anch - The base string for constructing anchors.
+              id_anch - The base string for constructing anchors.)
               
     @note id_anch has multiple functions. It is the base id for this tag,
           hence the location that footnote will link to bring us
@@ -364,6 +418,17 @@ def MainUpdateMemoryCache(opts, url, outdir, footnote, foot_dict, foot_title, fo
                           sect_label_href_list_child, sect_label_href_list_child2):
     """
     Update the cached footnotes and sections kept in memory.
+
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param url: Url to download footnotes / new sections from
+    @param outdir: The output directory that .html files are written to
+    @param footnote: Boolean, whether or not to generate a footnote
+    @param foot_dict: Dictionary storing details for notes and footnotes
+    @param foot_title: The name or string reference to a footnote
+    @param foot_dict_list: List of footnotes represented by dictionaries
+    @param sect_label_href_list: List of sections by label and href
+    @param sect_label_href_list_child: List of sections found in the children
+    @param sect_label_href_list_child2: Newest partial list of sections found in the children    
     
     @return: (foot_dict - structure describing a footnote
               sect_dict - structure describing a section)
@@ -409,6 +474,13 @@ def MainGetFootSect(opts, bl, tag_href, foot_dict_list, sect_label_href_list,
                      sect_label_href_list_child):
     """
     Based on an html tag and lists of cached url results resolve an url
+    
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param bl:  Beautiful Soup representation of an HTML web page.
+    @param tag_href: B Soup object representing a tag with an "href" attribute
+    @param foot_dict_list: List of footnotes represented by dictionaries
+    @param sect_label_href_list: List of sections by label and href
+    @param sect_label_href_list_child: List of sections found in the children    
     
     @return: (err - any descriptive errors
               footnote - whether the tag points to a footnote or a section
@@ -476,6 +548,14 @@ def MainCheckUrlReachable(opts, bl, ok_i_urls, already_warned_url, tag_href,
     """
     Use wget to test whether we can connect to an URL
     
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param bl:  Beautiful Soup representation of an HTML web page.
+    @param ok_i_urls: A list of already checked internet URLS
+    @param already_warned_url: A list of urls for which warnings were already issued
+    @param tag_href: B Soup object representing a tag with an "href" attribute
+    @param slink: A count of removed links
+    @param http404: A count of unreachable pages
+    
     @return (slink - removed link count,
              http404 - unreachable link count)
     """
@@ -529,7 +609,18 @@ def MainHandleErrs(opts, bl, tag_href, err, ok_i_urls, slink,
                     http404, psym, url_cache_hit, already_warned_url):
     """
     Select a symbol to report progress and log any error messages that occur.
-    
+
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param bl:  Beautiful Soup representation of an HTML web page.
+    @param tag_href: B Soup object representing a tag with an "href" attribute
+    @param err: Cause of recent failure, code
+    @param ok_i_urls: A list of already checked internet URLS
+    @param slink: A count of removed links
+    @param http404: A count of unreachable pages
+    @param psym: Character to print to show progress
+    @param url_cache_hit: Boolean indicating that we have a cache hit
+    @param already_warned_url: A list of urls for which warnings were already issued
+
     @return: (slink - count of links removed due to similarity to parent or brevity
               http404 - failed internet accesses
               psym - progress symbol)
@@ -599,6 +690,9 @@ def MainHandleErrs(opts, bl, tag_href, err, ok_i_urls, slink,
 def MainLoadCache(opts, bl):
     """
     Load Cache data from previous runs stored on our disk
+
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param bl:  Beautiful Soup representation of an HTML web page.
     
     @return (ok_i_urls - a list of Internet addresses and whether they can be reached,
              foot_dict_list - a list of footnotes already processed)
@@ -658,6 +752,14 @@ def MainLoadCache(opts, bl):
 def MainNotes(opts, bl):
     """
     Entry point for collecting articles and footnotes.
+    
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param bl:  Beautiful Soup representation of an HTML web page.
+    
+    @return: (sect_label_href_list: List of sections by label and href
+              foot_dict_list: foot_dict_list: List of footnotes represented by dictionaries
+              slink: A count of removed links
+              http404: A count of unreachable pages)
     """
     
     i = 0
@@ -734,6 +836,9 @@ def MainNotes(opts, bl):
 def MainWelcomeMsg(opts, st_time):
     """
     Print the welcom message for generating sections
+    
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param st_time: Start time    
     """
 
     uPlog(opts, '')
@@ -757,6 +862,17 @@ def MainWelcomeMsg(opts, st_time):
 
 
 def MainSectionCreate(opts, st_time, bl, section_bname):
+    """
+    
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param st_time: Start time
+    @param bl:  Beautiful Soup representation of an HTML web page.
+    @param section_bname: the basename of the URL, also the section name
+
+    @return (foot_dict_list: List of footnotes represented by dictionaries
+             sect_label_href_list: List of sections by label and href)
+    """
+
 
     st_time = time.time()
     im_tot = 0
@@ -783,7 +899,15 @@ def MainSectionCreate(opts, st_time, bl, section_bname):
     return foot_dict_list, sect_label_href_list
 
 def Main(opts):
+    """
+    Main entry point for ebook generation once command line options are generated
     
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    
+    @return: (err: message or code explaining failure
+              foot_dict_list: List of footnotes represented by dictionaries
+              sect_label_href_list:  List of sections by label and href)
+    """
     st_time = time.time()
     foot_dict_list = []
     foot_dict = {}
