@@ -1,5 +1,5 @@
 """
-@summary:      W2EB - A tool for converting Wikipedia articles into ebooks.
+@summary:      W2EB - LocalRefs: Manage footnote structures
 @author:       Dave Gilbert
 @contact:      dave.wm.gilbert@gmail.com
 @license:      GPLv3
@@ -51,7 +51,7 @@ def LocalReuseArticleFnoteDuplicate(opts, tag_href, foot_dict_list):
     @param foot_dict_list: List of footnotes represented by dictionaries
     
     @return: T/F whether the reference was found in the existing list.
-    """--+++++
+    """
 
     found = False
     

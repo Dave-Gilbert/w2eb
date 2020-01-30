@@ -1,5 +1,5 @@
 """
-@summary:      W2EB - A tool for converting Wikipedia articles into ebooks.
+@summary:      W2EB - Startup: Parse command line options, simplify html pages
 @author:       Dave Gilbert
 @contact:      dave.wm.gilbert@gmail.com
 @license:      GPLv3
@@ -117,7 +117,7 @@ def StartupParseCLI(op):
     @return: A collection of booleans, strings, and integers.
     """
     
-    basedir = ''
+    basedir = '.'
     clean_cache = 0
     wikidown = 0
     export = False
@@ -207,10 +207,10 @@ def StartupGuessBooknm(booknm, booknm_orig, bodir, logfile, debug):
     @param logfile: output data for error log
     @param debug: current debug level
     
-    @note most functions just take 'opts' as their first argument, however
+    @note: most functions just take 'opts' as their first argument, however
     during startup the opts structure is not yet fully established.
     
-    @return url and booknm
+    @return: url and booknm
     
     """
 

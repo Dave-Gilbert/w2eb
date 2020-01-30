@@ -1,5 +1,5 @@
 """
-@summary:      W2EB - A tool for converting Wikipedia articles into ebooks.
+@summary:      W2EB - Pic: Get images, convert them to PNG if necessary and resize
 @author:       Dave Gilbert
 @contact:      dave.wm.gilbert@gmail.com
 @license:      GPLv3
@@ -370,7 +370,7 @@ def PicIdentifyImageType(opts, image_url, image_file):
     @param image_url: the image file http location
     @param image_file: the base file name of the image.
     
-    @return link the file to a renamed version with a meaningful .<ext>
+    @return: link the file to a renamed version with a meaningful .<ext>
     """
 
     # unrecognized file type

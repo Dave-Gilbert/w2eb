@@ -1,5 +1,5 @@
 """
-@summary:      W2EB - A tool for converting Wikipedia articles into ebooks.
+@summary:      W2EB - ConstPic: Constants needed for rendering images 
 @author:       Dave Gilbert
 @contact:      dave.wm.gilbert@gmail.com
 @license:      GPLv3

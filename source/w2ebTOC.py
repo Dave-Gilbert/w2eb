@@ -1,5 +1,5 @@
 """
-@summary:      W2EB - A tool for converting Wikipedia articles into ebooks.
+@summary:      W2EB - TOC: Generate a table of contents for the book
 @author:       Dave Gilbert
 @contact:      dave.wm.gilbert@gmail.com
 @license:      GPLv3

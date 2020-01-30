@@ -1,5 +1,5 @@
 """
-@summary:      W2EB - A tool for converting Wikipedia articles into ebooks.
+@summary:      W2EB - Final: Assemble the final elements of the ebook
 @author:       Dave Gilbert
 @contact:      dave.wm.gilbert@gmail.com
 @license:      GPLv3
@@ -259,13 +259,13 @@ def FinalBackLinks(foot_dict):
     """
     Generate the backlinks for each footnote.
 
-    @param foot_dict_list: List of footnotes represented by dictionaries
+    @param foot_dict: Dictionary storing details for notes and footnotes
 
     @note: Most footnotes will be referred to once, but it is not unusual
     for a footnote to have multiple referents. We need to provide an
     appropriate backlink mechanism so we can return to any one of them.
     
-    @retun an html string with a list of links
+    @return: an html string with a list of links
     """
 
     if len(foot_dict['ret_anch_all']) == 1:

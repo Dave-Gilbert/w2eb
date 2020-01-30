@@ -1,5 +1,5 @@
 """
-@summary:      W2EB - A tool for converting Wikipedia articles into ebooks.
+@summary:      W2EB - GenText: Generate text for footnotes
 @author:       Dave Gilbert
 @contact:      dave.wm.gilbert@gmail.com
 @license:      GPLv3
@@ -12,6 +12,8 @@ import json
 import sys
 
 from w2ebUtils import *
+from w2ebConstPunc import *
+from w2ebConstPic import WMAX
 
 from BeautifulSoup import NavigableString
 from BeautifulSoup import Tag
@@ -155,8 +157,8 @@ def GenTexTag2Str(opts, allow_refs, allow_img, tag_pdh, part_string, sep):
     
     @note: This function may be called recursively for certain tags
     
-    @return - words  updated word count
-            - part_string  modified partial string
+    @return: - words  updated word count
+             - part_string  modified partial string
     """
     
     ustr = ''
@@ -454,7 +456,7 @@ def GenTextSummarizeFootNote(opts, bl):
     @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
     @param bl:  Beautiful Soup representation of an HTML web page.
     
-    @return (err, or a dictionary of footnote items)
+    @return: (err, or a dictionary of footnote items)
     """
     
     err, foot_dict = GenTextFootNote(opts, bl)
@@ -475,8 +477,8 @@ def GenTextGetFootNote(opts):
 
     @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
 
-    @return - err: None on success, a descriptive error otherwise
-            - foot_dict: Dictionary structure defining a footnote and note
+    @return: - err: None on success, a descriptive error otherwise
+             - foot_dict: Dictionary structure defining a footnote and note
     """
     
     

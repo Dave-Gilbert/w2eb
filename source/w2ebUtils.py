@@ -1,5 +1,5 @@
 """
-@summary:      W2EB - A tool for converting Wikipedia articles into ebooks.
+@summary:      W2EB - Utils: Frequently referenced utility functions
 @author:       Dave Gilbert
 @contact:      dave.wm.gilbert@gmail.com
 @license:      GPLv3
@@ -17,6 +17,7 @@ import time
 import string
 
 from bs4 import BeautifulSoup
+from w2ebConstPic import *
 
 WGET_OPTS = """ \
  --timeout=10 \
@@ -121,7 +122,7 @@ def uGetHtml(opts):
     """
     Collect the html file defined by opts.  
     
-    @param opts
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
     
     Gets whatever uGetHtml will collect for a url in opts and 
     returns the basename of that file for use as a reference.
@@ -192,11 +193,11 @@ def uGenRetAnch(opts, foot_dict, foot_title):
     @param foot_dict: Dictionary storing details for notes and footnotes
     @param foot_title: The name or string reference to a footnote         
     
-    @note The same footnote is often referenced multiple times. We create a
+    @note: The same footnote is often referenced multiple times. We create a
     list of return anchors and add them to the foot dict. This function makes
     the new return anchor, adds it to the list.
     
-    @note id_anch should be used to construct destination ids, 
+    @note: id_anch should be used to construct destination ids, 
     """
 
     if not 'id_anch' in foot_dict: 
@@ -483,8 +484,8 @@ def uGetFlistFromDir(ls_dir, prefix, ext, must_get):
     @param ext: The file name extension
     @param must_get: Whether to raise an exception if the listing fails
 
-    @note this command is similar to: ls <ls_dir>/<prefix>*.<ext>
-          the values returned exclude any subdirectories.
+    @note: this command is similar to: ls <ls_dir>/<prefix>*.<ext>
+           the values returned exclude any subdirectories.
 
     @return: ofiles - a list of files
     """
@@ -521,7 +522,7 @@ def uGet1HtmlFile(opts, ls_dir, must_get):
     @param ls_dir - directory to check
     @param must_get - whether multiple entries are tollerated. They shouldn't be.
     
-    @return (zero or one .html filenames)
+    @return: (zero or one .html filenames)
     """
     
     ret_file = ''
@@ -615,7 +616,7 @@ def uSysCmdOut(opts, cmdstr, catch_errors):
     
     @return: The output from the command as a list of strings    
     
-    @note
+    @note:
     This fn does not have a good way to capture stderr messages. popen is deprecated.
     This function should be rewritten. There are also built-in fns for many standard Unix
     operations, and those are better options than using this fn. 
@@ -863,7 +864,7 @@ def uFindFootDict(foot_title, foot_dict_list):
     """
     Look up foot_title in a list of foot dictionaries.
     
-    @param foot_tite: a footnote title
+    @param foot_title: a footnote title
     @param foot_dict_list: List of footnotes represented by dictionaries
     @return: None if not found, o.w. a footnote dictionary
     """

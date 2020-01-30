@@ -1,5 +1,5 @@
 """
-@summary:      W2EB - A tool for converting Wikipedia articles into ebooks.
+@summary:      W2EB - Main: Top level functions for finding footnotes and sections 
 @author:       Dave Gilbert
 @contact:      dave.wm.gilbert@gmail.com
 @license:      GPLv3
@@ -42,10 +42,10 @@ def MainRecursiveCall(opts, bl, url, footnote, foot_title, foot_dict_list):
     @param url: Url to download footnotes / new sections from
     @param footnote: Boolean, whether or not to generate a footnote
     @param foot_title: The name of the footnote
-    @param foot_dict_list - a list of footnotes already processed
+    @param foot_dict_list: - a list of footnotes already processed
     
-    @return (err - any errors encountered as a string,
-             foot_dict - footnote data stored in a dictionary)
+    @return: (err - any errors encountered as a string,
+              foot_dict - footnote data stored in a dictionary)
              
      @note:
      Subsections are returned implicitly by collecting data in bodir.
@@ -279,7 +279,7 @@ def MainUpdateHTMLTag(opts, bl, tag_href, foot_dict, href):
     @param foot_dict: Dictionary storing details for notes and footnotes    
     @param tag_href: B Soup object representing a tag with an "href" attribute    
 
-    @note
+    @note:
     We add the return anchor to our href tag for both sections and footnotes.
     For footnotes we create a number in parenthesis which we append to the anchor.
     """
@@ -389,7 +389,7 @@ def MainPickFootVsSect(opts, tag_href):
               foot_title - The name of the footnote or section
               id_anch - The base string for constructing anchors.)
               
-    @note id_anch has multiple functions. It is the base id for this tag,
+    @note: id_anch has multiple functions. It is the base id for this tag,
           hence the location that footnote will link to bring us
           back to the text. It is also the id for the footnote with the suffix
           "_foot" appened to it. This provides us with unique bidirectional linkage.
@@ -556,8 +556,8 @@ def MainCheckUrlReachable(opts, bl, ok_i_urls, already_warned_url, tag_href,
     @param slink: A count of removed links
     @param http404: A count of unreachable pages
     
-    @return (slink - removed link count,
-             http404 - unreachable link count)
+    @return: (slink - removed link count,
+              http404 - unreachable link count)
     """
     # the URL is a regular external reference.
     # so we annotate the anchor text with "i" for internet
@@ -694,8 +694,8 @@ def MainLoadCache(opts, bl):
     @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
     @param bl:  Beautiful Soup representation of an HTML web page.
     
-    @return (ok_i_urls - a list of Internet addresses and whether they can be reached,
-             foot_dict_list - a list of footnotes already processed)
+    @return: (ok_i_urls - a list of Internet addresses and whether they can be reached,
+              foot_dict_list - a list of footnotes already processed)
     """
 
     ok_i_urls = {}
@@ -869,8 +869,8 @@ def MainSectionCreate(opts, st_time, bl, section_bname):
     @param bl:  Beautiful Soup representation of an HTML web page.
     @param section_bname: the basename of the URL, also the section name
 
-    @return (foot_dict_list: List of footnotes represented by dictionaries
-             sect_label_href_list: List of sections by label and href)
+    @return: (foot_dict_list: List of footnotes represented by dictionaries
+              sect_label_href_list: List of sections by label and href)
     """
 
 
