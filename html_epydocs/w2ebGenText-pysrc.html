@@ -1,0 +1,647 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>w2ebGenText</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        Module&nbsp;w2ebGenText
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="w2ebGenText-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="w2ebGenText-module.html">Module w2ebGenText</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-docstring">"""</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-docstring">@summary:      W2EB - GenText: Generate text for footnotes</tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-docstring">@author:       Dave Gilbert</tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-docstring">@contact:      dave.wm.gilbert@gmail.com</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-docstring">@license:      GPLv3</tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-docstring">@requires:     Python 2.7, wget, Image Magick's convert, Beautiful Soup, Calibre</tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-docstring">@since:        2019.04.10 </tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-docstring">@version:      0.3</tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-docstring">"""</tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">json</tt> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">sys</tt> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Module w2ebUtils=w2ebUtils-module.html"><a title="w2ebUtils" class="py-name" href="#" onclick="return doclink('link-0', 'w2ebUtils', 'link-0');">w2ebUtils</a></tt> <tt class="py-keyword">import</tt> <tt class="py-op">*</tt> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-1" class="py-name" targets="Module w2ebConstPunc=w2ebConstPunc-module.html"><a title="w2ebConstPunc" class="py-name" href="#" onclick="return doclink('link-1', 'w2ebConstPunc', 'link-1');">w2ebConstPunc</a></tt> <tt class="py-keyword">import</tt> <tt class="py-op">*</tt> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-2" class="py-name" targets="Module w2ebConstPic=w2ebConstPic-module.html"><a title="w2ebConstPic" class="py-name" href="#" onclick="return doclink('link-2', 'w2ebConstPic', 'link-2');">w2ebConstPic</a></tt> <tt class="py-keyword">import</tt> <tt id="link-3" class="py-name" targets="Variable w2ebConstPic.WMAX=w2ebConstPic-module.html#WMAX,Variable w2ebFinal.WMAX=w2ebFinal-module.html#WMAX,Variable w2ebLocalRefs.WMAX=w2ebLocalRefs-module.html#WMAX,Variable w2ebMain.WMAX=w2ebMain-module.html#WMAX,Variable w2ebPic.WMAX=w2ebPic-module.html#WMAX,Variable w2ebStartup.WMAX=w2ebStartup-module.html#WMAX,Variable w2ebTOC.WMAX=w2ebTOC-module.html#WMAX,Variable w2ebUtils.WMAX=w2ebUtils-module.html#WMAX"><a title="w2ebConstPic.WMAX
+w2ebFinal.WMAX
+w2ebLocalRefs.WMAX
+w2ebMain.WMAX
+w2ebPic.WMAX
+w2ebStartup.WMAX
+w2ebTOC.WMAX
+w2ebUtils.WMAX" class="py-name" href="#" onclick="return doclink('link-3', 'WMAX', 'link-3');">WMAX</a></tt> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">BeautifulSoup</tt> <tt class="py-keyword">import</tt> <tt class="py-name">NavigableString</tt> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">BeautifulSoup</tt> <tt class="py-keyword">import</tt> <tt class="py-name">Tag</tt> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line"> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">bs4</tt><tt class="py-op">.</tt><tt class="py-name">element</tt> </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line"><tt class="py-comment"># We collect as many as MAX_PAR pargraphs for the detailed note section</tt> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line"> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line"><tt id="link-4" class="py-name" targets="Variable w2ebGenText.NOTE_MAX_PAR=w2ebGenText-module.html#NOTE_MAX_PAR"><a title="w2ebGenText.NOTE_MAX_PAR" class="py-name" href="#" onclick="return doclink('link-4', 'NOTE_MAX_PAR', 'link-4');">NOTE_MAX_PAR</a></tt> <tt class="py-op">=</tt> <tt class="py-number">10</tt> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line"> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line"><tt class="py-comment"># A footnote link must have at least this many words to be included.</tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line"><tt class="py-comment"># we start looking for a natural end from here, i.e. a period or paragraph</tt> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line"> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line"><tt id="link-5" class="py-name" targets="Variable w2ebGenText.MIN_WORDS=w2ebGenText-module.html#MIN_WORDS"><a title="w2ebGenText.MIN_WORDS" class="py-name" href="#" onclick="return doclink('link-5', 'MIN_WORDS', 'link-5');">MIN_WORDS</a></tt> <tt class="py-op">=</tt> <tt class="py-number">15</tt> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line"> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line"> </tt>
+<a name="GenTextStripSquareBr"></a><div id="GenTextStripSquareBr-def"><a name="L33"></a><tt class="py-lineno"> 33</tt> <a class="py-toggle" href="#" id="GenTextStripSquareBr-toggle" onclick="return toggle('GenTextStripSquareBr');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="w2ebGenText-module.html#GenTextStripSquareBr">GenTextStripSquareBr</a><tt class="py-op">(</tt><tt class="py-param">par_text</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GenTextStripSquareBr-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="GenTextStripSquareBr-expanded"><a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line"><tt class="py-docstring">    Remove any reference like data surrounded by square brackets [*]</tt> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line"><tt class="py-docstring">    </tt> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line"><tt class="py-docstring">    @param par_text: A string representing a paragraph</tt> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line"><tt class="py-docstring">    </tt> </tt>
+<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line"><tt class="py-docstring">    @return: Simplified paragraph text</tt> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line">     </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">par_text</tt><tt class="py-op">:</tt> </tt>
+<a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-string">''</tt> </tt>
+<a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line">     </tt>
+<a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line">    <tt class="py-name">out_text</tt> <tt class="py-op">=</tt> <tt class="py-name">par_text</tt> </tt>
+<a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line">    <tt class="py-name">done</tt> <tt class="py-op">=</tt> <tt class="py-name">False</tt> </tt>
+<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line"> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line">    <tt class="py-keyword">while</tt> <tt class="py-keyword">not</tt> <tt class="py-name">done</tt><tt class="py-op">:</tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line">        <tt class="py-name">done</tt> <tt class="py-op">=</tt> <tt class="py-name">True</tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line">        <tt class="py-name">ind_l</tt> <tt class="py-op">=</tt> <tt class="py-name">out_text</tt><tt class="py-op">.</tt><tt class="py-name">find</tt><tt class="py-op">(</tt><tt class="py-string">'['</tt><tt class="py-op">)</tt> </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line">        <tt class="py-name">ind_r</tt> <tt class="py-op">=</tt> <tt class="py-name">out_text</tt><tt class="py-op">.</tt><tt class="py-name">find</tt><tt class="py-op">(</tt><tt class="py-string">']'</tt><tt class="py-op">)</tt> </tt>
+<a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line">         </tt>
+<a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">ind_l</tt> <tt class="py-op">&gt;</tt> <tt class="py-number">0</tt> <tt class="py-keyword">and</tt> <tt class="py-name">ind_r</tt> <tt class="py-op">&gt;</tt> <tt class="py-number">0</tt> <tt class="py-keyword">and</tt> <tt class="py-name">ind_l</tt> <tt class="py-op">&lt;</tt> <tt class="py-name">ind_r</tt><tt class="py-op">:</tt> </tt>
+<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line">            <tt class="py-name">out_text</tt> <tt class="py-op">=</tt> <tt class="py-name">out_text</tt><tt class="py-op">[</tt><tt class="py-op">:</tt><tt class="py-name">ind_l</tt><tt class="py-op">]</tt> <tt class="py-op">+</tt> <tt class="py-name">out_text</tt><tt class="py-op">[</tt><tt class="py-name">ind_r</tt> <tt class="py-op">+</tt> <tt class="py-number">1</tt><tt class="py-op">:</tt><tt class="py-op">]</tt> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line">            <tt class="py-name">done</tt> <tt class="py-op">=</tt> <tt class="py-name">False</tt> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line"> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line">    <tt class="py-name">out_text</tt> <tt class="py-op">=</tt> <tt class="py-string">' '</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">out_text</tt><tt class="py-op">.</tt><tt class="py-name">split</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt>  <tt class="py-comment"># strips \n \t etc. but not ' '</tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line"> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">out_text</tt> </tt>
+</div><a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line"> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line"> </tt>
+<a name="GenTextShortFoot"></a><div id="GenTextShortFoot-def"><a name="L62"></a><tt class="py-lineno"> 62</tt> <a class="py-toggle" href="#" id="GenTextShortFoot-toggle" onclick="return toggle('GenTextShortFoot');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="w2ebGenText-module.html#GenTextShortFoot">GenTextShortFoot</a><tt class="py-op">(</tt><tt class="py-param">note0_in</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GenTextShortFoot-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="GenTextShortFoot-expanded"><a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line"><tt class="py-docstring">    Generate the text for the short footnote, about MIN_WORDS long.</tt> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line"><tt class="py-docstring">    @param note0_in: The first paragraph pulled out of an article, usually several sentences long.</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line"><tt class="py-docstring">    @return: A footnote style summary, possibly an incomplete sentence.</tt> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line"> </tt>
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line">    <tt class="py-name">half_minw</tt> <tt class="py-op">=</tt> <tt id="link-6" class="py-name"><a title="w2ebGenText.MIN_WORDS" class="py-name" href="#" onclick="return doclink('link-6', 'MIN_WORDS', 'link-5');">MIN_WORDS</a></tt> <tt class="py-op">/</tt> <tt class="py-number">2</tt> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line"> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line">    <tt class="py-name">wc</tt> <tt class="py-op">=</tt> <tt class="py-number">0</tt> <tt class="py-comment"># word count</tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">    <tt class="py-name">note0_wlist</tt> <tt class="py-op">=</tt> <tt class="py-name">note0_in</tt><tt class="py-op">.</tt><tt class="py-name">split</tt><tt class="py-op">(</tt><tt class="py-string">' '</tt><tt class="py-op">)</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line">    <tt class="py-name">note0</tt> <tt class="py-op">=</tt> <tt class="py-string">''</tt> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">wc</tt> <tt class="py-keyword">in</tt> <tt class="py-name">range</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">note0_wlist</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line">        <tt class="py-name">word</tt> <tt class="py-op">=</tt> <tt class="py-name">note0_wlist</tt><tt class="py-op">[</tt><tt class="py-name">wc</tt><tt class="py-op">]</tt> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line">        <tt class="py-name">note0</tt> <tt class="py-op">=</tt> <tt class="py-name">note0</tt> <tt class="py-op">+</tt> <tt class="py-string">' '</tt> <tt class="py-op">+</tt> <tt class="py-name">word</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line">         </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">word</tt><tt class="py-op">[</tt><tt class="py-op">-</tt><tt class="py-number">1</tt><tt class="py-op">:</tt><tt class="py-op">]</tt> <tt class="py-keyword">in</tt> <tt id="link-7" class="py-name" targets="Variable w2ebConstPunc.Punc1=w2ebConstPunc-module.html#Punc1,Variable w2ebGenText.Punc1=w2ebGenText-module.html#Punc1,Variable w2ebTOC.Punc1=w2ebTOC-module.html#Punc1"><a title="w2ebConstPunc.Punc1
+w2ebGenText.Punc1
+w2ebTOC.Punc1" class="py-name" href="#" onclick="return doclink('link-7', 'Punc1', 'link-7');">Punc1</a></tt> <tt class="py-keyword">and</tt> <tt class="py-name">wc</tt> <tt class="py-op">&gt;</tt> <tt class="py-number">2</tt> <tt class="py-op">*</tt> <tt class="py-name">half_minw</tt><tt class="py-op">:</tt> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">word</tt><tt class="py-op">[</tt><tt class="py-op">-</tt><tt class="py-number">3</tt><tt class="py-op">:</tt><tt class="py-op">-</tt><tt class="py-number">2</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt class="py-name">isalpha</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt>  <tt class="py-comment"># avoid single letter initials h.p. lovercraft</tt> </tt>
+<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line">                <tt class="py-keyword">break</tt> </tt>
+<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">word</tt><tt class="py-op">[</tt><tt class="py-op">-</tt><tt class="py-number">1</tt><tt class="py-op">:</tt><tt class="py-op">]</tt> <tt class="py-keyword">in</tt> <tt id="link-8" class="py-name" targets="Variable w2ebConstPunc.Punc2=w2ebConstPunc-module.html#Punc2,Variable w2ebGenText.Punc2=w2ebGenText-module.html#Punc2,Variable w2ebTOC.Punc2=w2ebTOC-module.html#Punc2"><a title="w2ebConstPunc.Punc2
+w2ebGenText.Punc2
+w2ebTOC.Punc2" class="py-name" href="#" onclick="return doclink('link-8', 'Punc2', 'link-8');">Punc2</a></tt> <tt class="py-keyword">and</tt> <tt class="py-name">wc</tt> <tt class="py-op">&gt;</tt> <tt class="py-number">4</tt> <tt class="py-op">*</tt> <tt class="py-name">half_minw</tt><tt class="py-op">:</tt> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line">            <tt class="py-keyword">break</tt> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">word</tt><tt class="py-op">[</tt><tt class="py-op">-</tt><tt class="py-number">1</tt><tt class="py-op">:</tt><tt class="py-op">]</tt> <tt class="py-keyword">in</tt> <tt id="link-9" class="py-name" targets="Variable w2ebConstPunc.Punc3=w2ebConstPunc-module.html#Punc3,Variable w2ebGenText.Punc3=w2ebGenText-module.html#Punc3,Variable w2ebTOC.Punc3=w2ebTOC-module.html#Punc3"><a title="w2ebConstPunc.Punc3
+w2ebGenText.Punc3
+w2ebTOC.Punc3" class="py-name" href="#" onclick="return doclink('link-9', 'Punc3', 'link-9');">Punc3</a></tt> <tt class="py-keyword">and</tt> <tt class="py-name">wc</tt> <tt class="py-op">&gt;</tt> <tt class="py-number">6</tt> <tt class="py-op">*</tt> <tt class="py-name">half_minw</tt><tt class="py-op">:</tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line">            <tt class="py-keyword">break</tt> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">word</tt><tt class="py-op">[</tt><tt class="py-op">-</tt><tt class="py-number">1</tt><tt class="py-op">:</tt><tt class="py-op">]</tt> <tt class="py-keyword">in</tt> <tt id="link-10" class="py-name" targets="Variable w2ebConstPunc.Punc4=w2ebConstPunc-module.html#Punc4,Variable w2ebGenText.Punc4=w2ebGenText-module.html#Punc4,Variable w2ebTOC.Punc4=w2ebTOC-module.html#Punc4"><a title="w2ebConstPunc.Punc4
+w2ebGenText.Punc4
+w2ebTOC.Punc4" class="py-name" href="#" onclick="return doclink('link-10', 'Punc4', 'link-10');">Punc4</a></tt> <tt class="py-keyword">and</tt> <tt class="py-name">wc</tt> <tt class="py-op">&gt;</tt> <tt class="py-number">8</tt> <tt class="py-op">*</tt> <tt class="py-name">half_minw</tt><tt class="py-op">:</tt> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line">            <tt class="py-name">word</tt> <tt class="py-op">=</tt> <tt class="py-name">word</tt><tt class="py-op">[</tt><tt class="py-op">:</tt><tt class="py-op">-</tt><tt class="py-number">1</tt><tt class="py-op">]</tt> </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line">            <tt class="py-keyword">break</tt> </tt>
+<a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">wc</tt> <tt class="py-op">&gt;</tt> <tt class="py-number">8</tt> <tt class="py-op">*</tt> <tt class="py-name">half_minw</tt><tt class="py-op">:</tt> </tt>
+<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line">    <tt class="py-comment">#        print "found foo_max"</tt> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line">            <tt class="py-keyword">break</tt> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line"> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line">    <tt class="py-comment">#note0 = note0 + ' ' + word</tt> </tt>
+<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line"> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">note0</tt> </tt>
+</div><a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line"> </tt>
+<a name="GenTextFootRef"></a><div id="GenTextFootRef-def"><a name="L98"></a><tt class="py-lineno"> 98</tt> <a class="py-toggle" href="#" id="GenTextFootRef-toggle" onclick="return toggle('GenTextFootRef');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="w2ebGenText-module.html#GenTextFootRef">GenTextFootRef</a><tt class="py-op">(</tt><tt class="py-param">opts</tt><tt class="py-op">,</tt> <tt class="py-param">tag_href</tt><tt class="py-op">,</tt> <tt class="py-param">yes_i</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GenTextFootRef-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="GenTextFootRef-expanded"><a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line"><tt class="py-docstring">    Generate a reference for a footnote.</tt> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line"><tt class="py-docstring">    </tt> </tt>
+<a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line"><tt class="py-docstring">    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()</tt> </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line"><tt class="py-docstring">    @param tag_href: B Soup object representing a tag with an "href" attribute</tt> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line"><tt class="py-docstring">    @param yes_i: Whether the internet 'i' shows up in the text </tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line"><tt class="py-docstring">    </tt> </tt>
+<a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line"><tt class="py-docstring">    @note: References in footnotes themselves can get messy quickly, so we</tt> </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line"><tt class="py-docstring">    only allow them in reused footnotes from the original article. Also we</tt> </tt>
+<a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line"><tt class="py-docstring">    suppress them if they point to another footnote since we are in the process</tt> </tt>
+<a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line"><tt class="py-docstring">    of renaming all footnote anchors.</tt> </tt>
+<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line"><tt class="py-docstring">    </tt> </tt>
+<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line"><tt class="py-docstring">    @return: (ustr - something to use in place of the anchor tag)</tt> </tt>
+<a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line"> </tt>
+<a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line"> </tt>
+<a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line">    <tt class="py-name">a_text</tt> <tt class="py-op">=</tt> <tt id="link-11" class="py-name" targets="Function w2ebUtils.uGetTextSafe()=w2ebUtils-module.html#uGetTextSafe"><a title="w2ebUtils.uGetTextSafe" class="py-name" href="#" onclick="return doclink('link-11', 'uGetTextSafe', 'link-11');">uGetTextSafe</a></tt><tt class="py-op">(</tt><tt class="py-name">tag_href</tt><tt class="py-op">)</tt> </tt>
+<a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line"> </tt>
+<a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">tag_href</tt><tt class="py-op">.</tt><tt class="py-name">find</tt><tt class="py-op">(</tt><tt class="py-string">'img'</tt><tt class="py-op">)</tt> <tt class="py-keyword">and</tt> <tt class="py-keyword">not</tt> <tt class="py-name">a_text</tt><tt class="py-op">:</tt> </tt>
+<a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">a_text</tt><tt class="py-op">:</tt> </tt>
+<a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-string">''</tt> </tt>
+<a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line">     </tt>
+<a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line">    <tt class="py-name">ustr</tt> <tt class="py-op">=</tt> <tt class="py-string">'&lt;i&gt;'</tt> <tt class="py-op">+</tt> <tt id="link-12" class="py-name"><a title="w2ebUtils.uGetTextSafe" class="py-name" href="#" onclick="return doclink('link-12', 'uGetTextSafe', 'link-11');">uGetTextSafe</a></tt><tt class="py-op">(</tt><tt class="py-name">tag_href</tt><tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt class="py-string">'&lt;/i&gt;'</tt> </tt>
+<a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">tag_href</tt><tt class="py-op">.</tt><tt class="py-name">has_attr</tt><tt class="py-op">(</tt><tt class="py-string">'href'</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line">        <tt class="py-name">href</tt> <tt class="py-op">=</tt> <tt class="py-name">tag_href</tt><tt class="py-op">[</tt><tt class="py-string">'href'</tt><tt class="py-op">]</tt> </tt>
+<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line">         </tt>
+<a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-string">'http'</tt> <tt class="py-keyword">in</tt> <tt class="py-name">href</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">:</tt><tt class="py-number">4</tt><tt class="py-op">]</tt><tt class="py-op">:</tt> </tt>
+<a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">yes_i</tt><tt class="py-op">:</tt> <tt class="py-comment"># we are done parsing if we allow adding the internet 'i'</tt> </tt>
+<a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line">     </tt>
+<a name="L128"></a><tt class="py-lineno">128</tt>  <tt class="py-line">                <tt class="py-name">label</tt> <tt class="py-op">=</tt> <tt id="link-13" class="py-name"><a title="w2ebUtils.uGetTextSafe" class="py-name" href="#" onclick="return doclink('link-13', 'uGetTextSafe', 'link-11');">uGetTextSafe</a></tt><tt class="py-op">(</tt><tt class="py-name">tag_href</tt><tt class="py-op">)</tt> </tt>
+<a name="L129"></a><tt class="py-lineno">129</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt> <tt class="py-name">label</tt><tt class="py-op">:</tt> </tt>
+<a name="L130"></a><tt class="py-lineno">130</tt>  <tt class="py-line">                    <tt class="py-name">ustr</tt> <tt class="py-op">=</tt> <tt class="py-string">'&lt;a href="%s"&gt;%s |i|&lt;/a&gt;'</tt> <tt class="py-op">%</tt> <tt class="py-op">(</tt><tt class="py-name">tag_href</tt><tt class="py-op">[</tt><tt class="py-string">'href'</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> <tt class="py-name">label</tt><tt class="py-op">)</tt> </tt>
+<a name="L131"></a><tt class="py-lineno">131</tt>  <tt class="py-line">     </tt>
+<a name="L132"></a><tt class="py-lineno">132</tt>  <tt class="py-line">            <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L133"></a><tt class="py-lineno">133</tt>  <tt class="py-line">                <tt class="py-comment"># break the tag_href by changing its name to 'div', BW would say not to</tt> </tt>
+<a name="L134"></a><tt class="py-lineno">134</tt>  <tt class="py-line">                <tt class="py-name">tag_href</tt><tt class="py-op">.</tt><tt class="py-name">name</tt> <tt class="py-op">=</tt> <tt class="py-string">'div'</tt> </tt>
+<a name="L135"></a><tt class="py-lineno">135</tt>  <tt class="py-line">                <tt class="py-name">label</tt><tt class="py-op">,</tt> <tt class="py-name">sep</tt> <tt class="py-op">=</tt> <tt id="link-14" class="py-name" targets="Function w2ebGenText.GenTexTag2Str()=w2ebGenText-module.html#GenTexTag2Str"><a title="w2ebGenText.GenTexTag2Str" class="py-name" href="#" onclick="return doclink('link-14', 'GenTexTag2Str', 'link-14');">GenTexTag2Str</a></tt><tt class="py-op">(</tt><tt class="py-name">opts</tt><tt class="py-op">,</tt> <tt class="py-name">False</tt><tt class="py-op">,</tt> <tt class="py-name">True</tt><tt class="py-op">,</tt> <tt class="py-name">tag_href</tt><tt class="py-op">,</tt> <tt class="py-string">''</tt><tt class="py-op">,</tt> <tt class="py-string">''</tt><tt class="py-op">)</tt> </tt>
+<a name="L136"></a><tt class="py-lineno">136</tt>  <tt class="py-line">     </tt>
+<a name="L137"></a><tt class="py-lineno">137</tt>  <tt class="py-line">                <tt class="py-name">ustr</tt> <tt class="py-op">=</tt> <tt class="py-string">'&lt;a href="%s"&gt;%s&lt;/a&gt;'</tt> <tt class="py-op">%</tt> <tt class="py-op">(</tt><tt class="py-name">tag_href</tt><tt class="py-op">[</tt><tt class="py-string">'href'</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> <tt class="py-name">label</tt><tt class="py-op">)</tt> </tt>
+<a name="L138"></a><tt class="py-lineno">138</tt>  <tt class="py-line">     </tt>
+<a name="L139"></a><tt class="py-lineno">139</tt>  <tt class="py-line">        <tt class="py-keyword">elif</tt> <tt class="py-string">'#'</tt> <tt class="py-keyword">in</tt> <tt class="py-name">href</tt><tt class="py-op">:</tt> </tt>
+<a name="L140"></a><tt class="py-lineno">140</tt>  <tt class="py-line">            <tt class="py-name">anch</tt> <tt class="py-op">=</tt> <tt class="py-name">href</tt><tt class="py-op">.</tt><tt class="py-name">split</tt><tt class="py-op">(</tt><tt class="py-string">'#'</tt><tt class="py-op">)</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt> </tt>
+<a name="L141"></a><tt class="py-lineno">141</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-string">'cite_note'</tt> <tt class="py-keyword">in</tt> <tt class="py-name">anch</tt><tt class="py-op">:</tt> <tt class="py-comment"># probably we can't sort this out here XXX give up</tt> </tt>
+<a name="L142"></a><tt class="py-lineno">142</tt>  <tt class="py-line">                <tt class="py-name">ustr</tt> <tt class="py-op">=</tt> <tt class="py-string">'&lt;a href="#%s"&gt;%s&lt;/a&gt;'</tt> <tt class="py-op">%</tt> <tt class="py-op">(</tt><tt class="py-name">anch</tt><tt class="py-op">,</tt> </tt>
+<a name="L143"></a><tt class="py-lineno">143</tt>  <tt class="py-line">                 <tt id="link-15" class="py-name"><a title="w2ebUtils.uGetTextSafe" class="py-name" href="#" onclick="return doclink('link-15', 'uGetTextSafe', 'link-11');">uGetTextSafe</a></tt><tt class="py-op">(</tt><tt class="py-name">tag_href</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L144"></a><tt class="py-lineno">144</tt>  <tt class="py-line"> </tt>
+<a name="L145"></a><tt class="py-lineno">145</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">ustr</tt> </tt>
+</div><a name="L146"></a><tt class="py-lineno">146</tt>  <tt class="py-line"> </tt>
+<a name="GenTexTag2Str"></a><div id="GenTexTag2Str-def"><a name="L147"></a><tt class="py-lineno">147</tt> <a class="py-toggle" href="#" id="GenTexTag2Str-toggle" onclick="return toggle('GenTexTag2Str');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="w2ebGenText-module.html#GenTexTag2Str">GenTexTag2Str</a><tt class="py-op">(</tt><tt class="py-param">opts</tt><tt class="py-op">,</tt> <tt class="py-param">allow_refs</tt><tt class="py-op">,</tt> <tt class="py-param">allow_img</tt><tt class="py-op">,</tt> <tt class="py-param">tag_pdh</tt><tt class="py-op">,</tt> <tt class="py-param">part_string</tt><tt class="py-op">,</tt> <tt class="py-param">sep</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GenTexTag2Str-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="GenTexTag2Str-expanded"><a name="L148"></a><tt class="py-lineno">148</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L149"></a><tt class="py-lineno">149</tt>  <tt class="py-line"><tt class="py-docstring">    Build up the partial string by appending the rendering of the current tag</tt> </tt>
+<a name="L150"></a><tt class="py-lineno">150</tt>  <tt class="py-line"><tt class="py-docstring">    </tt> </tt>
+<a name="L151"></a><tt class="py-lineno">151</tt>  <tt class="py-line"><tt class="py-docstring">    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()</tt> </tt>
+<a name="L152"></a><tt class="py-lineno">152</tt>  <tt class="py-line"><tt class="py-docstring">    @param allow_refs: Boolean, whether we allow references in the string</tt> </tt>
+<a name="L153"></a><tt class="py-lineno">153</tt>  <tt class="py-line"><tt class="py-docstring">    @param allow_img: Boolean, whether we allow images to appear in the string</tt> </tt>
+<a name="L154"></a><tt class="py-lineno">154</tt>  <tt class="py-line"><tt class="py-docstring">    @param tag_pdh: B Soup object, of many possible types, paragraph, divisor, etc.</tt> </tt>
+<a name="L155"></a><tt class="py-lineno">155</tt>  <tt class="py-line"><tt class="py-docstring">    @param part_string: any incomplete string evaluated so far</tt> </tt>
+<a name="L156"></a><tt class="py-lineno">156</tt>  <tt class="py-line"><tt class="py-docstring">    @param sep: seperator</tt> </tt>
+<a name="L157"></a><tt class="py-lineno">157</tt>  <tt class="py-line"><tt class="py-docstring">    </tt> </tt>
+<a name="L158"></a><tt class="py-lineno">158</tt>  <tt class="py-line"><tt class="py-docstring">    @note: This function may be called recursively for certain tags</tt> </tt>
+<a name="L159"></a><tt class="py-lineno">159</tt>  <tt class="py-line"><tt class="py-docstring">    </tt> </tt>
+<a name="L160"></a><tt class="py-lineno">160</tt>  <tt class="py-line"><tt class="py-docstring">    @return: - words  updated word count</tt> </tt>
+<a name="L161"></a><tt class="py-lineno">161</tt>  <tt class="py-line"><tt class="py-docstring">             - part_string  modified partial string</tt> </tt>
+<a name="L162"></a><tt class="py-lineno">162</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L163"></a><tt class="py-lineno">163</tt>  <tt class="py-line">     </tt>
+<a name="L164"></a><tt class="py-lineno">164</tt>  <tt class="py-line">    <tt class="py-name">ustr</tt> <tt class="py-op">=</tt> <tt class="py-string">''</tt> </tt>
+<a name="L165"></a><tt class="py-lineno">165</tt>  <tt class="py-line">    <tt class="py-name">tnm</tt> <tt class="py-op">=</tt> <tt class="py-name">tag_pdh</tt><tt class="py-op">.</tt><tt class="py-name">name</tt> </tt>
+<a name="L166"></a><tt class="py-lineno">166</tt>  <tt class="py-line"> </tt>
+<a name="L167"></a><tt class="py-lineno">167</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">isinstance</tt><tt class="py-op">(</tt><tt class="py-name">tag_pdh</tt><tt class="py-op">,</tt> <tt class="py-name">bs4</tt><tt class="py-op">.</tt><tt class="py-name">element</tt><tt class="py-op">.</tt><tt class="py-name">Tag</tt><tt class="py-op">)</tt> <tt class="py-keyword">or</tt> <tt class="py-keyword">not</tt> <tt class="py-name">tag_pdh</tt><tt class="py-op">.</tt><tt class="py-name">name</tt><tt class="py-op">:</tt> </tt>
+<a name="L168"></a><tt class="py-lineno">168</tt>  <tt class="py-line"> </tt>
+<a name="L169"></a><tt class="py-lineno">169</tt>  <tt class="py-line">        <tt class="py-name">ustr</tt> <tt class="py-op">=</tt> <tt id="link-16" class="py-name"><a title="w2ebUtils.uGetTextSafe" class="py-name" href="#" onclick="return doclink('link-16', 'uGetTextSafe', 'link-11');">uGetTextSafe</a></tt><tt class="py-op">(</tt><tt class="py-name">tag_pdh</tt><tt class="py-op">)</tt> </tt>
+<a name="L170"></a><tt class="py-lineno">170</tt>  <tt class="py-line">        <tt class="py-name">ustr</tt> <tt class="py-op">=</tt> <tt id="link-17" class="py-name" targets="Function w2ebGenText.GenTextStripSquareBr()=w2ebGenText-module.html#GenTextStripSquareBr"><a title="w2ebGenText.GenTextStripSquareBr" class="py-name" href="#" onclick="return doclink('link-17', 'GenTextStripSquareBr', 'link-17');">GenTextStripSquareBr</a></tt><tt class="py-op">(</tt><tt class="py-name">tag_pdh</tt><tt class="py-op">)</tt> </tt>
+<a name="L171"></a><tt class="py-lineno">171</tt>  <tt class="py-line"> </tt>
+<a name="L172"></a><tt class="py-lineno">172</tt>  <tt class="py-line">    <tt class="py-keyword">elif</tt> <tt class="py-name">tnm</tt> <tt class="py-keyword">in</tt> <tt class="py-op">[</tt><tt class="py-string">'span'</tt><tt class="py-op">,</tt> <tt class="py-string">'cite'</tt><tt class="py-op">,</tt> <tt class="py-string">'p'</tt><tt class="py-op">,</tt> <tt class="py-string">'li'</tt><tt class="py-op">,</tt> <tt class="py-string">'td'</tt><tt class="py-op">,</tt> <tt class="py-string">'th'</tt><tt class="py-op">,</tt> <tt class="py-string">'div'</tt> <tt class="py-op">]</tt><tt class="py-op">:</tt> </tt>
+<a name="L173"></a><tt class="py-lineno">173</tt>  <tt class="py-line"> </tt>
+<a name="L174"></a><tt class="py-lineno">174</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">item</tt> <tt class="py-keyword">in</tt> <tt class="py-name">tag_pdh</tt><tt class="py-op">:</tt> </tt>
+<a name="L175"></a><tt class="py-lineno">175</tt>  <tt class="py-line"> </tt>
+<a name="L176"></a><tt class="py-lineno">176</tt>  <tt class="py-line">            <tt class="py-name">part_string</tt><tt class="py-op">,</tt> <tt class="py-name">sep</tt> <tt class="py-op">=</tt> <tt id="link-18" class="py-name"><a title="w2ebGenText.GenTexTag2Str" class="py-name" href="#" onclick="return doclink('link-18', 'GenTexTag2Str', 'link-14');">GenTexTag2Str</a></tt><tt class="py-op">(</tt><tt class="py-name">opts</tt><tt class="py-op">,</tt> <tt class="py-name">allow_refs</tt><tt class="py-op">,</tt> <tt class="py-name">allow_img</tt><tt class="py-op">,</tt> <tt class="py-name">item</tt><tt class="py-op">,</tt> </tt>
+<a name="L177"></a><tt class="py-lineno">177</tt>  <tt class="py-line">                                                <tt class="py-name">part_string</tt><tt class="py-op">,</tt> <tt class="py-name">sep</tt><tt class="py-op">)</tt> </tt>
+<a name="L178"></a><tt class="py-lineno">178</tt>  <tt class="py-line">            <tt class="py-keyword">continue</tt> </tt>
+<a name="L179"></a><tt class="py-lineno">179</tt>  <tt class="py-line"> </tt>
+<a name="L180"></a><tt class="py-lineno">180</tt>  <tt class="py-line">    <tt class="py-keyword">elif</tt> <tt class="py-name">tnm</tt> <tt class="py-keyword">in</tt> <tt class="py-op">[</tt><tt class="py-string">'i'</tt><tt class="py-op">,</tt> <tt class="py-string">'b'</tt><tt class="py-op">,</tt> <tt class="py-string">'u'</tt><tt class="py-op">,</tt> <tt class="py-string">'small'</tt><tt class="py-op">]</tt><tt class="py-op">:</tt>  </tt>
+<a name="L181"></a><tt class="py-lineno">181</tt>  <tt class="py-line"> </tt>
+<a name="L182"></a><tt class="py-lineno">182</tt>  <tt class="py-line">            <tt class="py-name">ustr</tt> <tt class="py-op">=</tt> <tt id="link-19" class="py-name"><a title="w2ebUtils.uGetTextSafe" class="py-name" href="#" onclick="return doclink('link-19', 'uGetTextSafe', 'link-11');">uGetTextSafe</a></tt><tt class="py-op">(</tt><tt class="py-name">tag_pdh</tt><tt class="py-op">)</tt> </tt>
+<a name="L183"></a><tt class="py-lineno">183</tt>  <tt class="py-line">            <tt class="py-name">ustr</tt> <tt class="py-op">=</tt> <tt class="py-string">'&lt;%s&gt;'</tt> <tt class="py-op">%</tt> <tt class="py-name">tnm</tt> <tt class="py-op">+</tt> <tt id="link-20" class="py-name"><a title="w2ebGenText.GenTextStripSquareBr" class="py-name" href="#" onclick="return doclink('link-20', 'GenTextStripSquareBr', 'link-17');">GenTextStripSquareBr</a></tt><tt class="py-op">(</tt><tt class="py-name">ustr</tt><tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt class="py-string">'&lt;/%s&gt;'</tt> <tt class="py-op">%</tt> <tt class="py-name">tnm</tt>  </tt>
+<a name="L184"></a><tt class="py-lineno">184</tt>  <tt class="py-line"> </tt>
+<a name="L185"></a><tt class="py-lineno">185</tt>  <tt class="py-line">    <tt class="py-keyword">elif</tt> <tt class="py-name">tnm</tt> <tt class="py-op">==</tt> <tt class="py-string">'a'</tt><tt class="py-op">:</tt> </tt>
+<a name="L186"></a><tt class="py-lineno">186</tt>  <tt class="py-line"> </tt>
+<a name="L187"></a><tt class="py-lineno">187</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">allow_refs</tt><tt class="py-op">:</tt> </tt>
+<a name="L188"></a><tt class="py-lineno">188</tt>  <tt class="py-line">            <tt class="py-name">ustr</tt> <tt class="py-op">=</tt> <tt id="link-21" class="py-name"><a title="w2ebUtils.uGetTextSafe" class="py-name" href="#" onclick="return doclink('link-21', 'uGetTextSafe', 'link-11');">uGetTextSafe</a></tt><tt class="py-op">(</tt><tt class="py-name">tag_pdh</tt><tt class="py-op">)</tt> </tt>
+<a name="L189"></a><tt class="py-lineno">189</tt>  <tt class="py-line">        <tt class="py-keyword">elif</tt> <tt class="py-name">allow_refs</tt> <tt class="py-op">==</tt> <tt class="py-string">'yes_i'</tt><tt class="py-op">:</tt> </tt>
+<a name="L190"></a><tt class="py-lineno">190</tt>  <tt class="py-line">            <tt class="py-name">ustr</tt> <tt class="py-op">=</tt> <tt id="link-22" class="py-name" targets="Function w2ebGenText.GenTextFootRef()=w2ebGenText-module.html#GenTextFootRef"><a title="w2ebGenText.GenTextFootRef" class="py-name" href="#" onclick="return doclink('link-22', 'GenTextFootRef', 'link-22');">GenTextFootRef</a></tt><tt class="py-op">(</tt><tt class="py-name">opts</tt><tt class="py-op">,</tt> <tt class="py-name">tag_pdh</tt><tt class="py-op">,</tt> <tt class="py-name">True</tt><tt class="py-op">)</tt> </tt>
+<a name="L191"></a><tt class="py-lineno">191</tt>  <tt class="py-line">        <tt class="py-keyword">elif</tt> <tt class="py-name">allow_refs</tt> <tt class="py-op">==</tt> <tt class="py-string">'yes_noi'</tt><tt class="py-op">:</tt> </tt>
+<a name="L192"></a><tt class="py-lineno">192</tt>  <tt class="py-line">            <tt class="py-name">ustr</tt> <tt class="py-op">=</tt> <tt id="link-23" class="py-name"><a title="w2ebGenText.GenTextFootRef" class="py-name" href="#" onclick="return doclink('link-23', 'GenTextFootRef', 'link-22');">GenTextFootRef</a></tt><tt class="py-op">(</tt><tt class="py-name">opts</tt><tt class="py-op">,</tt> <tt class="py-name">tag_pdh</tt><tt class="py-op">,</tt> <tt class="py-name">False</tt><tt class="py-op">)</tt> </tt>
+<a name="L193"></a><tt class="py-lineno">193</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L194"></a><tt class="py-lineno">194</tt>  <tt class="py-line">            <tt class="py-keyword">assert</tt> <tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-string">"Illegal value for allow_refs:"</tt> <tt class="py-op">+</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">allow_refs</tt><tt class="py-op">)</tt> </tt>
+<a name="L195"></a><tt class="py-lineno">195</tt>  <tt class="py-line"> </tt>
+<a name="L196"></a><tt class="py-lineno">196</tt>  <tt class="py-line">    <tt class="py-keyword">elif</tt> <tt class="py-name">tnm</tt> <tt class="py-op">==</tt> <tt class="py-string">'img'</tt><tt class="py-op">:</tt> </tt>
+<a name="L197"></a><tt class="py-lineno">197</tt>  <tt class="py-line"> </tt>
+<a name="L198"></a><tt class="py-lineno">198</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">allow_img</tt><tt class="py-op">:</tt> </tt>
+<a name="L199"></a><tt class="py-lineno">199</tt>  <tt class="py-line">            <tt class="py-name">ustr</tt> <tt class="py-op">=</tt> <tt class="py-string">'&lt;center&gt;'</tt> <tt class="py-op">+</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">tag_pdh</tt><tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt class="py-string">'&lt;/center&gt;'</tt> </tt>
+<a name="L200"></a><tt class="py-lineno">200</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L201"></a><tt class="py-lineno">201</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">opts</tt><tt class="py-op">[</tt><tt class="py-string">'debug'</tt><tt class="py-op">]</tt> <tt class="py-op">&gt;=</tt> <tt class="py-number">2</tt><tt class="py-op">:</tt> </tt>
+<a name="L202"></a><tt class="py-lineno">202</tt>  <tt class="py-line">                <tt class="py-name">ustr</tt> <tt class="py-op">=</tt> <tt class="py-string">'{'</tt> <tt class="py-op">+</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">basename</tt><tt class="py-op">(</tt><tt class="py-name">tag_pdh</tt><tt class="py-op">[</tt><tt class="py-string">'src'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt class="py-string">'}'</tt> </tt>
+<a name="L203"></a><tt class="py-lineno">203</tt>  <tt class="py-line"> </tt>
+<a name="L204"></a><tt class="py-lineno">204</tt>  <tt class="py-line">    <tt class="py-keyword">elif</tt> <tt class="py-name">tnm</tt> <tt class="py-keyword">in</tt> <tt class="py-op">[</tt><tt class="py-string">'style'</tt><tt class="py-op">,</tt> <tt class="py-string">'link'</tt><tt class="py-op">,</tt> <tt class="py-string">'sup'</tt><tt class="py-op">,</tt> <tt class="py-string">'sub'</tt><tt class="py-op">,</tt> <tt class="py-string">'br'</tt><tt class="py-op">]</tt><tt class="py-op">:</tt> </tt>
+<a name="L205"></a><tt class="py-lineno">205</tt>  <tt class="py-line">        <tt class="py-comment"># discard these explicitly</tt> </tt>
+<a name="L206"></a><tt class="py-lineno">206</tt>  <tt class="py-line">        <tt class="py-name">ustr</tt> <tt class="py-op">=</tt><tt class="py-string">''</tt> </tt>
+<a name="L207"></a><tt class="py-lineno">207</tt>  <tt class="py-line">    <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L208"></a><tt class="py-lineno">208</tt>  <tt class="py-line">        <tt id="link-24" class="py-name" targets="Function w2ebUtils.uPlogExtra()=w2ebUtils-module.html#uPlogExtra"><a title="w2ebUtils.uPlogExtra" class="py-name" href="#" onclick="return doclink('link-24', 'uPlogExtra', 'link-24');">uPlogExtra</a></tt><tt class="py-op">(</tt><tt class="py-name">opts</tt><tt class="py-op">,</tt> <tt class="py-string">"Unrecognized tag found during parsing: "</tt> <tt class="py-op">+</tt> </tt>
+<a name="L209"></a><tt class="py-lineno">209</tt>  <tt class="py-line">                    <tt class="py-name">tag_pdh</tt><tt class="py-op">.</tt><tt class="py-name">name</tt><tt class="py-op">,</tt> <tt class="py-number">3</tt><tt class="py-op">)</tt> </tt>
+<a name="L210"></a><tt class="py-lineno">210</tt>  <tt class="py-line">         </tt>
+<a name="L211"></a><tt class="py-lineno">211</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">ustr</tt><tt class="py-op">:</tt> </tt>
+<a name="L212"></a><tt class="py-lineno">212</tt>  <tt class="py-line">        <tt class="py-name">part_string</tt> <tt class="py-op">=</tt> <tt class="py-name">part_string</tt> <tt class="py-op">+</tt> <tt class="py-name">sep</tt> <tt class="py-op">+</tt> <tt class="py-name">ustr</tt>    <tt class="py-comment"># XXX not sure we want sep</tt> </tt>
+<a name="L213"></a><tt class="py-lineno">213</tt>  <tt class="py-line">        <tt class="py-name">sep</tt> <tt class="py-op">=</tt> <tt class="py-string">' '</tt> </tt>
+<a name="L214"></a><tt class="py-lineno">214</tt>  <tt class="py-line"> </tt>
+<a name="L215"></a><tt class="py-lineno">215</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">part_string</tt><tt class="py-op">,</tt> <tt class="py-name">sep</tt> </tt>
+</div><a name="L216"></a><tt class="py-lineno">216</tt>  <tt class="py-line"> </tt>
+<a name="L217"></a><tt class="py-lineno">217</tt>  <tt class="py-line"> </tt>
+<a name="GenTextWordsFromTags"></a><div id="GenTextWordsFromTags-def"><a name="L218"></a><tt class="py-lineno">218</tt> <a class="py-toggle" href="#" id="GenTextWordsFromTags-toggle" onclick="return toggle('GenTextWordsFromTags');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="w2ebGenText-module.html#GenTextWordsFromTags">GenTextWordsFromTags</a><tt class="py-op">(</tt><tt class="py-param">opts</tt><tt class="py-op">,</tt> <tt class="py-param">head</tt><tt class="py-op">,</tt> <tt class="py-param">allow_refs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GenTextWordsFromTags-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="GenTextWordsFromTags-expanded"><a name="L219"></a><tt class="py-lineno">219</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L220"></a><tt class="py-lineno">220</tt>  <tt class="py-line"><tt class="py-docstring">    Translate a tag into a list of paragraphs, up to the first heading.</tt> </tt>
+<a name="L221"></a><tt class="py-lineno">221</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L222"></a><tt class="py-lineno">222</tt>  <tt class="py-line"><tt class="py-docstring">    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()</tt> </tt>
+<a name="L223"></a><tt class="py-lineno">223</tt>  <tt class="py-line"><tt class="py-docstring">    @param head: B Soup tag with potentially a number of children</tt> </tt>
+<a name="L224"></a><tt class="py-lineno">224</tt>  <tt class="py-line"><tt class="py-docstring">    @param allow_refs: Allow references to be included as part of the footnote</tt> </tt>
+<a name="L225"></a><tt class="py-lineno">225</tt>  <tt class="py-line"><tt class="py-docstring">    </tt> </tt>
+<a name="L226"></a><tt class="py-lineno">226</tt>  <tt class="py-line"><tt class="py-docstring">    @note: For footnotes generated from links to Wikipedia we include the</tt> </tt>
+<a name="L227"></a><tt class="py-lineno">227</tt>  <tt class="py-line"><tt class="py-docstring">    Wikipedia reference at the end. For footnotes that are reused from the</tt> </tt>
+<a name="L228"></a><tt class="py-lineno">228</tt>  <tt class="py-line"><tt class="py-docstring">    original we attempt to recycle them. XXX </tt> </tt>
+<a name="L229"></a><tt class="py-lineno">229</tt>  <tt class="py-line"><tt class="py-docstring">        </tt> </tt>
+<a name="L230"></a><tt class="py-lineno">230</tt>  <tt class="py-line"><tt class="py-docstring">    @note: This function walks through the list of descendents searching for</tt> </tt>
+<a name="L231"></a><tt class="py-lineno">231</tt>  <tt class="py-line"><tt class="py-docstring">    at least MIN_WORDS to construct its first paragraph. If the first paragraph</tt> </tt>
+<a name="L232"></a><tt class="py-lineno">232</tt>  <tt class="py-line"><tt class="py-docstring">    is less than MIN_WORDS it will merge subsequent paragraphs.</tt> </tt>
+<a name="L233"></a><tt class="py-lineno">233</tt>  <tt class="py-line"><tt class="py-docstring">    </tt> </tt>
+<a name="L234"></a><tt class="py-lineno">234</tt>  <tt class="py-line"><tt class="py-docstring">    The search stops when NOTE_MAX_PAR paragraphs are reached, or when a major</tt> </tt>
+<a name="L235"></a><tt class="py-lineno">235</tt>  <tt class="py-line"><tt class="py-docstring">    heading is reached.</tt> </tt>
+<a name="L236"></a><tt class="py-lineno">236</tt>  <tt class="py-line"><tt class="py-docstring">    </tt> </tt>
+<a name="L237"></a><tt class="py-lineno">237</tt>  <tt class="py-line"><tt class="py-docstring">    If a major heading is encountered before we have even seen MIN_WORDS, then</tt> </tt>
+<a name="L238"></a><tt class="py-lineno">238</tt>  <tt class="py-line"><tt class="py-docstring">    </tt> </tt>
+<a name="L239"></a><tt class="py-lineno">239</tt>  <tt class="py-line"><tt class="py-docstring">    @return: (words - the total number of words found,</tt> </tt>
+<a name="L240"></a><tt class="py-lineno">240</tt>  <tt class="py-line"><tt class="py-docstring">              note_list - a list of paragraphs to make notes or footnotes)</tt> </tt>
+<a name="L241"></a><tt class="py-lineno">241</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L242"></a><tt class="py-lineno">242</tt>  <tt class="py-line"> </tt>
+<a name="L243"></a><tt class="py-lineno">243</tt>  <tt class="py-line">    <tt class="py-name">render_list</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-string">'p'</tt><tt class="py-op">,</tt> <tt class="py-string">'a'</tt><tt class="py-op">,</tt> <tt class="py-string">'i'</tt><tt class="py-op">,</tt> <tt class="py-string">'b'</tt><tt class="py-op">,</tt> <tt class="py-string">'u'</tt><tt class="py-op">,</tt> <tt class="py-string">'span'</tt><tt class="py-op">,</tt> <tt class="py-string">'cite'</tt><tt class="py-op">]</tt> <tt class="py-comment"># tags to render</tt> </tt>
+<a name="L244"></a><tt class="py-lineno">244</tt>  <tt class="py-line">    <tt class="py-name">endsearch_list</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-string">'h1'</tt><tt class="py-op">,</tt><tt class="py-string">'h2'</tt><tt class="py-op">]</tt> </tt>
+<a name="L245"></a><tt class="py-lineno">245</tt>  <tt class="py-line">    <tt class="py-name">search_list</tt> <tt class="py-op">=</tt> <tt class="py-name">endsearch_list</tt> <tt class="py-op">+</tt> <tt class="py-name">render_list</tt> </tt>
+<a name="L246"></a><tt class="py-lineno">246</tt>  <tt class="py-line"> </tt>
+<a name="L247"></a><tt class="py-lineno">247</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">head</tt><tt class="py-op">.</tt><tt class="py-name">name</tt> <tt class="py-keyword">in</tt> <tt class="py-op">[</tt><tt class="py-string">'span'</tt><tt class="py-op">,</tt> <tt class="py-string">'cite'</tt><tt class="py-op">]</tt><tt class="py-op">:</tt> </tt>
+<a name="L248"></a><tt class="py-lineno">248</tt>  <tt class="py-line">        <tt class="py-name">list_all</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-name">head</tt><tt class="py-op">]</tt> </tt>
+<a name="L249"></a><tt class="py-lineno">249</tt>  <tt class="py-line">    <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L250"></a><tt class="py-lineno">250</tt>  <tt class="py-line">        <tt class="py-name">list_all</tt> <tt class="py-op">=</tt> <tt class="py-name">list</tt><tt class="py-op">(</tt><tt class="py-name">head</tt><tt class="py-op">.</tt><tt class="py-name">find_all</tt><tt class="py-op">(</tt><tt class="py-keyword">lambda</tt> <tt class="py-name">x</tt><tt class="py-op">:</tt> <tt class="py-name">x</tt><tt class="py-op">.</tt><tt class="py-name">name</tt> <tt class="py-keyword">in</tt> <tt class="py-op">[</tt><tt class="py-string">'h1'</tt><tt class="py-op">,</tt><tt class="py-string">'h2'</tt><tt class="py-op">,</tt> <tt class="py-string">'p'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L251"></a><tt class="py-lineno">251</tt>  <tt class="py-line">     </tt>
+<a name="L252"></a><tt class="py-lineno">252</tt>  <tt class="py-line">    <tt class="py-name">words</tt> <tt class="py-op">=</tt> <tt class="py-number">0</tt> </tt>
+<a name="L253"></a><tt class="py-lineno">253</tt>  <tt class="py-line">    <tt class="py-name">note_list</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L254"></a><tt class="py-lineno">254</tt>  <tt class="py-line">    <tt class="py-name">part_string</tt> <tt class="py-op">=</tt><tt class="py-string">''</tt> </tt>
+<a name="L255"></a><tt class="py-lineno">255</tt>  <tt class="py-line">    <tt class="py-name">sep</tt> <tt class="py-op">=</tt> <tt class="py-string">''</tt> </tt>
+<a name="L256"></a><tt class="py-lineno">256</tt>  <tt class="py-line"> </tt>
+<a name="L257"></a><tt class="py-lineno">257</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">tag_pdh</tt> <tt class="py-keyword">in</tt> <tt class="py-name">list_all</tt><tt class="py-op">:</tt> </tt>
+<a name="L258"></a><tt class="py-lineno">258</tt>  <tt class="py-line"> </tt>
+<a name="L259"></a><tt class="py-lineno">259</tt>  <tt class="py-line">       <tt class="py-comment"># print "PPPt=", tag_pdh.name</tt> </tt>
+<a name="L260"></a><tt class="py-lineno">260</tt>  <tt class="py-line"> </tt>
+<a name="L261"></a><tt class="py-lineno">261</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">tag_pdh</tt><tt class="py-op">.</tt><tt class="py-name">name</tt> <tt class="py-keyword">in</tt> <tt class="py-name">endsearch_list</tt><tt class="py-op">:</tt> </tt>
+<a name="L262"></a><tt class="py-lineno">262</tt>  <tt class="py-line">            <tt class="py-comment"># if we don't have enough words, but are at a major division</tt> </tt>
+<a name="L263"></a><tt class="py-lineno">263</tt>  <tt class="py-line">            <tt class="py-comment"># keep searching... </tt> </tt>
+<a name="L264"></a><tt class="py-lineno">264</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">words</tt> <tt class="py-op">&lt;</tt> <tt id="link-25" class="py-name"><a title="w2ebGenText.MIN_WORDS" class="py-name" href="#" onclick="return doclink('link-25', 'MIN_WORDS', 'link-5');">MIN_WORDS</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L265"></a><tt class="py-lineno">265</tt>  <tt class="py-line">                <tt class="py-keyword">continue</tt> </tt>
+<a name="L266"></a><tt class="py-lineno">266</tt>  <tt class="py-line">            <tt class="py-comment"># after finding the TOC normally we are done</tt> </tt>
+<a name="L267"></a><tt class="py-lineno">267</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">tag_pdh</tt><tt class="py-op">.</tt><tt class="py-name">has_attr</tt><tt class="py-op">(</tt><tt class="py-string">'id'</tt><tt class="py-op">)</tt> <tt class="py-keyword">and</tt> <tt class="py-name">tag_pdh</tt><tt class="py-op">[</tt><tt class="py-string">'id'</tt><tt class="py-op">]</tt> <tt class="py-op">==</tt> <tt class="py-string">'toc'</tt><tt class="py-op">:</tt> </tt>
+<a name="L268"></a><tt class="py-lineno">268</tt>  <tt class="py-line">                <tt class="py-keyword">break</tt> </tt>
+<a name="L269"></a><tt class="py-lineno">269</tt>  <tt class="py-line"> </tt>
+<a name="L270"></a><tt class="py-lineno">270</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L271"></a><tt class="py-lineno">271</tt>  <tt class="py-line"> </tt>
+<a name="L272"></a><tt class="py-lineno">272</tt>  <tt class="py-line">            <tt class="py-name">part_string</tt><tt class="py-op">,</tt> <tt class="py-name">sep</tt> <tt class="py-op">=</tt> <tt id="link-26" class="py-name"><a title="w2ebGenText.GenTexTag2Str" class="py-name" href="#" onclick="return doclink('link-26', 'GenTexTag2Str', 'link-14');">GenTexTag2Str</a></tt><tt class="py-op">(</tt><tt class="py-name">opts</tt><tt class="py-op">,</tt> <tt class="py-name">allow_refs</tt><tt class="py-op">,</tt> <tt class="py-name">False</tt><tt class="py-op">,</tt> <tt class="py-name">tag_pdh</tt><tt class="py-op">,</tt> </tt>
+<a name="L273"></a><tt class="py-lineno">273</tt>  <tt class="py-line">                                        <tt class="py-name">part_string</tt><tt class="py-op">,</tt> <tt class="py-name">sep</tt><tt class="py-op">)</tt> </tt>
+<a name="L274"></a><tt class="py-lineno">274</tt>  <tt class="py-line"> </tt>
+<a name="L275"></a><tt class="py-lineno">275</tt>  <tt class="py-line">        <tt class="py-comment"># we force the first paragraph to include at least MIN_WORDS</tt> </tt>
+<a name="L276"></a><tt class="py-lineno">276</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">tag_pdh</tt><tt class="py-op">.</tt><tt class="py-name">name</tt> <tt class="py-op">==</tt> <tt class="py-string">'p'</tt><tt class="py-op">:</tt> </tt>
+<a name="L277"></a><tt class="py-lineno">277</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">note_list</tt><tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-number">0</tt> <tt class="py-keyword">and</tt> <tt class="py-name">part_string</tt><tt class="py-op">.</tt><tt class="py-name">count</tt><tt class="py-op">(</tt><tt class="py-string">' '</tt><tt class="py-op">)</tt> <tt class="py-op">&lt;</tt> <tt id="link-27" class="py-name"><a title="w2ebGenText.MIN_WORDS" class="py-name" href="#" onclick="return doclink('link-27', 'MIN_WORDS', 'link-5');">MIN_WORDS</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L278"></a><tt class="py-lineno">278</tt>  <tt class="py-line">                <tt class="py-keyword">continue</tt> </tt>
+<a name="L279"></a><tt class="py-lineno">279</tt>  <tt class="py-line"> </tt>
+<a name="L280"></a><tt class="py-lineno">280</tt>  <tt class="py-line">            <tt class="py-name">note_list</tt> <tt class="py-op">+=</tt> <tt class="py-op">[</tt><tt class="py-name">part_string</tt><tt class="py-op">]</tt> </tt>
+<a name="L281"></a><tt class="py-lineno">281</tt>  <tt class="py-line">            <tt class="py-name">words</tt> <tt class="py-op">+=</tt> <tt class="py-name">part_string</tt><tt class="py-op">.</tt><tt class="py-name">count</tt><tt class="py-op">(</tt><tt class="py-string">' '</tt><tt class="py-op">)</tt> </tt>
+<a name="L282"></a><tt class="py-lineno">282</tt>  <tt class="py-line">            <tt class="py-name">part_string</tt> <tt class="py-op">=</tt> <tt class="py-string">''</tt> </tt>
+<a name="L283"></a><tt class="py-lineno">283</tt>  <tt class="py-line">            <tt class="py-name">sep</tt> <tt class="py-op">=</tt> <tt class="py-string">''</tt> </tt>
+<a name="L284"></a><tt class="py-lineno">284</tt>  <tt class="py-line">     </tt>
+<a name="L285"></a><tt class="py-lineno">285</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">note_list</tt><tt class="py-op">)</tt> <tt class="py-op">&gt;</tt> <tt id="link-28" class="py-name"><a title="w2ebGenText.NOTE_MAX_PAR" class="py-name" href="#" onclick="return doclink('link-28', 'NOTE_MAX_PAR', 'link-4');">NOTE_MAX_PAR</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L286"></a><tt class="py-lineno">286</tt>  <tt class="py-line">            <tt class="py-comment"># stop so we don't read a whole article</tt> </tt>
+<a name="L287"></a><tt class="py-lineno">287</tt>  <tt class="py-line">            <tt class="py-keyword">break</tt> </tt>
+<a name="L288"></a><tt class="py-lineno">288</tt>  <tt class="py-line">     </tt>
+<a name="L289"></a><tt class="py-lineno">289</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">part_string</tt><tt class="py-op">:</tt> </tt>
+<a name="L290"></a><tt class="py-lineno">290</tt>  <tt class="py-line">        <tt class="py-name">words</tt> <tt class="py-op">+=</tt> <tt class="py-name">part_string</tt><tt class="py-op">.</tt><tt class="py-name">count</tt><tt class="py-op">(</tt><tt class="py-string">' '</tt><tt class="py-op">)</tt> </tt>
+<a name="L291"></a><tt class="py-lineno">291</tt>  <tt class="py-line">        <tt class="py-name">note_list</tt> <tt class="py-op">+=</tt> <tt class="py-op">[</tt><tt class="py-name">part_string</tt><tt class="py-op">]</tt> </tt>
+<a name="L292"></a><tt class="py-lineno">292</tt>  <tt class="py-line"> </tt>
+<a name="L293"></a><tt class="py-lineno">293</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">words</tt><tt class="py-op">,</tt> <tt class="py-name">note_list</tt> </tt>
+</div><a name="L294"></a><tt class="py-lineno">294</tt>  <tt class="py-line"> </tt>
+<a name="GenTextLongAndShort"></a><div id="GenTextLongAndShort-def"><a name="L295"></a><tt class="py-lineno">295</tt> <a class="py-toggle" href="#" id="GenTextLongAndShort-toggle" onclick="return toggle('GenTextLongAndShort');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="w2ebGenText-module.html#GenTextLongAndShort">GenTextLongAndShort</a><tt class="py-op">(</tt><tt class="py-param">note_list</tt><tt class="py-op">,</tt> <tt class="py-param">id_anch</tt><tt class="py-op">,</tt> <tt class="py-param">url</tt><tt class="py-op">,</tt> <tt class="py-param">foot_title</tt><tt class="py-op">,</tt> </tt>
+<a name="L296"></a><tt class="py-lineno">296</tt>  <tt class="py-line">                            <tt class="py-param">notes</tt><tt class="py-op">,</tt> <tt class="py-param">note0</tt><tt class="py-op">,</tt> <tt class="py-param">num</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GenTextLongAndShort-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="GenTextLongAndShort-expanded"><a name="L297"></a><tt class="py-lineno">297</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L298"></a><tt class="py-lineno">298</tt>  <tt class="py-line"><tt class="py-docstring">    Footnotes include both a long and short version, generate both here</tt> </tt>
+<a name="L299"></a><tt class="py-lineno">299</tt>  <tt class="py-line"><tt class="py-docstring">    </tt> </tt>
+<a name="L300"></a><tt class="py-lineno">300</tt>  <tt class="py-line"><tt class="py-docstring">    @param note_list: list of strings, each string represents a paragraph of a footnote</tt> </tt>
+<a name="L301"></a><tt class="py-lineno">301</tt>  <tt class="py-line"><tt class="py-docstring">    @param id_anch: The id attribute, or anchor used to link to the footnote</tt> </tt>
+<a name="L302"></a><tt class="py-lineno">302</tt>  <tt class="py-line"><tt class="py-docstring">    @param url: A reference for complete information</tt> </tt>
+<a name="L303"></a><tt class="py-lineno">303</tt>  <tt class="py-line"><tt class="py-docstring">    @param foot_title: string, the label identifying the footnote</tt> </tt>
+<a name="L304"></a><tt class="py-lineno">304</tt>  <tt class="py-line"><tt class="py-docstring">    @param notes: if == 'never', only generate the footnote, not the long note</tt> </tt>
+<a name="L305"></a><tt class="py-lineno">305</tt>  <tt class="py-line"><tt class="py-docstring">    @param note0: string, the shortened text of the footnote, about MAX_WORDS long</tt> </tt>
+<a name="L306"></a><tt class="py-lineno">306</tt>  <tt class="py-line"><tt class="py-docstring">    @param num: integer, the number associated with the footnote</tt> </tt>
+<a name="L307"></a><tt class="py-lineno">307</tt>  <tt class="py-line"><tt class="py-docstring">    </tt> </tt>
+<a name="L308"></a><tt class="py-lineno">308</tt>  <tt class="py-line"><tt class="py-docstring">    @return: (shortnote - the short version, aka a footnote,</tt> </tt>
+<a name="L309"></a><tt class="py-lineno">309</tt>  <tt class="py-line"><tt class="py-docstring">              long_note_list - the long version, a list of paragraphs)</tt> </tt>
+<a name="L310"></a><tt class="py-lineno">310</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L311"></a><tt class="py-lineno">311</tt>  <tt class="py-line"> </tt>
+<a name="L312"></a><tt class="py-lineno">312</tt>  <tt class="py-line">    <tt class="py-name">shortnote</tt> <tt class="py-op">=</tt> <tt class="py-string">'&lt;p&gt;'</tt> </tt>
+<a name="L313"></a><tt class="py-lineno">313</tt>  <tt class="py-line">    <tt class="py-name">shortnote</tt> <tt class="py-op">+=</tt> <tt class="py-string">'&lt;b id="'</tt> <tt class="py-op">+</tt> <tt class="py-name">id_anch</tt> <tt class="py-op">+</tt> <tt class="py-string">'_foot"&gt;'</tt> <tt class="py-op">+</tt> <tt class="py-name">foot_title</tt> <tt class="py-op">+</tt> <tt class="py-name">num</tt> <tt class="py-op">+</tt> <tt class="py-string">'&lt;/b&gt; '</tt> </tt>
+<a name="L314"></a><tt class="py-lineno">314</tt>  <tt class="py-line">    <tt class="py-name">shortnote</tt> <tt class="py-op">+=</tt> <tt class="py-name">note0</tt> </tt>
+<a name="L315"></a><tt class="py-lineno">315</tt>  <tt class="py-line">    <tt class="py-comment">#shortnote += '&lt;a href="' + '#' + id_anch + '"&gt; back&lt;/a&gt;'</tt> </tt>
+<a name="L316"></a><tt class="py-lineno">316</tt>  <tt class="py-line">    <tt class="py-name">shortnote</tt> <tt class="py-op">+=</tt> <tt id="link-29" class="py-name" targets="Variable w2ebFinal.W2EB_BLM=w2ebFinal-module.html#W2EB_BLM,Variable w2ebGenText.W2EB_BLM=w2ebGenText-module.html#W2EB_BLM,Variable w2ebLocalRefs.W2EB_BLM=w2ebLocalRefs-module.html#W2EB_BLM,Variable w2ebMain.W2EB_BLM=w2ebMain-module.html#W2EB_BLM,Variable w2ebPic.W2EB_BLM=w2ebPic-module.html#W2EB_BLM,Variable w2ebStartup.W2EB_BLM=w2ebStartup-module.html#W2EB_BLM,Variable w2ebTOC.W2EB_BLM=w2ebTOC-module.html#W2EB_BLM,Variable w2ebUtils.W2EB_BLM=w2ebUtils-module.html#W2EB_BLM"><a title="w2ebFinal.W2EB_BLM
+w2ebGenText.W2EB_BLM
+w2ebLocalRefs.W2EB_BLM
+w2ebMain.W2EB_BLM
+w2ebPic.W2EB_BLM
+w2ebStartup.W2EB_BLM
+w2ebTOC.W2EB_BLM
+w2ebUtils.W2EB_BLM" class="py-name" href="#" onclick="return doclink('link-29', 'W2EB_BLM', 'link-29');">W2EB_BLM</a></tt> </tt>
+<a name="L317"></a><tt class="py-lineno">317</tt>  <tt class="py-line"> </tt>
+<a name="L318"></a><tt class="py-lineno">318</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">notes</tt> <tt class="py-op">==</tt> <tt class="py-string">'never'</tt><tt class="py-op">:</tt> </tt>
+<a name="L319"></a><tt class="py-lineno">319</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">url</tt><tt class="py-op">:</tt> </tt>
+<a name="L320"></a><tt class="py-lineno">320</tt>  <tt class="py-line">            <tt class="py-name">shortnote</tt> <tt class="py-op">+=</tt> <tt class="py-string">' / more @ &lt;a href="'</tt> <tt class="py-op">+</tt> <tt class="py-name">url</tt> <tt class="py-op">+</tt> <tt class="py-string">'"&gt;'</tt> <tt class="py-op">+</tt> <tt class="py-name">url</tt> <tt class="py-op">+</tt> <tt class="py-string">'&lt;/a&gt;&lt;/p&gt;'</tt> </tt>
+<a name="L321"></a><tt class="py-lineno">321</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L322"></a><tt class="py-lineno">322</tt>  <tt class="py-line">            <tt class="py-name">shortnote</tt> <tt class="py-op">+=</tt> <tt class="py-string">'&lt;/p&gt;'</tt> </tt>
+<a name="L323"></a><tt class="py-lineno">323</tt>  <tt class="py-line">        <tt class="py-name">long_note_list</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L324"></a><tt class="py-lineno">324</tt>  <tt class="py-line"> </tt>
+<a name="L325"></a><tt class="py-lineno">325</tt>  <tt class="py-line">    <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L326"></a><tt class="py-lineno">326</tt>  <tt class="py-line">        <tt class="py-name">shortnote</tt> <tt class="py-op">+=</tt> <tt class="py-string">' / &lt;a href="'</tt> <tt class="py-op">+</tt> <tt class="py-string">'#'</tt> <tt class="py-op">+</tt> <tt class="py-name">id_anch</tt> <tt class="py-op">+</tt> <tt class="py-string">'_long"&gt;more...&lt;/a&gt;&lt;/p&gt;'</tt> </tt>
+<a name="L327"></a><tt class="py-lineno">327</tt>  <tt class="py-line"> </tt>
+<a name="L328"></a><tt class="py-lineno">328</tt>  <tt class="py-line">        <tt class="py-name">backlinklong</tt> <tt class="py-op">=</tt> <tt class="py-string">'&lt;b id="'</tt> <tt class="py-op">+</tt> <tt class="py-name">id_anch</tt> <tt class="py-op">+</tt> <tt class="py-string">'_long"&gt;'</tt> <tt class="py-op">+</tt> <tt class="py-name">foot_title</tt> <tt class="py-op">+</tt> <tt class="py-name">num</tt> <tt class="py-op">+</tt> <tt class="py-string">'&lt;/b&gt; '</tt> </tt>
+<a name="L329"></a><tt class="py-lineno">329</tt>  <tt class="py-line">        <tt class="py-name">long_note_list</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-string">'&lt;p&gt;'</tt> <tt class="py-op">+</tt> <tt class="py-name">backlinklong</tt> <tt class="py-op">+</tt> <tt class="py-name">note_list</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> <tt class="py-op">+</tt> <tt class="py-string">'&lt;/p&gt;'</tt><tt class="py-op">]</tt> </tt>
+<a name="L330"></a><tt class="py-lineno">330</tt>  <tt class="py-line">         </tt>
+<a name="L331"></a><tt class="py-lineno">331</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">note</tt> <tt class="py-keyword">in</tt> <tt class="py-name">note_list</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">:</tt><tt class="py-op">]</tt><tt class="py-op">:</tt> </tt>
+<a name="L332"></a><tt class="py-lineno">332</tt>  <tt class="py-line">            <tt class="py-name">long_note_list</tt> <tt class="py-op">+=</tt> <tt class="py-op">[</tt><tt class="py-string">'&lt;p&gt;'</tt> <tt class="py-op">+</tt> <tt class="py-name">note</tt> <tt class="py-op">+</tt> <tt class="py-string">'&lt;/p&gt;'</tt><tt class="py-op">]</tt> </tt>
+<a name="L333"></a><tt class="py-lineno">333</tt>  <tt class="py-line"> </tt>
+<a name="L334"></a><tt class="py-lineno">334</tt>  <tt class="py-line">        <tt class="py-comment">#long_note_list += ['&lt;p&gt;&lt;a href="' + '#' + id_anch + '"&gt; back&lt;/a&gt;']</tt> </tt>
+<a name="L335"></a><tt class="py-lineno">335</tt>  <tt class="py-line">        <tt class="py-name">long_note_list</tt> <tt class="py-op">+=</tt> <tt class="py-op">[</tt><tt class="py-string">'&lt;p&gt;'</tt> <tt class="py-op">+</tt> <tt id="link-30" class="py-name"><a title="w2ebFinal.W2EB_BLM
+w2ebGenText.W2EB_BLM
+w2ebLocalRefs.W2EB_BLM
+w2ebMain.W2EB_BLM
+w2ebPic.W2EB_BLM
+w2ebStartup.W2EB_BLM
+w2ebTOC.W2EB_BLM
+w2ebUtils.W2EB_BLM" class="py-name" href="#" onclick="return doclink('link-30', 'W2EB_BLM', 'link-29');">W2EB_BLM</a></tt><tt class="py-op">]</tt> </tt>
+<a name="L336"></a><tt class="py-lineno">336</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">url</tt><tt class="py-op">:</tt> </tt>
+<a name="L337"></a><tt class="py-lineno">337</tt>  <tt class="py-line">            <tt class="py-name">long_note_list</tt> <tt class="py-op">+=</tt> <tt class="py-op">[</tt><tt class="py-string">' / more @ &lt;a href="'</tt> <tt class="py-op">+</tt> <tt class="py-name">url</tt> <tt class="py-op">+</tt> <tt class="py-string">'"&gt;'</tt> <tt class="py-op">+</tt> <tt class="py-name">url</tt> <tt class="py-op">+</tt> <tt class="py-string">'&lt;/a&gt;&lt;/p&gt;'</tt><tt class="py-op">]</tt> </tt>
+<a name="L338"></a><tt class="py-lineno">338</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L339"></a><tt class="py-lineno">339</tt>  <tt class="py-line">            <tt class="py-name">long_note_list</tt> <tt class="py-op">+=</tt> <tt class="py-op">[</tt><tt class="py-string">'&lt;/p&gt;'</tt><tt class="py-op">]</tt> </tt>
+<a name="L340"></a><tt class="py-lineno">340</tt>  <tt class="py-line"> </tt>
+<a name="L341"></a><tt class="py-lineno">341</tt>  <tt class="py-line">        <tt class="py-name">long_note_list</tt> <tt class="py-op">+=</tt> <tt class="py-op">[</tt><tt class="py-string">'&lt;br /&gt;'</tt><tt class="py-op">]</tt> </tt>
+<a name="L342"></a><tt class="py-lineno">342</tt>  <tt class="py-line">        <tt class="py-name">long_note_list</tt> <tt class="py-op">+=</tt> <tt class="py-op">[</tt><tt class="py-string">'&lt;p&gt;&lt;hr width="'</tt> <tt class="py-op">+</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">int</tt><tt class="py-op">(</tt><tt id="link-31" class="py-name"><a title="w2ebConstPic.WMAX
+w2ebFinal.WMAX
+w2ebLocalRefs.WMAX
+w2ebMain.WMAX
+w2ebPic.WMAX
+w2ebStartup.WMAX
+w2ebTOC.WMAX
+w2ebUtils.WMAX" class="py-name" href="#" onclick="return doclink('link-31', 'WMAX', 'link-3');">WMAX</a></tt> <tt class="py-op">*</tt> <tt class="py-number">.8</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt class="py-string">'" align="center"&gt;&lt;/p&gt;'</tt><tt class="py-op">]</tt> <tt class="py-comment">## Ok idea, maybe later...</tt> </tt>
+<a name="L343"></a><tt class="py-lineno">343</tt>  <tt class="py-line"> </tt>
+<a name="L344"></a><tt class="py-lineno">344</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">shortnote</tt><tt class="py-op">,</tt> <tt class="py-name">long_note_list</tt> </tt>
+</div><a name="L345"></a><tt class="py-lineno">345</tt>  <tt class="py-line"> </tt>
+<a name="L346"></a><tt class="py-lineno">346</tt>  <tt class="py-line"> </tt>
+<a name="GenTextMakeFootDict"></a><div id="GenTextMakeFootDict-def"><a name="L347"></a><tt class="py-lineno">347</tt> <a class="py-toggle" href="#" id="GenTextMakeFootDict-toggle" onclick="return toggle('GenTextMakeFootDict');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="w2ebGenText-module.html#GenTextMakeFootDict">GenTextMakeFootDict</a><tt class="py-op">(</tt><tt class="py-param">opts</tt><tt class="py-op">,</tt> <tt class="py-param">note_list</tt><tt class="py-op">,</tt> <tt class="py-param">url</tt><tt class="py-op">,</tt> <tt class="py-param">foot_title</tt><tt class="py-op">,</tt> <tt class="py-param">notes</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GenTextMakeFootDict-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="GenTextMakeFootDict-expanded"><a name="L348"></a><tt class="py-lineno">348</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L349"></a><tt class="py-lineno">349</tt>  <tt class="py-line"><tt class="py-docstring">    Construct the foot dictionary from the raw text summary. Add backlink, number etc.</tt> </tt>
+<a name="L350"></a><tt class="py-lineno">350</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L351"></a><tt class="py-lineno">351</tt>  <tt class="py-line"><tt class="py-docstring">    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()</tt> </tt>
+<a name="L352"></a><tt class="py-lineno">352</tt>  <tt class="py-line"><tt class="py-docstring">    @param note_list: list of strings, each string represents a paragraph of a footnote</tt> </tt>
+<a name="L353"></a><tt class="py-lineno">353</tt>  <tt class="py-line"><tt class="py-docstring">    @param url: A reference for complete information</tt> </tt>
+<a name="L354"></a><tt class="py-lineno">354</tt>  <tt class="py-line"><tt class="py-docstring">    @param foot_title: string, the label identifying the footnote</tt> </tt>
+<a name="L355"></a><tt class="py-lineno">355</tt>  <tt class="py-line"><tt class="py-docstring">    @param notes: if == 'never', only generate the footnote, not the long note</tt> </tt>
+<a name="L356"></a><tt class="py-lineno">356</tt>  <tt class="py-line"><tt class="py-docstring">    </tt> </tt>
+<a name="L357"></a><tt class="py-lineno">357</tt>  <tt class="py-line"><tt class="py-docstring">    @return: foot_dict - a structure with several standard entries</tt> </tt>
+<a name="L358"></a><tt class="py-lineno">358</tt>  <tt class="py-line"><tt class="py-docstring">    </tt> </tt>
+<a name="L359"></a><tt class="py-lineno">359</tt>  <tt class="py-line"><tt class="py-docstring">    @note:</tt> </tt>
+<a name="L360"></a><tt class="py-lineno">360</tt>  <tt class="py-line"><tt class="py-docstring">    Kindle has a footnote feature where it creates a small box on top of the</tt> </tt>
+<a name="L361"></a><tt class="py-lineno">361</tt>  <tt class="py-line"><tt class="py-docstring">    text where the footnote appears, however, it doesn't work consistently.</tt> </tt>
+<a name="L362"></a><tt class="py-lineno">362</tt>  <tt class="py-line"><tt class="py-docstring">    Sometimes there is no pop-up, at other times the popup is there, but</tt> </tt>
+<a name="L363"></a><tt class="py-lineno">363</tt>  <tt class="py-line"><tt class="py-docstring">    it includes too many footnotes.</tt> </tt>
+<a name="L364"></a><tt class="py-lineno">364</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L365"></a><tt class="py-lineno">365</tt>  <tt class="py-line"><tt class="py-docstring">    @note:</tt> </tt>
+<a name="L366"></a><tt class="py-lineno">366</tt>  <tt class="py-line"><tt class="py-docstring">    A boolean is included to enable it one day, but for not it simply doesn't</tt> </tt>
+<a name="L367"></a><tt class="py-lineno">367</tt>  <tt class="py-line"><tt class="py-docstring">    work. The backlink needs to be kept separate from the id to disable it.</tt> </tt>
+<a name="L368"></a><tt class="py-lineno">368</tt>  <tt class="py-line"><tt class="py-docstring">    keeping them together only sometimes enables it, and often the Kindle can't</tt> </tt>
+<a name="L369"></a><tt class="py-lineno">369</tt>  <tt class="py-line"><tt class="py-docstring">    seem to find the end of the footnote.</tt> </tt>
+<a name="L370"></a><tt class="py-lineno">370</tt>  <tt class="py-line"><tt class="py-docstring">    </tt> </tt>
+<a name="L371"></a><tt class="py-lineno">371</tt>  <tt class="py-line"><tt class="py-docstring">    Popups seem to be triggered by references that include backlinks. Our backlink</tt> </tt>
+<a name="L372"></a><tt class="py-lineno">372</tt>  <tt class="py-line"><tt class="py-docstring">    is intentionally separated from our anchor to disable this feature. </tt> </tt>
+<a name="L373"></a><tt class="py-lineno">373</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L374"></a><tt class="py-lineno">374</tt>  <tt class="py-line"> </tt>
+<a name="L375"></a><tt class="py-lineno">375</tt>  <tt class="py-line">    <tt class="py-name">note0</tt> <tt class="py-op">=</tt> <tt id="link-32" class="py-name" targets="Function w2ebGenText.GenTextShortFoot()=w2ebGenText-module.html#GenTextShortFoot"><a title="w2ebGenText.GenTextShortFoot" class="py-name" href="#" onclick="return doclink('link-32', 'GenTextShortFoot', 'link-32');">GenTextShortFoot</a></tt><tt class="py-op">(</tt><tt class="py-name">note_list</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L376"></a><tt class="py-lineno">376</tt>  <tt class="py-line"> </tt>
+<a name="L377"></a><tt class="py-lineno">377</tt>  <tt class="py-line"> </tt>
+<a name="L378"></a><tt class="py-lineno">378</tt>  <tt class="py-line">    <tt class="py-name">foot_dict</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt> </tt>
+<a name="L379"></a><tt class="py-lineno">379</tt>  <tt class="py-line"> </tt>
+<a name="L380"></a><tt class="py-lineno">380</tt>  <tt class="py-line">    <tt id="link-33" class="py-name" targets="Function w2ebUtils.uGenRetAnch()=w2ebUtils-module.html#uGenRetAnch"><a title="w2ebUtils.uGenRetAnch" class="py-name" href="#" onclick="return doclink('link-33', 'uGenRetAnch', 'link-33');">uGenRetAnch</a></tt><tt class="py-op">(</tt><tt class="py-name">opts</tt><tt class="py-op">,</tt> <tt class="py-name">foot_dict</tt><tt class="py-op">,</tt> <tt class="py-name">foot_title</tt><tt class="py-op">)</tt> </tt>
+<a name="L381"></a><tt class="py-lineno">381</tt>  <tt class="py-line"> </tt>
+<a name="L382"></a><tt class="py-lineno">382</tt>  <tt class="py-line">    <tt class="py-name">num</tt> <tt class="py-op">=</tt> <tt class="py-string">' ['</tt> <tt class="py-op">+</tt> <tt class="py-name">foot_dict</tt><tt class="py-op">[</tt><tt class="py-string">'id_anch'</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt class="py-name">split</tt><tt class="py-op">(</tt><tt class="py-string">'_'</tt><tt class="py-op">)</tt><tt class="py-op">[</tt><tt class="py-number">2</tt><tt class="py-op">]</tt> <tt class="py-op">+</tt> <tt class="py-string">']:'</tt> </tt>
+<a name="L383"></a><tt class="py-lineno">383</tt>  <tt class="py-line"> </tt>
+<a name="L384"></a><tt class="py-lineno">384</tt>  <tt class="py-line">    <tt class="py-name">shortnote</tt><tt class="py-op">,</tt> <tt class="py-name">note_list</tt> <tt class="py-op">=</tt> <tt id="link-34" class="py-name" targets="Function w2ebGenText.GenTextLongAndShort()=w2ebGenText-module.html#GenTextLongAndShort"><a title="w2ebGenText.GenTextLongAndShort" class="py-name" href="#" onclick="return doclink('link-34', 'GenTextLongAndShort', 'link-34');">GenTextLongAndShort</a></tt><tt class="py-op">(</tt><tt class="py-name">note_list</tt><tt class="py-op">,</tt> <tt class="py-name">foot_dict</tt><tt class="py-op">[</tt><tt class="py-string">'id_anch'</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> </tt>
+<a name="L385"></a><tt class="py-lineno">385</tt>  <tt class="py-line">                                <tt class="py-name">url</tt><tt class="py-op">,</tt> <tt class="py-name">foot_title</tt><tt class="py-op">,</tt> <tt class="py-name">notes</tt><tt class="py-op">,</tt> <tt class="py-name">note0</tt><tt class="py-op">,</tt> <tt class="py-name">num</tt><tt class="py-op">)</tt> </tt>
+<a name="L386"></a><tt class="py-lineno">386</tt>  <tt class="py-line"> </tt>
+<a name="L387"></a><tt class="py-lineno">387</tt>  <tt class="py-line">    <tt class="py-comment"># basic foot dictionary definition...</tt> </tt>
+<a name="L388"></a><tt class="py-lineno">388</tt>  <tt class="py-line"> </tt>
+<a name="L389"></a><tt class="py-lineno">389</tt>  <tt class="py-line">    <tt class="py-name">foot_dict</tt><tt class="py-op">[</tt><tt class="py-string">'short_foot'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">shortnote</tt> </tt>
+<a name="L390"></a><tt class="py-lineno">390</tt>  <tt class="py-line">    <tt class="py-name">foot_dict</tt><tt class="py-op">[</tt><tt class="py-string">'long_foot'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">note_list</tt> </tt>
+<a name="L391"></a><tt class="py-lineno">391</tt>  <tt class="py-line">    <tt class="py-name">foot_dict</tt><tt class="py-op">[</tt><tt class="py-string">'foot_title'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">foot_title</tt> </tt>
+<a name="L392"></a><tt class="py-lineno">392</tt>  <tt class="py-line">    <tt class="py-name">foot_dict</tt><tt class="py-op">[</tt><tt class="py-string">'orig_anch'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-string">''</tt> </tt>
+<a name="L393"></a><tt class="py-lineno">393</tt>  <tt class="py-line">    <tt class="py-name">foot_dict</tt><tt class="py-op">[</tt><tt class="py-string">'msg'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-number">0</tt> </tt>
+<a name="L394"></a><tt class="py-lineno">394</tt>  <tt class="py-line">     </tt>
+<a name="L395"></a><tt class="py-lineno">395</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">foot_dict</tt> </tt>
+</div><a name="L396"></a><tt class="py-lineno">396</tt>  <tt class="py-line"> </tt>
+<a name="L397"></a><tt class="py-lineno">397</tt>  <tt class="py-line"> </tt>
+<a name="GenTextFootNote"></a><div id="GenTextFootNote-def"><a name="L398"></a><tt class="py-lineno">398</tt> <a class="py-toggle" href="#" id="GenTextFootNote-toggle" onclick="return toggle('GenTextFootNote');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="w2ebGenText-module.html#GenTextFootNote">GenTextFootNote</a><tt class="py-op">(</tt><tt class="py-param">opts</tt><tt class="py-op">,</tt> <tt class="py-param">bl</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GenTextFootNote-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="GenTextFootNote-expanded"><a name="L399"></a><tt class="py-lineno">399</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L400"></a><tt class="py-lineno">400</tt>  <tt class="py-line"><tt class="py-docstring">    Generate the text for footnotes, both long and short.</tt> </tt>
+<a name="L401"></a><tt class="py-lineno">401</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L402"></a><tt class="py-lineno">402</tt>  <tt class="py-line"><tt class="py-docstring">    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()</tt> </tt>
+<a name="L403"></a><tt class="py-lineno">403</tt>  <tt class="py-line"><tt class="py-docstring">    @param bl:  Beautiful Soup representation of an HTML web page.</tt> </tt>
+<a name="L404"></a><tt class="py-lineno">404</tt>  <tt class="py-line"><tt class="py-docstring">    </tt> </tt>
+<a name="L405"></a><tt class="py-lineno">405</tt>  <tt class="py-line"><tt class="py-docstring">    @return: </tt> </tt>
+<a name="L406"></a><tt class="py-lineno">406</tt>  <tt class="py-line"><tt class="py-docstring">        - err: any error,</tt> </tt>
+<a name="L407"></a><tt class="py-lineno">407</tt>  <tt class="py-line"><tt class="py-docstring">        - foot_dict: a structure with several fields</tt> </tt>
+<a name="L408"></a><tt class="py-lineno">408</tt>  <tt class="py-line"><tt class="py-docstring">        </tt> </tt>
+<a name="L409"></a><tt class="py-lineno">409</tt>  <tt class="py-line"><tt class="py-docstring">    @note: foot_dict structure</tt> </tt>
+<a name="L410"></a><tt class="py-lineno">410</tt>  <tt class="py-line"><tt class="py-docstring">            - 'short_foot' short versions of a footnote</tt> </tt>
+<a name="L411"></a><tt class="py-lineno">411</tt>  <tt class="py-line"><tt class="py-docstring">            - 'long_foot' long versions of a footnote</tt> </tt>
+<a name="L412"></a><tt class="py-lineno">412</tt>  <tt class="py-line"><tt class="py-docstring">            - 'foot_title' name of the footnote, usually the link</tt> </tt>
+<a name="L413"></a><tt class="py-lineno">413</tt>  <tt class="py-line"><tt class="py-docstring">            - 'id_anch' return anchor for the footnote</tt> </tt>
+<a name="L414"></a><tt class="py-lineno">414</tt>  <tt class="py-line"><tt class="py-docstring">            - 'msg' whether a debug message has been generated)</tt> </tt>
+<a name="L415"></a><tt class="py-lineno">415</tt>  <tt class="py-line"><tt class="py-docstring">    </tt> </tt>
+<a name="L416"></a><tt class="py-lineno">416</tt>  <tt class="py-line"><tt class="py-docstring">    @note:</tt> </tt>
+<a name="L417"></a><tt class="py-lineno">417</tt>  <tt class="py-line"><tt class="py-docstring">     </tt> </tt>
+<a name="L418"></a><tt class="py-lineno">418</tt>  <tt class="py-line"><tt class="py-docstring">    Seems to be the single wikimedia tag defining text content.</tt> </tt>
+<a name="L419"></a><tt class="py-lineno">419</tt>  <tt class="py-line"><tt class="py-docstring">       </tt> </tt>
+<a name="L420"></a><tt class="py-lineno">420</tt>  <tt class="py-line"><tt class="py-docstring">    Sort of, found some cases where this wasn't true,</tt> </tt>
+<a name="L421"></a><tt class="py-lineno">421</tt>  <tt class="py-line"><tt class="py-docstring">    for example: https://en.wikibooks.org/wiki/Special:Categories</tt> </tt>
+<a name="L422"></a><tt class="py-lineno">422</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L423"></a><tt class="py-lineno">423</tt>  <tt class="py-line">     </tt>
+<a name="L424"></a><tt class="py-lineno">424</tt>  <tt class="py-line">    <tt class="py-name">head</tt> <tt class="py-op">=</tt> <tt class="py-name">bl</tt><tt class="py-op">.</tt><tt class="py-name">find</tt><tt class="py-op">(</tt><tt class="py-string">'div'</tt><tt class="py-op">,</tt> <tt class="py-name">class_</tt><tt class="py-op">=</tt><tt class="py-string">'mw-parser-output'</tt><tt class="py-op">)</tt> </tt>
+<a name="L425"></a><tt class="py-lineno">425</tt>  <tt class="py-line">     </tt>
+<a name="L426"></a><tt class="py-lineno">426</tt>  <tt class="py-line">    <tt class="py-name">err</tt> <tt class="py-op">=</tt> <tt class="py-string">''</tt> </tt>
+<a name="L427"></a><tt class="py-lineno">427</tt>  <tt class="py-line">         </tt>
+<a name="L428"></a><tt class="py-lineno">428</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">head</tt><tt class="py-op">:</tt> </tt>
+<a name="L429"></a><tt class="py-lineno">429</tt>  <tt class="py-line">        <tt class="py-name">err</tt> <tt class="py-op">=</tt> <tt class="py-string">'bad_footnote: Can not find class=mw-parser-output in wiki text.'</tt> </tt>
+<a name="L430"></a><tt class="py-lineno">430</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">err</tt><tt class="py-op">,</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt> </tt>
+<a name="L431"></a><tt class="py-lineno">431</tt>  <tt class="py-line">     </tt>
+<a name="L432"></a><tt class="py-lineno">432</tt>  <tt class="py-line">    <tt class="py-name">words</tt><tt class="py-op">,</tt> <tt class="py-name">note_list</tt> <tt class="py-op">=</tt> <tt id="link-35" class="py-name" targets="Function w2ebGenText.GenTextWordsFromTags()=w2ebGenText-module.html#GenTextWordsFromTags"><a title="w2ebGenText.GenTextWordsFromTags" class="py-name" href="#" onclick="return doclink('link-35', 'GenTextWordsFromTags', 'link-35');">GenTextWordsFromTags</a></tt><tt class="py-op">(</tt><tt class="py-name">opts</tt><tt class="py-op">,</tt> <tt class="py-name">head</tt><tt class="py-op">,</tt> <tt class="py-name">False</tt><tt class="py-op">)</tt> </tt>
+<a name="L433"></a><tt class="py-lineno">433</tt>  <tt class="py-line">     </tt>
+<a name="L434"></a><tt class="py-lineno">434</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">words</tt> <tt class="py-op">&lt;</tt> <tt id="link-36" class="py-name"><a title="w2ebGenText.MIN_WORDS" class="py-name" href="#" onclick="return doclink('link-36', 'MIN_WORDS', 'link-5');">MIN_WORDS</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L435"></a><tt class="py-lineno">435</tt>  <tt class="py-line"> </tt>
+<a name="L436"></a><tt class="py-lineno">436</tt>  <tt class="py-line">        <tt class="py-name">err</tt> <tt class="py-op">=</tt> <tt class="py-string">'bad_footnote: Did not find enough text.'</tt> </tt>
+<a name="L437"></a><tt class="py-lineno">437</tt>  <tt class="py-line">        <tt id="link-37" class="py-name" targets="Function w2ebUtils.uPlog()=w2ebUtils-module.html#uPlog"><a title="w2ebUtils.uPlog" class="py-name" href="#" onclick="return doclink('link-37', 'uPlog', 'link-37');">uPlog</a></tt><tt class="py-op">(</tt><tt class="py-name">opts</tt><tt class="py-op">,</tt> <tt class="py-string">'Short footnote. Found %d words, need at least %d words.'</tt> <tt class="py-op">%</tt> </tt>
+<a name="L438"></a><tt class="py-lineno">438</tt>  <tt class="py-line">             <tt class="py-op">(</tt><tt class="py-name">words</tt><tt class="py-op">,</tt> <tt id="link-38" class="py-name"><a title="w2ebGenText.MIN_WORDS" class="py-name" href="#" onclick="return doclink('link-38', 'MIN_WORDS', 'link-5');">MIN_WORDS</a></tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L439"></a><tt class="py-lineno">439</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">words</tt> <tt class="py-op">&gt;</tt> <tt class="py-number">0</tt><tt class="py-op">:</tt>         </tt>
+<a name="L440"></a><tt class="py-lineno">440</tt>  <tt class="py-line">            <tt id="link-39" class="py-name"><a title="w2ebUtils.uPlog" class="py-name" href="#" onclick="return doclink('link-39', 'uPlog', 'link-37');">uPlog</a></tt><tt class="py-op">(</tt><tt class="py-name">opts</tt><tt class="py-op">,</tt> <tt class="py-string">'\n'</tt><tt class="py-op">,</tt> <tt class="py-name">note_list</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> <tt class="py-string">'\n'</tt><tt class="py-op">)</tt> </tt>
+<a name="L441"></a><tt class="py-lineno">441</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">err</tt><tt class="py-op">,</tt> <tt class="py-name">None</tt> </tt>
+<a name="L442"></a><tt class="py-lineno">442</tt>  <tt class="py-line">     </tt>
+<a name="L443"></a><tt class="py-lineno">443</tt>  <tt class="py-line">    <tt class="py-name">notes</tt> <tt class="py-op">=</tt> <tt class="py-name">opts</tt><tt class="py-op">[</tt><tt class="py-string">'notes'</tt><tt class="py-op">]</tt> </tt>
+<a name="L444"></a><tt class="py-lineno">444</tt>  <tt class="py-line">    <tt class="py-name">foot_title</tt> <tt class="py-op">=</tt> <tt class="py-name">opts</tt><tt class="py-op">[</tt><tt class="py-string">'footsect_name'</tt><tt class="py-op">]</tt> </tt>
+<a name="L445"></a><tt class="py-lineno">445</tt>  <tt class="py-line">    <tt class="py-name">url</tt> <tt class="py-op">=</tt> <tt class="py-name">opts</tt><tt class="py-op">[</tt><tt class="py-string">'url'</tt><tt class="py-op">]</tt> </tt>
+<a name="L446"></a><tt class="py-lineno">446</tt>  <tt class="py-line">     </tt>
+<a name="L447"></a><tt class="py-lineno">447</tt>  <tt class="py-line">    <tt class="py-name">foot_dict</tt> <tt class="py-op">=</tt> <tt id="link-40" class="py-name" targets="Function w2ebGenText.GenTextMakeFootDict()=w2ebGenText-module.html#GenTextMakeFootDict"><a title="w2ebGenText.GenTextMakeFootDict" class="py-name" href="#" onclick="return doclink('link-40', 'GenTextMakeFootDict', 'link-40');">GenTextMakeFootDict</a></tt><tt class="py-op">(</tt><tt class="py-name">opts</tt><tt class="py-op">,</tt> <tt class="py-name">note_list</tt><tt class="py-op">,</tt> <tt class="py-name">url</tt><tt class="py-op">,</tt> <tt class="py-name">foot_title</tt><tt class="py-op">,</tt> <tt class="py-name">notes</tt><tt class="py-op">)</tt> </tt>
+<a name="L448"></a><tt class="py-lineno">448</tt>  <tt class="py-line"> </tt>
+<a name="L449"></a><tt class="py-lineno">449</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">err</tt><tt class="py-op">,</tt> <tt class="py-name">foot_dict</tt> </tt>
+</div><a name="L450"></a><tt class="py-lineno">450</tt>  <tt class="py-line"> </tt>
+<a name="L451"></a><tt class="py-lineno">451</tt>  <tt class="py-line"> </tt>
+<a name="GenTextSummarizeFootNote"></a><div id="GenTextSummarizeFootNote-def"><a name="L452"></a><tt class="py-lineno">452</tt> <a class="py-toggle" href="#" id="GenTextSummarizeFootNote-toggle" onclick="return toggle('GenTextSummarizeFootNote');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="w2ebGenText-module.html#GenTextSummarizeFootNote">GenTextSummarizeFootNote</a><tt class="py-op">(</tt><tt class="py-param">opts</tt><tt class="py-op">,</tt> <tt class="py-param">bl</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GenTextSummarizeFootNote-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="GenTextSummarizeFootNote-expanded"><a name="L453"></a><tt class="py-lineno">453</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L454"></a><tt class="py-lineno">454</tt>  <tt class="py-line"><tt class="py-docstring">    Summarize the article represented by bl. Save a representation in the footnote dir.</tt> </tt>
+<a name="L455"></a><tt class="py-lineno">455</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L456"></a><tt class="py-lineno">456</tt>  <tt class="py-line"><tt class="py-docstring">    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()</tt> </tt>
+<a name="L457"></a><tt class="py-lineno">457</tt>  <tt class="py-line"><tt class="py-docstring">    @param bl:  Beautiful Soup representation of an HTML web page.</tt> </tt>
+<a name="L458"></a><tt class="py-lineno">458</tt>  <tt class="py-line"><tt class="py-docstring">    </tt> </tt>
+<a name="L459"></a><tt class="py-lineno">459</tt>  <tt class="py-line"><tt class="py-docstring">    @return: (err, or a dictionary of footnote items)</tt> </tt>
+<a name="L460"></a><tt class="py-lineno">460</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L461"></a><tt class="py-lineno">461</tt>  <tt class="py-line">     </tt>
+<a name="L462"></a><tt class="py-lineno">462</tt>  <tt class="py-line">    <tt class="py-name">err</tt><tt class="py-op">,</tt> <tt class="py-name">foot_dict</tt> <tt class="py-op">=</tt> <tt id="link-41" class="py-name" targets="Function w2ebGenText.GenTextFootNote()=w2ebGenText-module.html#GenTextFootNote"><a title="w2ebGenText.GenTextFootNote" class="py-name" href="#" onclick="return doclink('link-41', 'GenTextFootNote', 'link-41');">GenTextFootNote</a></tt><tt class="py-op">(</tt><tt class="py-name">opts</tt><tt class="py-op">,</tt> <tt class="py-name">bl</tt><tt class="py-op">)</tt> </tt>
+<a name="L463"></a><tt class="py-lineno">463</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">foot_dict</tt><tt class="py-op">:</tt> </tt>
+<a name="L464"></a><tt class="py-lineno">464</tt>  <tt class="py-line">        <tt class="py-name">fp</tt> <tt class="py-op">=</tt> <tt class="py-name">open</tt><tt class="py-op">(</tt><tt class="py-name">opts</tt><tt class="py-op">[</tt><tt class="py-string">'base_bodir'</tt><tt class="py-op">]</tt> <tt class="py-op">+</tt> <tt class="py-string">'/footnotes/'</tt> <tt class="py-op">+</tt> <tt class="py-name">foot_dict</tt><tt class="py-op">[</tt><tt class="py-string">'id_anch'</tt><tt class="py-op">]</tt> <tt class="py-op">+</tt> <tt class="py-string">'.json'</tt><tt class="py-op">,</tt> <tt class="py-string">'w'</tt><tt class="py-op">)</tt> </tt>
+<a name="L465"></a><tt class="py-lineno">465</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">fp</tt><tt class="py-op">:</tt> </tt>
+<a name="L466"></a><tt class="py-lineno">466</tt>  <tt class="py-line">            <tt class="py-name">json</tt><tt class="py-op">.</tt><tt class="py-name">dump</tt><tt class="py-op">(</tt><tt class="py-name">foot_dict</tt><tt class="py-op">,</tt> <tt class="py-name">fp</tt><tt class="py-op">)</tt> </tt>
+<a name="L467"></a><tt class="py-lineno">467</tt>  <tt class="py-line">            <tt class="py-name">fp</tt><tt class="py-op">.</tt><tt class="py-name">close</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L468"></a><tt class="py-lineno">468</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L469"></a><tt class="py-lineno">469</tt>  <tt class="py-line">            <tt id="link-42" class="py-name"><a title="w2ebUtils.uPlog" class="py-name" href="#" onclick="return doclink('link-42', 'uPlog', 'link-37');">uPlog</a></tt><tt class="py-op">(</tt><tt class="py-name">opts</tt><tt class="py-op">,</tt> <tt class="py-string">"Warning: unable to save footnote in cache, proceeding anyway"</tt><tt class="py-op">)</tt> </tt>
+<a name="L470"></a><tt class="py-lineno">470</tt>  <tt class="py-line"><tt class="py-comment"># Not being able to cache a file should maybe create just a warning.</tt> </tt>
+<a name="L471"></a><tt class="py-lineno">471</tt>  <tt class="py-line"> </tt>
+<a name="L472"></a><tt class="py-lineno">472</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">err</tt><tt class="py-op">,</tt> <tt class="py-name">foot_dict</tt> </tt>
+</div><a name="L473"></a><tt class="py-lineno">473</tt>  <tt class="py-line"> </tt>
+<a name="GenTextGetFootNote"></a><div id="GenTextGetFootNote-def"><a name="L474"></a><tt class="py-lineno">474</tt> <a class="py-toggle" href="#" id="GenTextGetFootNote-toggle" onclick="return toggle('GenTextGetFootNote');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="w2ebGenText-module.html#GenTextGetFootNote">GenTextGetFootNote</a><tt class="py-op">(</tt><tt class="py-param">opts</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="GenTextGetFootNote-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="GenTextGetFootNote-expanded"><a name="L475"></a><tt class="py-lineno">475</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L476"></a><tt class="py-lineno">476</tt>  <tt class="py-line"><tt class="py-docstring">    Footnotes are derived from entire articles, use the global fields in opts to generate a summary</tt> </tt>
+<a name="L477"></a><tt class="py-lineno">477</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L478"></a><tt class="py-lineno">478</tt>  <tt class="py-line"><tt class="py-docstring">    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()</tt> </tt>
+<a name="L479"></a><tt class="py-lineno">479</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L480"></a><tt class="py-lineno">480</tt>  <tt class="py-line"><tt class="py-docstring">    @return: </tt> </tt>
+<a name="L481"></a><tt class="py-lineno">481</tt>  <tt class="py-line"><tt class="py-docstring">        - err: None on success, a descriptive error otherwise</tt> </tt>
+<a name="L482"></a><tt class="py-lineno">482</tt>  <tt class="py-line"><tt class="py-docstring">        - foot_dict: Dictionary structure defining a footnote and note</tt> </tt>
+<a name="L483"></a><tt class="py-lineno">483</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L484"></a><tt class="py-lineno">484</tt>  <tt class="py-line">     </tt>
+<a name="L485"></a><tt class="py-lineno">485</tt>  <tt class="py-line">     </tt>
+<a name="L486"></a><tt class="py-lineno">486</tt>  <tt class="py-line">    <tt class="py-name">st_time</tt> <tt class="py-op">=</tt> <tt class="py-name">time</tt><tt class="py-op">.</tt><tt class="py-name">time</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L487"></a><tt class="py-lineno">487</tt>  <tt class="py-line">    <tt class="py-name">foot_dict</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt> </tt>
+<a name="L488"></a><tt class="py-lineno">488</tt>  <tt class="py-line">     </tt>
+<a name="L489"></a><tt class="py-lineno">489</tt>  <tt class="py-line">    <tt class="py-name">opts</tt><tt class="py-op">[</tt><tt class="py-string">'footsect_name'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">opts</tt><tt class="py-op">[</tt><tt class="py-string">'footsect_name'</tt><tt class="py-op">]</tt> </tt>
+<a name="L490"></a><tt class="py-lineno">490</tt>  <tt class="py-line">             </tt>
+<a name="L491"></a><tt class="py-lineno">491</tt>  <tt class="py-line">    <tt id="link-43" class="py-name" targets="Function w2ebUtils.uSysMkdir()=w2ebUtils-module.html#uSysMkdir"><a title="w2ebUtils.uSysMkdir" class="py-name" href="#" onclick="return doclink('link-43', 'uSysMkdir', 'link-43');">uSysMkdir</a></tt><tt class="py-op">(</tt><tt class="py-name">opts</tt><tt class="py-op">,</tt> <tt class="py-name">opts</tt><tt class="py-op">[</tt><tt class="py-string">'dcdir'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L492"></a><tt class="py-lineno">492</tt>  <tt class="py-line"> </tt>
+<a name="L493"></a><tt class="py-lineno">493</tt>  <tt class="py-line">    <tt class="py-name">err</tt><tt class="py-op">,</tt> <tt class="py-name">bl</tt><tt class="py-op">,</tt> <tt class="py-name">section_bname</tt> <tt class="py-op">=</tt> <tt id="link-44" class="py-name" targets="Function w2ebUtils.uGetHtml()=w2ebUtils-module.html#uGetHtml"><a title="w2ebUtils.uGetHtml" class="py-name" href="#" onclick="return doclink('link-44', 'uGetHtml', 'link-44');">uGetHtml</a></tt><tt class="py-op">(</tt><tt class="py-name">opts</tt><tt class="py-op">)</tt> </tt>
+<a name="L494"></a><tt class="py-lineno">494</tt>  <tt class="py-line">     </tt>
+<a name="L495"></a><tt class="py-lineno">495</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">err</tt><tt class="py-op">:</tt> </tt>
+<a name="L496"></a><tt class="py-lineno">496</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">err</tt><tt class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L497"></a><tt class="py-lineno">497</tt>  <tt class="py-line"> </tt>
+<a name="L498"></a><tt class="py-lineno">498</tt>  <tt class="py-line">    <tt id="link-45" class="py-name"><a title="w2ebUtils.uPlogExtra" class="py-name" href="#" onclick="return doclink('link-45', 'uPlogExtra', 'link-24');">uPlogExtra</a></tt><tt class="py-op">(</tt><tt class="py-name">opts</tt><tt class="py-op">,</tt> <tt class="py-string">'==&gt; Fetching Footnote Summary for "'</tt> <tt class="py-op">+</tt> <tt class="py-name">opts</tt><tt class="py-op">[</tt><tt class="py-string">'footsect_name'</tt><tt class="py-op">]</tt> <tt class="py-op">+</tt> <tt class="py-string">'"'</tt><tt class="py-op">,</tt> <tt class="py-number">3</tt><tt class="py-op">)</tt> </tt>
+<a name="L499"></a><tt class="py-lineno">499</tt>  <tt class="py-line">    <tt id="link-46" class="py-name"><a title="w2ebUtils.uPlogExtra" class="py-name" href="#" onclick="return doclink('link-46', 'uPlogExtra', 'link-24');">uPlogExtra</a></tt><tt class="py-op">(</tt><tt class="py-name">opts</tt><tt class="py-op">,</tt> <tt class="py-string">"Searching:"</tt> <tt class="py-op">+</tt> <tt class="py-name">opts</tt><tt class="py-op">[</tt><tt class="py-string">'url'</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> <tt class="py-number">3</tt><tt class="py-op">)</tt> </tt>
+<a name="L500"></a><tt class="py-lineno">500</tt>  <tt class="py-line">     </tt>
+<a name="L501"></a><tt class="py-lineno">501</tt>  <tt class="py-line">    <tt class="py-name">opts</tt><tt class="py-op">[</tt><tt class="py-string">'section_bname'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">section_bname</tt> </tt>
+<a name="L502"></a><tt class="py-lineno">502</tt>  <tt class="py-line">     </tt>
+<a name="L503"></a><tt class="py-lineno">503</tt>  <tt class="py-line">    <tt class="py-name">err</tt><tt class="py-op">,</tt> <tt class="py-name">foot_dict</tt> <tt class="py-op">=</tt> <tt id="link-47" class="py-name" targets="Function w2ebGenText.GenTextSummarizeFootNote()=w2ebGenText-module.html#GenTextSummarizeFootNote"><a title="w2ebGenText.GenTextSummarizeFootNote" class="py-name" href="#" onclick="return doclink('link-47', 'GenTextSummarizeFootNote', 'link-47');">GenTextSummarizeFootNote</a></tt><tt class="py-op">(</tt><tt class="py-name">opts</tt><tt class="py-op">,</tt> <tt class="py-name">bl</tt><tt class="py-op">)</tt> </tt>
+<a name="L504"></a><tt class="py-lineno">504</tt>  <tt class="py-line"> </tt>
+<a name="L505"></a><tt class="py-lineno">505</tt>  <tt class="py-line">    <tt class="py-keyword">assert</tt> <tt class="py-name">bool</tt><tt class="py-op">(</tt><tt class="py-name">err</tt><tt class="py-op">)</tt> <tt class="py-op">^</tt> <tt class="py-name">bool</tt><tt class="py-op">(</tt><tt class="py-name">foot_dict</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-string">"One of err or foot_dict should be defined"</tt>  </tt>
+<a name="L506"></a><tt class="py-lineno">506</tt>  <tt class="py-line"> </tt>
+<a name="L507"></a><tt class="py-lineno">507</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">err</tt><tt class="py-op">,</tt> <tt class="py-name">foot_dict</tt> </tt>
+</div><a name="L508"></a><tt class="py-lineno">508</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Sat Feb  1 10:27:20 2020
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

@@ -236,7 +236,6 @@ def GenTextWordsFromTags(opts, head, allow_refs):
     
     If a major heading is encountered before we have even seen MIN_WORDS, then
     
-    
     @return: (words - the total number of words found,
               note_list - a list of paragraphs to make notes or footnotes)
     """
@@ -292,17 +291,6 @@ def GenTextWordsFromTags(opts, head, allow_refs):
         note_list += [part_string]
 
     return words, note_list
-
-#
-# Kindle has a footnote feature where the footnote pops up on the screen instead
-# of behaving like a link. The feature does not work consistently. Sometimes
-# there is no pop-up, at other times the popup is there, but it includes too many
-# footnotes.
-#
-# Popups seem to be triggered by references that include backlinks. Our backlink
-# is intentionally separated from our anchor to disable this feature. 
-#
-
 
 def GenTextLongAndShort(note_list, id_anch, url, foot_title,
                             notes, note0, num):
@@ -367,14 +355,22 @@ def GenTextMakeFootDict(opts, note_list, url, foot_title, notes):
     @param notes: if == 'never', only generate the footnote, not the long note
     
     @return: foot_dict - a structure with several standard entries
-    """
-    # Kindle has a footnote feature where it creates a small box on top of the
-    # text where the footnote appears, however, it doesn't work consistently.
-    # A boolean is included to enable it one day, but for not it simply doesn't
-    # work. The backlink needs to be kept separate from the id to disable it.
-    # keeping them together only sometimes enables it, and often the Kindle can't
-    # seem to find the end of the footnote.
     
+    @note:
+    Kindle has a footnote feature where it creates a small box on top of the
+    text where the footnote appears, however, it doesn't work consistently.
+    Sometimes there is no pop-up, at other times the popup is there, but
+    it includes too many footnotes.
+
+    @note:
+    A boolean is included to enable it one day, but for not it simply doesn't
+    work. The backlink needs to be kept separate from the id to disable it.
+    keeping them together only sometimes enables it, and often the Kindle can't
+    seem to find the end of the footnote.
+    
+    Popups seem to be triggered by references that include backlinks. Our backlink
+    is intentionally separated from our anchor to disable this feature. 
+    """
 
     note0 = GenTextShortFoot(note_list[0])
 
@@ -406,20 +402,24 @@ def GenTextFootNote(opts, bl):
     @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
     @param bl:  Beautiful Soup representation of an HTML web page.
     
-    @return: (err - any error,
-              foot_dict - a structure with 4 fields
-                        - 'short_foot' short versions of a footnote
-                        - 'long_foot' long versions of a footnote
-                        - 'foot_title' name of the footnote, usually the link
-                        - 'id_anch' return anchor for the footnote
-                        - 'msg' whether a debug message has been generated)
-    """
+    @return: 
+        - err: any error,
+        - foot_dict: a structure with several fields
+        
+    @note: foot_dict structure
+            - 'short_foot' short versions of a footnote
+            - 'long_foot' long versions of a footnote
+            - 'foot_title' name of the footnote, usually the link
+            - 'id_anch' return anchor for the footnote
+            - 'msg' whether a debug message has been generated)
+    
+    @note:
      
-    # seems to be the single wikimedia tag defining text content
-    #    
-    # sort of, found some cases where this wasn't true,
-    # for example: https://en.wikibooks.org/wiki/Special:Categories
-    # Lets erase the output file, treat it as a bust
+    Seems to be the single wikimedia tag defining text content.
+       
+    Sort of, found some cases where this wasn't true,
+    for example: https://en.wikibooks.org/wiki/Special:Categories
+    """
     
     head = bl.find('div', class_='mw-parser-output')
     
@@ -477,8 +477,9 @@ def GenTextGetFootNote(opts):
 
     @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
 
-    @return: - err: None on success, a descriptive error otherwise
-             - foot_dict: Dictionary structure defining a footnote and note
+    @return: 
+        - err: None on success, a descriptive error otherwise
+        - foot_dict: Dictionary structure defining a footnote and note
     """
     
     

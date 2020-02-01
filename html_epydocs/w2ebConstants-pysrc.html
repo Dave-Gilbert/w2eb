@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>w2ebConstants</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        Module&nbsp;w2ebConstants
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="w2ebConstants-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="w2ebConstants-module.html">Module w2ebConstants</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-docstring">"""</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-docstring">@summary:      W2EB - A tool for converting Wikipedia articles into ebooks.</tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-docstring">@author:       Dave Gilbert</tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-docstring">@contact:      dave.wm.gilbert@gmail.com</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-docstring">@license:      GPLv3</tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-docstring">@requires:     Python 2.7, wget, Image Magick's convert, Beautiful Soup, Calibre</tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-docstring">@since:        2019.04.10 </tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-docstring">@version:      0.3</tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-docstring">"""</tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Module w2ebUtils=w2ebUtils-module.html"><a title="w2ebUtils" class="py-name" href="#" onclick="return doclink('link-0', 'w2ebUtils', 'link-0');">w2ebUtils</a></tt> <tt class="py-keyword">import</tt> <tt class="py-op">*</tt> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"><tt class="py-comment"># All output is stored under the following directory</tt> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"><tt id="link-1" class="py-name" targets="Variable w2ebConstants.BASE_DIR=w2ebConstants-module.html#BASE_DIR,Variable w2ebFinal.BASE_DIR=w2ebFinal-module.html#BASE_DIR,Variable w2ebGenText.BASE_DIR=w2ebGenText-module.html#BASE_DIR,Variable w2ebMain.BASE_DIR=w2ebMain-module.html#BASE_DIR,Variable w2ebPic.BASE_DIR=w2ebPic-module.html#BASE_DIR,Variable w2ebTOC.BASE_DIR=w2ebTOC-module.html#BASE_DIR"><a title="w2ebConstants.BASE_DIR
+w2ebFinal.BASE_DIR
+w2ebGenText.BASE_DIR
+w2ebMain.BASE_DIR
+w2ebPic.BASE_DIR
+w2ebTOC.BASE_DIR" class="py-name" href="#" onclick="return doclink('link-1', 'BASE_DIR', 'link-1');">BASE_DIR</a></tt> <tt class="py-op">=</tt> <tt class="py-string">'/home/gilbert/Projects_Recent/wiki_books'</tt> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line"><tt class="py-comment"># Some temp files are created as part of image conversion. Store them here:</tt> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line"><tt id="link-2" class="py-name" targets="Variable w2ebConstants.TMP_DIR=w2ebConstants-module.html#TMP_DIR,Variable w2ebFinal.TMP_DIR=w2ebFinal-module.html#TMP_DIR,Variable w2ebGenText.TMP_DIR=w2ebGenText-module.html#TMP_DIR,Variable w2ebMain.TMP_DIR=w2ebMain-module.html#TMP_DIR,Variable w2ebPic.TMP_DIR=w2ebPic-module.html#TMP_DIR,Variable w2ebTOC.TMP_DIR=w2ebTOC-module.html#TMP_DIR"><a title="w2ebConstants.TMP_DIR
+w2ebFinal.TMP_DIR
+w2ebGenText.TMP_DIR
+w2ebMain.TMP_DIR
+w2ebPic.TMP_DIR
+w2ebTOC.TMP_DIR" class="py-name" href="#" onclick="return doclink('link-2', 'TMP_DIR', 'link-2');">TMP_DIR</a></tt> <tt class="py-op">=</tt> <tt class="py-string">'/tmp/'</tt> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line"> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line"><tt id="link-3" class="py-name" targets="Variable w2ebConstants.WGET_OPTS=w2ebConstants-module.html#WGET_OPTS,Variable w2ebFinal.WGET_OPTS=w2ebFinal-module.html#WGET_OPTS,Variable w2ebGenText.WGET_OPTS=w2ebGenText-module.html#WGET_OPTS,Variable w2ebMain.WGET_OPTS=w2ebMain-module.html#WGET_OPTS,Variable w2ebPic.WGET_OPTS=w2ebPic-module.html#WGET_OPTS,Variable w2ebTOC.WGET_OPTS=w2ebTOC-module.html#WGET_OPTS"><a title="w2ebConstants.WGET_OPTS
+w2ebFinal.WGET_OPTS
+w2ebGenText.WGET_OPTS
+w2ebMain.WGET_OPTS
+w2ebPic.WGET_OPTS
+w2ebTOC.WGET_OPTS" class="py-name" href="#" onclick="return doclink('link-3', 'WGET_OPTS', 'link-3');">WGET_OPTS</a></tt> <tt class="py-op">=</tt> <tt class="py-string">""" \</tt> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line"><tt class="py-string"> --timeout=10 \</tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line"><tt class="py-string"> --tries=2 \</tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line"><tt class="py-string"> --html-extension \</tt> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line"><tt class="py-string"> --restrict-file-names=unix \</tt> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line"><tt class="py-string"> --page-requisites \</tt> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line"><tt class="py-string"> -k \</tt> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line"><tt class="py-string"> --no-parent \</tt> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line"><tt class="py-string"> --backups=0 \</tt> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line"><tt class="py-string"> --level=0 \</tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line"><tt class="py-string"> """</tt> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line"> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line"><tt class="py-comment"># wget has a habit of creating backups which is confusing for us when we are looking</tt> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line"><tt class="py-comment"># for exactly one .html file. Seems that we can't have '-k' without backups, so ..</tt> </tt>
+<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line"><tt class="py-comment"># set the limit to 0</tt> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line"> </tt>
+<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line"><tt class="py-comment"># Would like to use -nc, but it conflicts with -k, not sure why we need the conversion</tt> </tt>
+<a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line"> </tt>
+<a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line"><tt class="py-comment"># Page requisites doesn't work. We don't know why.</tt> </tt>
+<a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line"><tt class="py-comment"># We only get a single page and must manually download</tt> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line"><tt class="py-comment"># links etc. </tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line"> </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line"><tt class="py-comment"># kindle pixel dimesions</tt> </tt>
+<a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line"> </tt>
+<a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line"><tt id="link-4" class="py-name" targets="Variable w2ebConstants.WMAX=w2ebConstants-module.html#WMAX,Variable w2ebFinal.WMAX=w2ebFinal-module.html#WMAX,Variable w2ebGenText.WMAX=w2ebGenText-module.html#WMAX,Variable w2ebMain.WMAX=w2ebMain-module.html#WMAX,Variable w2ebPic.WMAX=w2ebPic-module.html#WMAX,Variable w2ebTOC.WMAX=w2ebTOC-module.html#WMAX"><a title="w2ebConstants.WMAX
+w2ebFinal.WMAX
+w2ebGenText.WMAX
+w2ebMain.WMAX
+w2ebPic.WMAX
+w2ebTOC.WMAX" class="py-name" href="#" onclick="return doclink('link-4', 'WMAX', 'link-4');">WMAX</a></tt> <tt class="py-op">=</tt> <tt class="py-number">580</tt> </tt>
+<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line"><tt id="link-5" class="py-name" targets="Variable w2ebConstants.HMAX=w2ebConstants-module.html#HMAX,Variable w2ebFinal.HMAX=w2ebFinal-module.html#HMAX,Variable w2ebGenText.HMAX=w2ebGenText-module.html#HMAX,Variable w2ebMain.HMAX=w2ebMain-module.html#HMAX,Variable w2ebPic.HMAX=w2ebPic-module.html#HMAX,Variable w2ebTOC.HMAX=w2ebTOC-module.html#HMAX"><a title="w2ebConstants.HMAX
+w2ebFinal.HMAX
+w2ebGenText.HMAX
+w2ebMain.HMAX
+w2ebPic.HMAX
+w2ebTOC.HMAX" class="py-name" href="#" onclick="return doclink('link-5', 'HMAX', 'link-5');">HMAX</a></tt> <tt class="py-op">=</tt> <tt class="py-number">790</tt> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line"> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line"><tt class="py-comment"># set HMAX to be a little less than full height so we always have some room for text</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line"><tt id="link-6" class="py-name"><a title="w2ebConstants.HMAX
+w2ebFinal.HMAX
+w2ebGenText.HMAX
+w2ebMain.HMAX
+w2ebPic.HMAX
+w2ebTOC.HMAX" class="py-name" href="#" onclick="return doclink('link-6', 'HMAX', 'link-5');">HMAX</a></tt> <tt class="py-op">=</tt> <tt class="py-name">int</tt><tt class="py-op">(</tt><tt class="py-number">.85</tt> <tt class="py-op">*</tt> <tt id="link-7" class="py-name"><a title="w2ebConstants.HMAX
+w2ebFinal.HMAX
+w2ebGenText.HMAX
+w2ebMain.HMAX
+w2ebPic.HMAX
+w2ebTOC.HMAX" class="py-name" href="#" onclick="return doclink('link-7', 'HMAX', 'link-5');">HMAX</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line"> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line"><tt class="py-comment"># Don't scale images to a size smaller than this unless</tt> </tt>
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line"><tt class="py-comment"># the source image is actually this small</tt> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line"><tt id="link-8" class="py-name" targets="Variable w2ebConstants.MIN_IMAGEpxW=w2ebConstants-module.html#MIN_IMAGEpxW,Variable w2ebFinal.MIN_IMAGEpxW=w2ebFinal-module.html#MIN_IMAGEpxW,Variable w2ebGenText.MIN_IMAGEpxW=w2ebGenText-module.html#MIN_IMAGEpxW,Variable w2ebMain.MIN_IMAGEpxW=w2ebMain-module.html#MIN_IMAGEpxW,Variable w2ebPic.MIN_IMAGEpxW=w2ebPic-module.html#MIN_IMAGEpxW,Variable w2ebTOC.MIN_IMAGEpxW=w2ebTOC-module.html#MIN_IMAGEpxW"><a title="w2ebConstants.MIN_IMAGEpxW
+w2ebFinal.MIN_IMAGEpxW
+w2ebGenText.MIN_IMAGEpxW
+w2ebMain.MIN_IMAGEpxW
+w2ebPic.MIN_IMAGEpxW
+w2ebTOC.MIN_IMAGEpxW" class="py-name" href="#" onclick="return doclink('link-8', 'MIN_IMAGEpxW', 'link-8');">MIN_IMAGEpxW</a></tt> <tt class="py-op">=</tt> <tt id="link-9" class="py-name"><a title="w2ebConstants.WMAX
+w2ebFinal.WMAX
+w2ebGenText.WMAX
+w2ebMain.WMAX
+w2ebPic.WMAX
+w2ebTOC.WMAX" class="py-name" href="#" onclick="return doclink('link-9', 'WMAX', 'link-4');">WMAX</a></tt> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line"> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line"> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line"><tt class="py-comment"># Factor to scale math formulas by, expressed in 'ex' meaning:</tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line"><tt class="py-comment"># Relative to the x-height of the current font (rarely used)</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line"><tt class="py-comment"># We like to see about 30 rows on a Kindle with 1/2 space between</tt> </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line"><tt class="py-comment"># so maybe HMAX / 30?</tt> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line"><tt class="py-comment"># </tt> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line"><tt class="py-comment"># A value of 10 give a rough height of 20 pixels, which is a bit small,</tt> </tt>
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line"><tt class="py-comment"># and mathe equations tend to look bad on this level. Recommend 25 be used.</tt> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line"><tt class="py-comment"># Screen dot pitch is 92, Kindle dpi = 167, so whatever we see on the screen</tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line"><tt class="py-comment"># will be about 1/3rd smaller on the Kindle</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line"> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line"><tt id="link-10" class="py-name" targets="Variable w2ebConstants.IM_SCALEex=w2ebConstants-module.html#IM_SCALEex,Variable w2ebFinal.IM_SCALEex=w2ebFinal-module.html#IM_SCALEex,Variable w2ebGenText.IM_SCALEex=w2ebGenText-module.html#IM_SCALEex,Variable w2ebMain.IM_SCALEex=w2ebMain-module.html#IM_SCALEex,Variable w2ebPic.IM_SCALEex=w2ebPic-module.html#IM_SCALEex,Variable w2ebTOC.IM_SCALEex=w2ebTOC-module.html#IM_SCALEex"><a title="w2ebConstants.IM_SCALEex
+w2ebFinal.IM_SCALEex
+w2ebGenText.IM_SCALEex
+w2ebMain.IM_SCALEex
+w2ebPic.IM_SCALEex
+w2ebTOC.IM_SCALEex" class="py-name" href="#" onclick="return doclink('link-10', 'IM_SCALEex', 'link-10');">IM_SCALEex</a></tt> <tt class="py-op">=</tt> <tt class="py-number">25</tt> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line"> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line"><tt class="py-comment"># Otherwise we assume dimensions are in pixels, meant for a display</tt> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line"><tt class="py-comment"># so we should at least double them.  </tt> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line"> </tt>
+<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line"><tt id="link-11" class="py-name" targets="Variable w2ebConstants.IM_SCALEpx=w2ebConstants-module.html#IM_SCALEpx,Variable w2ebFinal.IM_SCALEpx=w2ebFinal-module.html#IM_SCALEpx,Variable w2ebGenText.IM_SCALEpx=w2ebGenText-module.html#IM_SCALEpx,Variable w2ebMain.IM_SCALEpx=w2ebMain-module.html#IM_SCALEpx,Variable w2ebPic.IM_SCALEpx=w2ebPic-module.html#IM_SCALEpx,Variable w2ebTOC.IM_SCALEpx=w2ebTOC-module.html#IM_SCALEpx"><a title="w2ebConstants.IM_SCALEpx
+w2ebFinal.IM_SCALEpx
+w2ebGenText.IM_SCALEpx
+w2ebMain.IM_SCALEpx
+w2ebPic.IM_SCALEpx
+w2ebTOC.IM_SCALEpx" class="py-name" href="#" onclick="return doclink('link-11', 'IM_SCALEpx', 'link-11');">IM_SCALEpx</a></tt> <tt class="py-op">=</tt> <tt class="py-number">3</tt> </tt>
+<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line"><tt id="link-12" class="py-name" targets="Variable w2ebConstants.IM_SCALEperc=w2ebConstants-module.html#IM_SCALEperc,Variable w2ebFinal.IM_SCALEperc=w2ebFinal-module.html#IM_SCALEperc,Variable w2ebGenText.IM_SCALEperc=w2ebGenText-module.html#IM_SCALEperc,Variable w2ebMain.IM_SCALEperc=w2ebMain-module.html#IM_SCALEperc,Variable w2ebPic.IM_SCALEperc=w2ebPic-module.html#IM_SCALEperc,Variable w2ebTOC.IM_SCALEperc=w2ebTOC-module.html#IM_SCALEperc"><a title="w2ebConstants.IM_SCALEperc
+w2ebFinal.IM_SCALEperc
+w2ebGenText.IM_SCALEperc
+w2ebMain.IM_SCALEperc
+w2ebPic.IM_SCALEperc
+w2ebTOC.IM_SCALEperc" class="py-name" href="#" onclick="return doclink('link-12', 'IM_SCALEperc', 'link-12');">IM_SCALEperc</a></tt> <tt class="py-op">=</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">int</tt><tt class="py-op">(</tt><tt id="link-13" class="py-name"><a title="w2ebConstants.IM_SCALEpx
+w2ebFinal.IM_SCALEpx
+w2ebGenText.IM_SCALEpx
+w2ebMain.IM_SCALEpx
+w2ebPic.IM_SCALEpx
+w2ebTOC.IM_SCALEpx" class="py-name" href="#" onclick="return doclink('link-13', 'IM_SCALEpx', 'link-11');">IM_SCALEpx</a></tt> <tt class="py-op">*</tt> <tt class="py-number">100</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt class="py-string">'%'</tt> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line"> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line"> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line"><tt class="py-comment"># don't scale by more than MAX_SCALEpx times to get a MIN_IMAGEpx</tt> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line"> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line"><tt id="link-14" class="py-name" targets="Variable w2ebConstants.MAX_SCALEpx=w2ebConstants-module.html#MAX_SCALEpx,Variable w2ebFinal.MAX_SCALEpx=w2ebFinal-module.html#MAX_SCALEpx,Variable w2ebGenText.MAX_SCALEpx=w2ebGenText-module.html#MAX_SCALEpx,Variable w2ebMain.MAX_SCALEpx=w2ebMain-module.html#MAX_SCALEpx,Variable w2ebPic.MAX_SCALEpx=w2ebPic-module.html#MAX_SCALEpx,Variable w2ebTOC.MAX_SCALEpx=w2ebTOC-module.html#MAX_SCALEpx"><a title="w2ebConstants.MAX_SCALEpx
+w2ebFinal.MAX_SCALEpx
+w2ebGenText.MAX_SCALEpx
+w2ebMain.MAX_SCALEpx
+w2ebPic.MAX_SCALEpx
+w2ebTOC.MAX_SCALEpx" class="py-name" href="#" onclick="return doclink('link-14', 'MAX_SCALEpx', 'link-14');">MAX_SCALEpx</a></tt> <tt class="py-op">=</tt> <tt class="py-number">4</tt> </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line"> </tt>
+<a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line"><tt class="py-comment"># A footnote link must have at least this many words to be included.</tt> </tt>
+<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line"><tt class="py-comment"># we start looking for a natural end from here, i.e. a period or paragraph</tt> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line"> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line"><tt id="link-15" class="py-name" targets="Variable w2ebConstants.MIN_WORDS=w2ebConstants-module.html#MIN_WORDS,Variable w2ebFinal.MIN_WORDS=w2ebFinal-module.html#MIN_WORDS,Variable w2ebGenText.MIN_WORDS=w2ebGenText-module.html#MIN_WORDS,Variable w2ebMain.MIN_WORDS=w2ebMain-module.html#MIN_WORDS,Variable w2ebPic.MIN_WORDS=w2ebPic-module.html#MIN_WORDS,Variable w2ebTOC.MIN_WORDS=w2ebTOC-module.html#MIN_WORDS"><a title="w2ebConstants.MIN_WORDS
+w2ebFinal.MIN_WORDS
+w2ebGenText.MIN_WORDS
+w2ebMain.MIN_WORDS
+w2ebPic.MIN_WORDS
+w2ebTOC.MIN_WORDS" class="py-name" href="#" onclick="return doclink('link-15', 'MIN_WORDS', 'link-15');">MIN_WORDS</a></tt> <tt class="py-op">=</tt> <tt class="py-number">15</tt> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line"> </tt>
+<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line"><tt class="py-comment"># Maximum footnote length is 4 * min_words</tt> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line"> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line"> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line"> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line"><tt class="py-comment"># We collect as many as MAX_PAR pargraphs for the detailed note section</tt> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line"> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line"><tt id="link-16" class="py-name" targets="Variable w2ebConstants.NOTE_MAX_PAR=w2ebConstants-module.html#NOTE_MAX_PAR,Variable w2ebFinal.NOTE_MAX_PAR=w2ebFinal-module.html#NOTE_MAX_PAR,Variable w2ebGenText.NOTE_MAX_PAR=w2ebGenText-module.html#NOTE_MAX_PAR,Variable w2ebMain.NOTE_MAX_PAR=w2ebMain-module.html#NOTE_MAX_PAR,Variable w2ebPic.NOTE_MAX_PAR=w2ebPic-module.html#NOTE_MAX_PAR,Variable w2ebTOC.NOTE_MAX_PAR=w2ebTOC-module.html#NOTE_MAX_PAR"><a title="w2ebConstants.NOTE_MAX_PAR
+w2ebFinal.NOTE_MAX_PAR
+w2ebGenText.NOTE_MAX_PAR
+w2ebMain.NOTE_MAX_PAR
+w2ebPic.NOTE_MAX_PAR
+w2ebTOC.NOTE_MAX_PAR" class="py-name" href="#" onclick="return doclink('link-16', 'NOTE_MAX_PAR', 'link-16');">NOTE_MAX_PAR</a></tt> <tt class="py-op">=</tt> <tt class="py-number">10</tt> </tt>
+<a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line"> </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line"><tt class="py-comment"># When searching for a Table of contents we prefer old TOC locations, or </tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line"><tt class="py-comment"># headings that say TOC. If we don't see anything like this after several</tt> </tt>
+<a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line"><tt class="py-comment"># paragraphs we simply insert our TOC at the beginning.#</tt> </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line"> </tt>
+<a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line"><tt id="link-17" class="py-name" targets="Variable w2ebConstants.TOC_MAX_PAR=w2ebConstants-module.html#TOC_MAX_PAR,Variable w2ebFinal.TOC_MAX_PAR=w2ebFinal-module.html#TOC_MAX_PAR,Variable w2ebGenText.TOC_MAX_PAR=w2ebGenText-module.html#TOC_MAX_PAR,Variable w2ebMain.TOC_MAX_PAR=w2ebMain-module.html#TOC_MAX_PAR,Variable w2ebPic.TOC_MAX_PAR=w2ebPic-module.html#TOC_MAX_PAR,Variable w2ebTOC.TOC_MAX_PAR=w2ebTOC-module.html#TOC_MAX_PAR"><a title="w2ebConstants.TOC_MAX_PAR
+w2ebFinal.TOC_MAX_PAR
+w2ebGenText.TOC_MAX_PAR
+w2ebMain.TOC_MAX_PAR
+w2ebPic.TOC_MAX_PAR
+w2ebTOC.TOC_MAX_PAR" class="py-name" href="#" onclick="return doclink('link-17', 'TOC_MAX_PAR', 'link-17');">TOC_MAX_PAR</a></tt> <tt class="py-op">=</tt> <tt class="py-number">10</tt> </tt>
+<a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line"> </tt>
+<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line"><tt class="py-comment"># footnotes must have no more than 10 paragraphs</tt> </tt>
+<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line"> </tt>
+<a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line"><tt id="link-18" class="py-name" targets="Variable w2ebConstants.MAX_PARAGRAPH=w2ebConstants-module.html#MAX_PARAGRAPH,Variable w2ebFinal.MAX_PARAGRAPH=w2ebFinal-module.html#MAX_PARAGRAPH,Variable w2ebGenText.MAX_PARAGRAPH=w2ebGenText-module.html#MAX_PARAGRAPH,Variable w2ebMain.MAX_PARAGRAPH=w2ebMain-module.html#MAX_PARAGRAPH,Variable w2ebPic.MAX_PARAGRAPH=w2ebPic-module.html#MAX_PARAGRAPH,Variable w2ebTOC.MAX_PARAGRAPH=w2ebTOC-module.html#MAX_PARAGRAPH"><a title="w2ebConstants.MAX_PARAGRAPH
+w2ebFinal.MAX_PARAGRAPH
+w2ebGenText.MAX_PARAGRAPH
+w2ebMain.MAX_PARAGRAPH
+w2ebPic.MAX_PARAGRAPH
+w2ebTOC.MAX_PARAGRAPH" class="py-name" href="#" onclick="return doclink('link-18', 'MAX_PARAGRAPH', 'link-18');">MAX_PARAGRAPH</a></tt> <tt class="py-op">=</tt> <tt class="py-number">10</tt> </tt>
+<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line"> </tt>
+<a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line"><tt id="link-19" class="py-name" targets="Variable w2ebConstants.IMAGE_PIC=w2ebConstants-module.html#IMAGE_PIC,Variable w2ebFinal.IMAGE_PIC=w2ebFinal-module.html#IMAGE_PIC,Variable w2ebGenText.IMAGE_PIC=w2ebGenText-module.html#IMAGE_PIC,Variable w2ebMain.IMAGE_PIC=w2ebMain-module.html#IMAGE_PIC,Variable w2ebPic.IMAGE_PIC=w2ebPic-module.html#IMAGE_PIC,Variable w2ebTOC.IMAGE_PIC=w2ebTOC-module.html#IMAGE_PIC"><a title="w2ebConstants.IMAGE_PIC
+w2ebFinal.IMAGE_PIC
+w2ebGenText.IMAGE_PIC
+w2ebMain.IMAGE_PIC
+w2ebPic.IMAGE_PIC
+w2ebTOC.IMAGE_PIC" class="py-name" href="#" onclick="return doclink('link-19', 'IMAGE_PIC', 'link-19');">IMAGE_PIC</a></tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-string">'.jpg'</tt><tt class="py-op">,</tt> <tt class="py-string">'.JPG'</tt><tt class="py-op">,</tt> <tt class="py-string">'jpeg'</tt><tt class="py-op">,</tt> <tt class="py-string">'JPEG'</tt><tt class="py-op">]</tt> </tt>
+<a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line"><tt id="link-20" class="py-name" targets="Variable w2ebConstants.IMAGE_FIG=w2ebConstants-module.html#IMAGE_FIG,Variable w2ebFinal.IMAGE_FIG=w2ebFinal-module.html#IMAGE_FIG,Variable w2ebGenText.IMAGE_FIG=w2ebGenText-module.html#IMAGE_FIG,Variable w2ebMain.IMAGE_FIG=w2ebMain-module.html#IMAGE_FIG,Variable w2ebPic.IMAGE_FIG=w2ebPic-module.html#IMAGE_FIG,Variable w2ebTOC.IMAGE_FIG=w2ebTOC-module.html#IMAGE_FIG"><a title="w2ebConstants.IMAGE_FIG
+w2ebFinal.IMAGE_FIG
+w2ebGenText.IMAGE_FIG
+w2ebMain.IMAGE_FIG
+w2ebPic.IMAGE_FIG
+w2ebTOC.IMAGE_FIG" class="py-name" href="#" onclick="return doclink('link-20', 'IMAGE_FIG', 'link-20');">IMAGE_FIG</a></tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-string">'.gif'</tt><tt class="py-op">,</tt> <tt class="py-string">'.GIF'</tt><tt class="py-op">,</tt> <tt class="py-string">'.png'</tt><tt class="py-op">,</tt> <tt class="py-string">'.PNG'</tt><tt class="py-op">]</tt> </tt>
+<a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line"><tt id="link-21" class="py-name" targets="Variable w2ebConstants.IMAGE_SVG=w2ebConstants-module.html#IMAGE_SVG,Variable w2ebFinal.IMAGE_SVG=w2ebFinal-module.html#IMAGE_SVG,Variable w2ebGenText.IMAGE_SVG=w2ebGenText-module.html#IMAGE_SVG,Variable w2ebMain.IMAGE_SVG=w2ebMain-module.html#IMAGE_SVG,Variable w2ebPic.IMAGE_SVG=w2ebPic-module.html#IMAGE_SVG,Variable w2ebTOC.IMAGE_SVG=w2ebTOC-module.html#IMAGE_SVG"><a title="w2ebConstants.IMAGE_SVG
+w2ebFinal.IMAGE_SVG
+w2ebGenText.IMAGE_SVG
+w2ebMain.IMAGE_SVG
+w2ebPic.IMAGE_SVG
+w2ebTOC.IMAGE_SVG" class="py-name" href="#" onclick="return doclink('link-21', 'IMAGE_SVG', 'link-21');">IMAGE_SVG</a></tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-string">'.svg'</tt><tt class="py-op">,</tt> <tt class="py-string">'.SVG'</tt><tt class="py-op">]</tt> </tt>
+<a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line"><tt id="link-22" class="py-name" targets="Variable w2ebConstants.SUFFIX_OT=w2ebConstants-module.html#SUFFIX_OT,Variable w2ebFinal.SUFFIX_OT=w2ebFinal-module.html#SUFFIX_OT,Variable w2ebGenText.SUFFIX_OT=w2ebGenText-module.html#SUFFIX_OT,Variable w2ebMain.SUFFIX_OT=w2ebMain-module.html#SUFFIX_OT,Variable w2ebPic.SUFFIX_OT=w2ebPic-module.html#SUFFIX_OT,Variable w2ebTOC.SUFFIX_OT=w2ebTOC-module.html#SUFFIX_OT"><a title="w2ebConstants.SUFFIX_OT
+w2ebFinal.SUFFIX_OT
+w2ebGenText.SUFFIX_OT
+w2ebMain.SUFFIX_OT
+w2ebPic.SUFFIX_OT
+w2ebTOC.SUFFIX_OT" class="py-name" href="#" onclick="return doclink('link-22', 'SUFFIX_OT', 'link-22');">SUFFIX_OT</a></tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-string">'.ico'</tt><tt class="py-op">,</tt> <tt class="py-string">'.php'</tt><tt class="py-op">,</tt> <tt class="py-string">'.pdf'</tt><tt class="py-op">,</tt> <tt class="py-string">'.PDF'</tt><tt class="py-op">]</tt> </tt>
+<a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line"> </tt>
+<a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line"><tt class="py-comment"># There are a few bad images that we see regularly... </tt> </tt>
+<a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line"><tt id="link-23" class="py-name" targets="Variable w2ebConstants.IMAGE_AVOID=w2ebConstants-module.html#IMAGE_AVOID,Variable w2ebFinal.IMAGE_AVOID=w2ebFinal-module.html#IMAGE_AVOID,Variable w2ebGenText.IMAGE_AVOID=w2ebGenText-module.html#IMAGE_AVOID,Variable w2ebMain.IMAGE_AVOID=w2ebMain-module.html#IMAGE_AVOID,Variable w2ebPic.IMAGE_AVOID=w2ebPic-module.html#IMAGE_AVOID,Variable w2ebTOC.IMAGE_AVOID=w2ebTOC-module.html#IMAGE_AVOID"><a title="w2ebConstants.IMAGE_AVOID
+w2ebFinal.IMAGE_AVOID
+w2ebGenText.IMAGE_AVOID
+w2ebMain.IMAGE_AVOID
+w2ebPic.IMAGE_AVOID
+w2ebTOC.IMAGE_AVOID" class="py-name" href="#" onclick="return doclink('link-23', 'IMAGE_AVOID', 'link-23');">IMAGE_AVOID</a></tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-string">'Special:CentralAutoLogin'</tt><tt class="py-op">]</tt> </tt>
+<a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line"> </tt>
+<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line"><tt class="py-comment"># There are a few bad links that always fail, just filter them </tt> </tt>
+<a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line"><tt id="link-24" class="py-name" targets="Variable w2ebConstants.LINK_AVOID=w2ebConstants-module.html#LINK_AVOID,Variable w2ebFinal.LINK_AVOID=w2ebFinal-module.html#LINK_AVOID,Variable w2ebGenText.LINK_AVOID=w2ebGenText-module.html#LINK_AVOID,Variable w2ebMain.LINK_AVOID=w2ebMain-module.html#LINK_AVOID,Variable w2ebPic.LINK_AVOID=w2ebPic-module.html#LINK_AVOID,Variable w2ebTOC.LINK_AVOID=w2ebTOC-module.html#LINK_AVOID"><a title="w2ebConstants.LINK_AVOID
+w2ebFinal.LINK_AVOID
+w2ebGenText.LINK_AVOID
+w2ebMain.LINK_AVOID
+w2ebPic.LINK_AVOID
+w2ebTOC.LINK_AVOID" class="py-name" href="#" onclick="return doclink('link-24', 'LINK_AVOID', 'link-24');">LINK_AVOID</a></tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-string">'Special:BookSources'</tt><tt class="py-op">]</tt> </tt>
+<a name="L128"></a><tt class="py-lineno">128</tt>  <tt class="py-line"> </tt>
+<a name="L129"></a><tt class="py-lineno">129</tt>  <tt class="py-line"> </tt>
+<a name="L130"></a><tt class="py-lineno">130</tt>  <tt class="py-line"><tt id="link-25" class="py-name" targets="Variable w2ebConstants.W2EBID=w2ebConstants-module.html#W2EBID,Variable w2ebFinal.W2EBID=w2ebFinal-module.html#W2EBID,Variable w2ebGenText.W2EBID=w2ebGenText-module.html#W2EBID,Variable w2ebMain.W2EBID=w2ebMain-module.html#W2EBID,Variable w2ebPic.W2EBID=w2ebPic-module.html#W2EBID,Variable w2ebTOC.W2EBID=w2ebTOC-module.html#W2EBID"><a title="w2ebConstants.W2EBID
+w2ebFinal.W2EBID
+w2ebGenText.W2EBID
+w2ebMain.W2EBID
+w2ebPic.W2EBID
+w2ebTOC.W2EBID" class="py-name" href="#" onclick="return doclink('link-25', 'W2EBID', 'link-25');">W2EBID</a></tt> <tt class="py-op">=</tt> <tt class="py-string">'w2eb_base_id'</tt> </tt>
+<a name="L131"></a><tt class="py-lineno">131</tt>  <tt class="py-line"><tt id="link-26" class="py-name" targets="Variable w2ebConstants.W2EBRI=w2ebConstants-module.html#W2EBRI,Variable w2ebFinal.W2EBRI=w2ebFinal-module.html#W2EBRI,Variable w2ebGenText.W2EBRI=w2ebGenText-module.html#W2EBRI,Variable w2ebMain.W2EBRI=w2ebMain-module.html#W2EBRI,Variable w2ebPic.W2EBRI=w2ebPic-module.html#W2EBRI,Variable w2ebTOC.W2EBRI=w2ebTOC-module.html#W2EBRI"><a title="w2ebConstants.W2EBRI
+w2ebFinal.W2EBRI
+w2ebGenText.W2EBRI
+w2ebMain.W2EBRI
+w2ebPic.W2EBRI
+w2ebTOC.W2EBRI" class="py-name" href="#" onclick="return doclink('link-26', 'W2EBRI', 'link-26');">W2EBRI</a></tt> <tt class="py-op">=</tt> <tt class="py-string">'w2eb_ret_'</tt> </tt>
+<a name="L132"></a><tt class="py-lineno">132</tt>  <tt class="py-line"><tt id="link-27" class="py-name" targets="Variable w2ebConstants.W2EB_BLM=w2ebConstants-module.html#W2EB_BLM,Variable w2ebFinal.W2EB_BLM=w2ebFinal-module.html#W2EB_BLM,Variable w2ebGenText.W2EB_BLM=w2ebGenText-module.html#W2EB_BLM,Variable w2ebMain.W2EB_BLM=w2ebMain-module.html#W2EB_BLM,Variable w2ebPic.W2EB_BLM=w2ebPic-module.html#W2EB_BLM,Variable w2ebTOC.W2EB_BLM=w2ebTOC-module.html#W2EB_BLM"><a title="w2ebConstants.W2EB_BLM
+w2ebFinal.W2EB_BLM
+w2ebGenText.W2EB_BLM
+w2ebMain.W2EB_BLM
+w2ebPic.W2EB_BLM
+w2ebTOC.W2EB_BLM" class="py-name" href="#" onclick="return doclink('link-27', 'W2EB_BLM', 'link-27');">W2EB_BLM</a></tt> <tt class="py-op">=</tt> <tt class="py-string">'W2EB_BACK_LINK_LIST_GOES_HERE'</tt> </tt>
+<a name="L133"></a><tt class="py-lineno">133</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L134"></a><tt class="py-lineno">134</tt>  <tt class="py-line"><tt class="py-comment"># I'm still struggling with this on. Basic example:</tt> </tt>
+<a name="L135"></a><tt class="py-lineno">135</tt>  <tt class="py-line"><tt class="py-comment"># x=u'\x139'</tt> </tt>
+<a name="L136"></a><tt class="py-lineno">136</tt>  <tt class="py-line"><tt class="py-comment"># print x   &lt;--- gives us a funny symbol</tt> </tt>
+<a name="L137"></a><tt class="py-lineno">137</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L138"></a><tt class="py-lineno">138</tt>  <tt class="py-line"><tt class="py-comment"># https://www.tutorialspoint.com/python/string_encode.htm</tt> </tt>
+<a name="L139"></a><tt class="py-lineno">139</tt>  <tt class="py-line"> </tt>
+<a name="L140"></a><tt class="py-lineno">140</tt>  <tt class="py-line"><tt class="py-comment"># https://docs.python.org/2/library/codecs.html#codec-base-classes</tt> </tt>
+<a name="L141"></a><tt class="py-lineno">141</tt>  <tt class="py-line"><tt class="py-comment"># and</tt> </tt>
+<a name="L142"></a><tt class="py-lineno">142</tt>  <tt class="py-line"><tt class="py-comment"># https://docs.python.org/2/library/codecs.html#standard-encodings</tt> </tt>
+<a name="L143"></a><tt class="py-lineno">143</tt>  <tt class="py-line"> </tt>
+<a name="L144"></a><tt class="py-lineno">144</tt>  <tt class="py-line"> </tt>
+<a name="L145"></a><tt class="py-lineno">145</tt>  <tt class="py-line"><tt class="py-comment"># Punctuation symbols are used to end summaries and headings in reasonable ways</tt> </tt>
+<a name="L146"></a><tt class="py-lineno">146</tt>  <tt class="py-line"><tt class="py-comment"># rather than just cutting them off. Once a word threshold is reached several </tt> </tt>
+<a name="L147"></a><tt class="py-lineno">147</tt>  <tt class="py-line"><tt class="py-comment"># functions start looking for one of these symbols to wrap up a summary. </tt> </tt>
+<a name="L148"></a><tt class="py-lineno">148</tt>  <tt class="py-line"> </tt>
+<a name="L149"></a><tt class="py-lineno">149</tt>  <tt class="py-line"><tt id="link-28" class="py-name" targets="Variable w2ebConstants.Punc1=w2ebConstants-module.html#Punc1,Variable w2ebFinal.Punc1=w2ebFinal-module.html#Punc1,Variable w2ebGenText.Punc1=w2ebGenText-module.html#Punc1,Variable w2ebMain.Punc1=w2ebMain-module.html#Punc1,Variable w2ebPic.Punc1=w2ebPic-module.html#Punc1,Variable w2ebTOC.Punc1=w2ebTOC-module.html#Punc1"><a title="w2ebConstants.Punc1
+w2ebFinal.Punc1
+w2ebGenText.Punc1
+w2ebMain.Punc1
+w2ebPic.Punc1
+w2ebTOC.Punc1" class="py-name" href="#" onclick="return doclink('link-28', 'Punc1', 'link-28');">Punc1</a></tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-string">'.'</tt><tt class="py-op">,</tt><tt class="py-string">'?'</tt><tt class="py-op">,</tt><tt class="py-string">'!'</tt><tt class="py-op">]</tt>           <tt class="py-comment"># good way to end a sentence</tt> </tt>
+<a name="L150"></a><tt class="py-lineno">150</tt>  <tt class="py-line"><tt id="link-29" class="py-name" targets="Variable w2ebConstants.Punc2=w2ebConstants-module.html#Punc2,Variable w2ebFinal.Punc2=w2ebFinal-module.html#Punc2,Variable w2ebGenText.Punc2=w2ebGenText-module.html#Punc2,Variable w2ebMain.Punc2=w2ebMain-module.html#Punc2,Variable w2ebPic.Punc2=w2ebPic-module.html#Punc2,Variable w2ebTOC.Punc2=w2ebTOC-module.html#Punc2"><a title="w2ebConstants.Punc2
+w2ebFinal.Punc2
+w2ebGenText.Punc2
+w2ebMain.Punc2
+w2ebPic.Punc2
+w2ebTOC.Punc2" class="py-name" href="#" onclick="return doclink('link-29', 'Punc2', 'link-29');">Punc2</a></tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-string">','</tt><tt class="py-op">,</tt> <tt class="py-string">':'</tt><tt class="py-op">,</tt> <tt class="py-string">';'</tt><tt class="py-op">]</tt>        <tt class="py-comment"># less good</tt> </tt>
+<a name="L151"></a><tt class="py-lineno">151</tt>  <tt class="py-line"><tt id="link-30" class="py-name" targets="Variable w2ebConstants.Punc3=w2ebConstants-module.html#Punc3,Variable w2ebFinal.Punc3=w2ebFinal-module.html#Punc3,Variable w2ebGenText.Punc3=w2ebGenText-module.html#Punc3,Variable w2ebMain.Punc3=w2ebMain-module.html#Punc3,Variable w2ebPic.Punc3=w2ebPic-module.html#Punc3,Variable w2ebTOC.Punc3=w2ebTOC-module.html#Punc3"><a title="w2ebConstants.Punc3
+w2ebFinal.Punc3
+w2ebGenText.Punc3
+w2ebMain.Punc3
+w2ebPic.Punc3
+w2ebTOC.Punc3" class="py-name" href="#" onclick="return doclink('link-30', 'Punc3', 'link-30');">Punc3</a></tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-string">')'</tt><tt class="py-op">,</tt><tt class="py-string">']'</tt><tt class="py-op">,</tt><tt class="py-string">'}'</tt><tt class="py-op">,</tt><tt class="py-string">'&gt;'</tt><tt class="py-op">]</tt>       <tt class="py-comment"># ...</tt> </tt>
+<a name="L152"></a><tt class="py-lineno">152</tt>  <tt class="py-line"><tt id="link-31" class="py-name" targets="Variable w2ebConstants.Punc4=w2ebConstants-module.html#Punc4,Variable w2ebFinal.Punc4=w2ebFinal-module.html#Punc4,Variable w2ebGenText.Punc4=w2ebGenText-module.html#Punc4,Variable w2ebMain.Punc4=w2ebMain-module.html#Punc4,Variable w2ebPic.Punc4=w2ebPic-module.html#Punc4,Variable w2ebTOC.Punc4=w2ebTOC-module.html#Punc4"><a title="w2ebConstants.Punc4
+w2ebFinal.Punc4
+w2ebGenText.Punc4
+w2ebMain.Punc4
+w2ebPic.Punc4
+w2ebTOC.Punc4" class="py-name" href="#" onclick="return doclink('link-31', 'Punc4', 'link-31');">Punc4</a></tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-string">'@'</tt><tt class="py-op">,</tt><tt class="py-string">'#'</tt><tt class="py-op">,</tt><tt class="py-string">'$'</tt><tt class="py-op">,</tt><tt class="py-string">'/'</tt><tt class="py-op">,</tt><tt class="py-string">'\\'</tt><tt class="py-op">,</tt> <tt class="py-string">'%'</tt><tt class="py-op">,</tt><tt class="py-string">'^'</tt><tt class="py-op">,</tt><tt class="py-string">'&amp;'</tt><tt class="py-op">,</tt><tt class="py-string">'*'</tt><tt class="py-op">,</tt><tt class="py-string">'('</tt><tt class="py-op">,</tt><tt class="py-string">'['</tt><tt class="py-op">,</tt><tt class="py-string">'{'</tt><tt class="py-op">,</tt><tt class="py-string">'&lt;'</tt><tt class="py-op">]</tt> </tt>
+<a name="L153"></a><tt class="py-lineno">153</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Sun Jul 21 19:51:15 2019
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

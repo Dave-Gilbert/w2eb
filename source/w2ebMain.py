@@ -276,6 +276,7 @@ def MainUpdateHTMLTag(opts, bl, tag_href, foot_dict, href):
 
     @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
     @param bl:  Beautiful Soup representation of an HTML web page.
+    @param tag_href: B Soup object representing a tag with an "href" attribute   
     @param foot_dict: Dictionary storing details for notes and footnotes    
     @param tag_href: B Soup object representing a tag with an "href" attribute    
 
@@ -382,12 +383,13 @@ def MainPickFootVsSect(opts, tag_href):
     @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
     @param tag_href: B Soup object representing a tag with an "href" attribute    
     
-    @return: (err - any detecte errors
-              url - the url with any associated '#' anch removed
-              anch - empty or the urls anchor
-              footnote - boolean, True if a footnote, false if a section
-              foot_title - The name of the footnote or section
-              id_anch - The base string for constructing anchors.)
+    @return: 
+        - err: any detecte errors
+        - url: the url with any associated '#' anch removed
+        - anch: empty or the urls anchor
+        - footnote: boolean, True if a footnote, false if a section
+        - foot_title: The name of the footnote or section
+        - id_anch: The base string for constructing anchors.)
               
     @note: id_anch has multiple functions. It is the base id for this tag,
           hence the location that footnote will link to bring us
@@ -904,9 +906,10 @@ def Main(opts):
     
     @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
     
-    @return: (err: message or code explaining failure
-              foot_dict_list: List of footnotes represented by dictionaries
-              sect_label_href_list:  List of sections by label and href)
+    @return: 
+        - err: message or code explaining failure
+        - foot_dict_list: List of footnotes represented by dictionaries
+        - sect_label_href_list:  List of sections by label and href)
     """
     st_time = time.time()
     foot_dict_list = []

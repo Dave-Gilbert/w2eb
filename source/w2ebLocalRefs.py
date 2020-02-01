@@ -153,6 +153,16 @@ def LocalGenFootDict(opts, tag_href, foot_title,
 def LocalReuseArticleFnote(opts, bl, tag_href):
     """
     Recognize and merge Wikipedia footnotes with our own.
+
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param bl:  Beautiful Soup representation of an HTML web page.
+    @param tag_href: B Soup object representing a tag with an "href" attribute
+    
+    @return: 
+        - err: string message describing failures
+        - foot_dict: Dictionary storing details for notes and footnotes
+        - tag_parent: Footnote parent tag, used for cleaning up old tags
+        
     
     @note: Assume any refernce that starts '#cit_ref' is to a wikipedia footnote.
     """
@@ -198,6 +208,10 @@ def LocalAndRecognized(opts, tag_href):
     """
     Recognize and merge Wikipedia local references with our own, if we can.
     
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param tag_href: B Soup object representing a tag with an "href" attribute
+    @return: True if we can find a jump link in the reference, i.e. '#'
+    
     @note: Assume any refernce that starts '#cit_ref' is to a wikipedia footnote.
     """
 
@@ -219,16 +233,20 @@ def LocalAndRecognized(opts, tag_href):
         anch = url.split('#')[1] 
     else:
         return False
-    
-#    if 'cite' in anch:
-#        print "YYYa", bname, opts['section_bname'], anch
-    
+        
     if bname.lower() in opts['section_bname'].lower() and anch[0:9] == 'cite_note':
         return True
     
     return False
 
 def LocalReuse(opts, bl):
+    """
+    There are often multiple references in the text to a single footnote, merge and reuse where possible
+    
+    @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
+    @param bl:  Beautiful Soup representation of an HTML web page.
+   
+    """
 
     foot_dict_list = []
     i = 0
@@ -272,7 +290,6 @@ def LocalReuse(opts, bl):
         if i % 25 == 0:
             p_total_est_time = uPrintProgress(opts, st_time, i,
                                               im_all, p_total_est_time)
-
         uPlogNr(opts, psym)
         i = i + 1
         sys.stdout.flush()
@@ -295,14 +312,5 @@ def LocalReuse(opts, bl):
         
     opts['stats_r'] = r
     return foot_dict_list
-
-
-
-
-
-
-
-
-
 
 

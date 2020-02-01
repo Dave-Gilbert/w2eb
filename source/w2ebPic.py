@@ -218,10 +218,10 @@ def PicFixPixelDims(bl, img_tag):
         p2.extract()
         center_tag.append(p2)
 
-png_bw = ' -colorspace Gray -depth 4 -colors 16 '
-jpg_bw = ' -colorspace Gray '
-resize = ' -resize "' + str(WMAX) + 'x' + str(HMAX) + '>" '
-convcmd = 'convert -background "#FFFFFF" -flatten '
+PNG_BW = ' -colorspace Gray -depth 4 -colors 16 '
+JPG_BW = ' -colorspace Gray '
+RESIZE = ' -resize "' + str(WMAX) + 'x' + str(HMAX) + '>" '
+CONVCMD = 'convert -background "#FFFFFF" -flatten '
 
 def PicConvertSVGcmd(opts, image_file, dosvg2png):
     """
@@ -229,6 +229,7 @@ def PicConvertSVGcmd(opts, image_file, dosvg2png):
     
     @param opts: Dictionary of common CLI parameters. See StartupGetOptions()
     @param image_file: the base file name of the image.
+    @param dosvg2png: force the conversion of SVG files to PNG, faster to skip this
     @return: error string if any, null otherwise
     
     @note: spawns the external convert command
@@ -240,9 +241,9 @@ def PicConvertSVGcmd(opts, image_file, dosvg2png):
     
     wxh = PicGetSvgDims(opts, l1)
 
-    png_conv = convcmd
+    png_conv = CONVCMD
     if opts['bw_images']:
-        png_conv = convcmd + png_bw
+        png_conv = CONVCMD + PNG_BW
                                 
     if l1[0:4] == "<svg":
 
@@ -262,7 +263,7 @@ def PicConvertSVGcmd(opts, image_file, dosvg2png):
                         ' -quality 75 ' + '"' + opts['bodir'] + '/' + image_file + 
                         '.svg" ' + '"' + opts['bodir'] + '/' + image_file + '.png"', False)
             else:
-                err = uSysCmd(opts, png_conv + resize + ' -quality 75 ' + opts['bodir'] + 
+                err = uSysCmd(opts, png_conv + RESIZE + ' -quality 75 ' + opts['bodir'] + 
                           '/"' + image_file + '.svg" ' + opts['bodir'] + 
                           '/"' + image_file + '.png"', False)
 
@@ -329,17 +330,17 @@ def PicConvertImage(opts, image_file, suff):
     # sometimes we fail to get the file. The most common reason
     # is complicated escape sequences. XXX should fix
 
-    png_conv = convcmd
-    jpg_conv = convcmd
+    png_conv = CONVCMD
+    jpg_conv = CONVCMD
     
     if opts['bw_images']:
-        png_conv = convcmd + png_bw
-        jpg_conv = convcmd + jpg_bw
+        png_conv = CONVCMD + PNG_BW
+        jpg_conv = CONVCMD + JPG_BW
 
     pid = str(os.getpid())
 
     if suff in IMAGE_FIG:
-        err = uSysCmd(opts, png_conv + '-resize ' + IM_SCALEperc + resize + 
+        err = uSysCmd(opts, png_conv + '-resize ' + IM_SCALEperc + RESIZE + 
                       '-quality 75 ' + '"' + opts['bodir'] + '/' + image_file +
                       '" ' +TMP_DIR + '/conv_' + pid + '.png', False)
         if not err:
@@ -348,7 +349,7 @@ def PicConvertImage(opts, image_file, suff):
                           opts['bodir'] + '/' + image_file + '"', False)
 
     elif suff in IMAGE_PIC:
-        err = uSysCmd(opts, jpg_conv + '-resize ' + IM_SCALEperc + resize +
+        err = uSysCmd(opts, jpg_conv + '-resize ' + IM_SCALEperc + RESIZE +
                       '-quality 75 ' + '"' + opts['bodir'] + '/' + image_file +
                       '" ' + TMP_DIR + '/conv_' + 'pid' + '.jpg', False)
         if not err:

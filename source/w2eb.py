@@ -17,11 +17,10 @@ from w2ebStartup import Startup
 from w2ebMain import Main
 
 #
-# All output is stored under the following directory
+# By default we put output in the current directory. Override this with '-b'
 #
 
-BASE_DIR = '/home/gilbert/Projects_Recent/wiki_books'  # XXX for debugging, my personal output dir
-# BASE_DIR = '.'
+BASE_DIR = '.'
 
 def SignalHandlerCtrlC(sig, frame):
     """

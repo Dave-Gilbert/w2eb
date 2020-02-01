@@ -1,0 +1,893 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>w2ebPic</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        Module&nbsp;w2ebPic
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="w2ebPic-module.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== MODULE DESCRIPTION ==================== -->
+<h1 class="epydoc">Module w2ebPic</h1><p class="nomargin-top"><span class="codelink"><a href="w2ebPic-pysrc.html">source&nbsp;code</a></span></p>
+<hr />
+<div class="fields">      <p><strong>Author:</strong>
+        Dave Gilbert
+      </p>
+      <p><strong>Contact:</strong>
+        dave.wm.gilbert@gmail.com
+      </p>
+      <p><strong>License:</strong>
+        GPLv3
+      </p>
+      <p><strong>Requires:</strong>
+        Python 2.7, wget, Image Magick's convert, Beautiful Soup, Calibre
+      </p>
+      <p><strong>Since:</strong>
+        2019.04.10
+      </p>
+      <p><strong>Version:</strong>
+        0.3
+      </p>
+</div><!-- ==================== FUNCTIONS ==================== -->
+<a name="section-Functions"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Functions</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Functions"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebPic-module.html#PicGetImage" class="summary-sig-name">PicGetImage</a>(<span class="summary-sig-arg">opts</span>,
+        <span class="summary-sig-arg">url</span>,
+        <span class="summary-sig-arg">image_file</span>)</span><br />
+      Fetch image file from &quot;url&quot; save to output file name 
+      &quot;image_file&quot;</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebPic-pysrc.html#PicGetImage">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebPic-module.html#PicGetSvgDims" class="summary-sig-name">PicGetSvgDims</a>(<span class="summary-sig-arg">opts</span>,
+        <span class="summary-sig-arg">str_line</span>)</span><br />
+      Read the dimensions of an SVG file</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebPic-pysrc.html#PicGetSvgDims">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebPic-module.html#PicFixPixelDims" class="summary-sig-name">PicFixPixelDims</a>(<span class="summary-sig-arg">bl</span>,
+        <span class="summary-sig-arg">img_tag</span>)</span><br />
+      Scale an image so it fits reasonably on our device</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebPic-pysrc.html#PicFixPixelDims">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebPic-module.html#PicConvertSVGcmd" class="summary-sig-name">PicConvertSVGcmd</a>(<span class="summary-sig-arg">opts</span>,
+        <span class="summary-sig-arg">image_file</span>,
+        <span class="summary-sig-arg">dosvg2png</span>)</span><br />
+      Convert a SVG file to a PNG file</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebPic-pysrc.html#PicConvertSVGcmd">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebPic-module.html#PicConvertSVG" class="summary-sig-name">PicConvertSVG</a>(<span class="summary-sig-arg">opts</span>,
+        <span class="summary-sig-arg">image_file</span>,
+        <span class="summary-sig-arg">image_url</span>,
+        <span class="summary-sig-arg">convert</span>,
+        <span class="summary-sig-arg">dosvg2png</span>)</span><br />
+      Returns:
+      error if any</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebPic-pysrc.html#PicConvertSVG">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebPic-module.html#PicConvertImage" class="summary-sig-name">PicConvertImage</a>(<span class="summary-sig-arg">opts</span>,
+        <span class="summary-sig-arg">image_file</span>,
+        <span class="summary-sig-arg">suff</span>)</span><br />
+      Returns:
+      error if any, a single character version of suff</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebPic-pysrc.html#PicConvertImage">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebPic-module.html#PicIdentifyImageType" class="summary-sig-name">PicIdentifyImageType</a>(<span class="summary-sig-arg">opts</span>,
+        <span class="summary-sig-arg">image_url</span>,
+        <span class="summary-sig-arg">image_file</span>)</span><br />
+      Use the unix file command to identify images</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebPic-pysrc.html#PicIdentifyImageType">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebPic-module.html#PicGetUrlFileName" class="summary-sig-name">PicGetUrlFileName</a>(<span class="summary-sig-arg">opts</span>,
+        <span class="summary-sig-arg">img_tag</span>)</span><br />
+      extract from the tag the image url, and a file name to save it to</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebPic-pysrc.html#PicGetUrlFileName">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebPic-module.html#estimate_runtime" class="summary-sig-name">estimate_runtime</a>(<span class="summary-sig-arg">bl</span>)</span><br />
+      Count all the images in the page, estimate a run time</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebPic-pysrc.html#estimate_runtime">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebPic-module.html#PicImType" class="summary-sig-name">PicImType</a>(<span class="summary-sig-arg">suff</span>)</span><br />
+      Convert image suffix to a single character</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebPic-pysrc.html#PicImType">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebPic-module.html#PicGetImages" class="summary-sig-name">PicGetImages</a>(<span class="summary-sig-arg">opts</span>,
+        <span class="summary-sig-arg">bl</span>)</span><br />
+      Get all the images for the current web page, convert to PNG if 
+      necessary</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebPic-pysrc.html#PicGetImages">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES ==================== -->
+<a name="section-Variables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Variables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="IMAGE_AVOID"></a><span class="summary-name">IMAGE_AVOID</span> = <code title="['Special:CentralAutoLogin']"><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">Special:CentralAutoLogin</code><code class="variable-quote">'</code><code class="variable-group">]</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="TMP_DIR"></a><span class="summary-name">TMP_DIR</span> = <code title="'/tmp/'"><code class="variable-quote">'</code><code class="variable-string">/tmp/</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="PNG_BW"></a><span class="summary-name">PNG_BW</span> = <code title="' -colorspace Gray -depth 4 -colors 16 '"><code class="variable-quote">'</code><code class="variable-string"> -colorspace Gray -depth 4 -colors 16 </code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="JPG_BW"></a><span class="summary-name">JPG_BW</span> = <code title="' -colorspace Gray '"><code class="variable-quote">'</code><code class="variable-string"> -colorspace Gray </code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="RESIZE"></a><span class="summary-name">RESIZE</span> = <code title="' -resize &quot;580x671&gt;&quot; '"><code class="variable-quote">'</code><code class="variable-string"> -resize &quot;580x671&gt;&quot; </code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="CONVCMD"></a><span class="summary-name">CONVCMD</span> = <code title="'convert -background &quot;#FFFFFF&quot; -flatten '"><code class="variable-quote">'</code><code class="variable-string">convert -background &quot;#FFFFFF&quot; -flatten </code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="G_our_print_version_file"></a><span class="summary-name">G_our_print_version_file</span> = <code title="''"><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="HMAX"></a><span class="summary-name">HMAX</span> = <code title="671">671</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="IMAGE_FIG"></a><span class="summary-name">IMAGE_FIG</span> = <code title="['.gif', '.GIF', '.png', '.PNG']"><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">.gif</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">.GIF</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">.png</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">.PNG</code><code class="variable-quote">'</code><code class="variable-group">]</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="IMAGE_PIC"></a><span class="summary-name">IMAGE_PIC</span> = <code title="['.jpg', '.JPG', 'jpeg', 'JPEG']"><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">.jpg</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">.JPG</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">jpeg</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">JPEG</code><code class="variable-quote">'</code><code class="variable-group">]</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="IMAGE_SVG"></a><span class="summary-name">IMAGE_SVG</span> = <code title="['.svg', '.SVG']"><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">.svg</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">.SVG</code><code class="variable-quote">'</code><code class="variable-group">]</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="IM_SCALEex"></a><span class="summary-name">IM_SCALEex</span> = <code title="25">25</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="IM_SCALEperc"></a><span class="summary-name">IM_SCALEperc</span> = <code title="'300%'"><code class="variable-quote">'</code><code class="variable-string">300%</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="IM_SCALEpx"></a><span class="summary-name">IM_SCALEpx</span> = <code title="3">3</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="MAX_SCALEpx"></a><span class="summary-name">MAX_SCALEpx</span> = <code title="4">4</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="MIN_IMAGEpxW"></a><span class="summary-name">MIN_IMAGEpxW</span> = <code title="580">580</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="SUFFIX_OT"></a><span class="summary-name">SUFFIX_OT</span> = <code title="['.ico', '.php', '.pdf', '.PDF']"><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">.ico</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">.php</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">.pdf</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">.PDF</code><code class="variable-quote">'</code><code class="variable-group">]</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="W2EBID"></a><span class="summary-name">W2EBID</span> = <code title="'w2eb_base_id'"><code class="variable-quote">'</code><code class="variable-string">w2eb_base_id</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="W2EBRI"></a><span class="summary-name">W2EBRI</span> = <code title="'w2eb_ret_'"><code class="variable-quote">'</code><code class="variable-string">w2eb_ret_</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="W2EB_BLM"></a><span class="summary-name">W2EB_BLM</span> = <code title="'W2EB_BACK_LINK_LIST_GOES_HERE'"><code class="variable-quote">'</code><code class="variable-string">W2EB_BACK_LINK_LIST_GOES_HERE</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="w2ebPic-module.html#WGET_OPTS" class="summary-name">WGET_OPTS</a> = <code title="'  --timeout=10  --tries=2  --html-extension  --restrict-file-names=un\
+ix  --page-requisites  -k  --no-parent  --backups=0  --level=0  '"><code class="variable-quote">'</code><code class="variable-string">  --timeout=10  --tries=2  --html-extension  --re</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="WMAX"></a><span class="summary-name">WMAX</span> = <code title="580">580</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__package__"></a><span class="summary-name">__package__</span> = <code title="None">None</code>
+    </td>
+  </tr>
+</table>
+<!-- ==================== FUNCTION DETAILS ==================== -->
+<a name="section-FunctionDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Function Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-FunctionDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="PicGetImage"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">PicGetImage</span>(<span class="sig-arg">opts</span>,
+        <span class="sig-arg">url</span>,
+        <span class="sig-arg">image_file</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebPic-pysrc.html#PicGetImage">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Fetch image file from &quot;url&quot; save to output file name 
+  &quot;image_file&quot;</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>opts</code></strong> - Dictionary of common CLI parameters. See StartupGetOptions()</li>
+        <li><strong class="pname"><code>url</code></strong> - url containing image</li>
+        <li><strong class="pname"><code>image_file</code></strong> - where to write the file</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="PicGetSvgDims"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">PicGetSvgDims</span>(<span class="sig-arg">opts</span>,
+        <span class="sig-arg">str_line</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebPic-pysrc.html#PicGetSvgDims">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Read the dimensions of an SVG file</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>opts</code></strong> - Dictionary of common CLI parameters. See StartupGetOptions()</li>
+        <li><strong class="pname"><code>str_line</code></strong> - string portion of SVG file that contains the parameters,</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>(retval - a string encoding &lt;w&gt;x&lt;h&gt;)</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="PicFixPixelDims"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">PicFixPixelDims</span>(<span class="sig-arg">bl</span>,
+        <span class="sig-arg">img_tag</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebPic-pysrc.html#PicFixPixelDims">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Scale an image so it fits reasonably on our device</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>bl</code></strong> - Beautiful Soup representation of an HTML web page.</li>
+        <li><strong class="pname"><code>img_tag</code></strong> - B Soup representation of an HTML img tag</li>
+    </ul></dd>
+  </dl>
+<div class="fields">      <p><strong>Note:</strong>
+        Sometimes the image has lots of resolution but the Page specifies 
+        it to be really small.
+        <p>If the reported image width is &gt;&gt; MIN_IMAGE_W &gt;&gt; 
+        display  width then adjust accordingly.</p>
+      </p>
+</div></td></tr></table>
+</div>
+<a name="PicConvertSVGcmd"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">PicConvertSVGcmd</span>(<span class="sig-arg">opts</span>,
+        <span class="sig-arg">image_file</span>,
+        <span class="sig-arg">dosvg2png</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebPic-pysrc.html#PicConvertSVGcmd">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Convert a SVG file to a PNG file</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>opts</code></strong> - Dictionary of common CLI parameters. See StartupGetOptions()</li>
+        <li><strong class="pname"><code>image_file</code></strong> - the base file name of the image.</li>
+        <li><strong class="pname"><code>dosvg2png</code></strong> - force the conversion of SVG files to PNG, faster to skip this</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>error string if any, null otherwise</dd>
+  </dl>
+<div class="fields">      <p><strong>Note:</strong>
+        spawns the external convert command
+      </p>
+</div></td></tr></table>
+</div>
+<a name="PicConvertSVG"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">PicConvertSVG</span>(<span class="sig-arg">opts</span>,
+        <span class="sig-arg">image_file</span>,
+        <span class="sig-arg">image_url</span>,
+        <span class="sig-arg">convert</span>,
+        <span class="sig-arg">dosvg2png</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebPic-pysrc.html#PicConvertSVG">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>opts</code></strong> - Dictionary of common CLI parameters. See StartupGetOptions()</li>
+        <li><strong class="pname"><code>image_file</code></strong> - the base file name of the image.</li>
+        <li><strong class="pname"><code>convert</code></strong> - number of images converted so far</li>
+        <li><strong class="pname"><code>dosvg2png</code></strong> - convert svg to png files</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>error if any</dd>
+  </dl>
+<div class="fields">      <p><strong>Note:</strong>
+        if the file has already been converted, then don't do anything 
+        unless dosvg2png is set. If file hasn't been downloaded, then fetch
+        it.
+      </p>
+</div></td></tr></table>
+</div>
+<a name="PicConvertImage"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">PicConvertImage</span>(<span class="sig-arg">opts</span>,
+        <span class="sig-arg">image_file</span>,
+        <span class="sig-arg">suff</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebPic-pysrc.html#PicConvertImage">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>opts</code></strong> - Dictionary of common CLI parameters. See StartupGetOptions()</li>
+        <li><strong class="pname"><code>image_file</code></strong> - the base file name of the image.</li>
+        <li><strong class="pname"><code>suff</code></strong> - the image file suffix</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>error if any, a single character version of suff</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="PicIdentifyImageType"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">PicIdentifyImageType</span>(<span class="sig-arg">opts</span>,
+        <span class="sig-arg">image_url</span>,
+        <span class="sig-arg">image_file</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebPic-pysrc.html#PicIdentifyImageType">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Use the unix file command to identify images</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>opts</code></strong> - Dictionary of common CLI parameters. See StartupGetOptions()</li>
+        <li><strong class="pname"><code>image_url</code></strong> - the image file http location</li>
+        <li><strong class="pname"><code>image_file</code></strong> - the base file name of the image.</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>link the file to a renamed version with a meaningful .&lt;ext&gt;</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="PicGetUrlFileName"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">PicGetUrlFileName</span>(<span class="sig-arg">opts</span>,
+        <span class="sig-arg">img_tag</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebPic-pysrc.html#PicGetUrlFileName">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>extract from the tag the image url, and a file name to save it to</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>opts</code></strong> - Dictionary of common CLI parameters. See StartupGetOptions()</li>
+        <li><strong class="pname"><code>img_tag</code></strong> - B Soup structure of HTML img tag</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>image URL, image file name</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="estimate_runtime"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">estimate_runtime</span>(<span class="sig-arg">bl</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebPic-pysrc.html#estimate_runtime">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Count all the images in the page, estimate a run time</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>bl</code></strong> - Beautiful Soup representation of an HTML web page.</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>estimated time in seconds, total number of images, total math eqs</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="PicImType"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">PicImType</span>(<span class="sig-arg">suff</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebPic-pysrc.html#PicImType">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Convert image suffix to a single character</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>suff</code></strong> - a suffix, prefixed by '.' or not</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="PicGetImages"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">PicGetImages</span>(<span class="sig-arg">opts</span>,
+        <span class="sig-arg">bl</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebPic-pysrc.html#PicGetImages">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Get all the images for the current web page, convert to PNG if 
+  necessary</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>opts</code></strong> - Dictionary of common CLI parameters. See StartupGetOptions()</li>
+        <li><strong class="pname"><code>bl</code></strong> - Beautiful Soup representation of an HTML web page. @return count 
+          of images in the system, number that were converted</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== VARIABLES DETAILS ==================== -->
+<a name="section-VariablesDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-VariablesDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="WGET_OPTS"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">WGET_OPTS</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-quote">'</code><code class="variable-string">  --timeout=10  --tries=2  --html-extension  --restrict-file-names=un</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">ix  --page-requisites  -k  --no-parent  --backups=0  --level=0  </code><code class="variable-quote">'</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Sat Feb  1 10:27:19 2020
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

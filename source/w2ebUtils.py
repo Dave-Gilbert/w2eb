@@ -40,7 +40,10 @@ W2EB_BLM = 'W2EB_BACK_LINK_LIST_GOES_HERE'
 
 def uSubstrBt(Str, pre, post):
     """
-    Get the substring between two other strings
+    Get the substring between two other strings, i.e. <pre><found><post>
+    
+    @param pre: the prefix to use as an anchor
+    @param post: the postfix or suffix to use as an anchor
     
     @return: The substring
     """
@@ -324,10 +327,9 @@ def uCleanChars(str_in):
     
     @param str_in: Input string with unprintable characters.
 
-    @note: Unprintable characters may be replaced by '?'. 
-
-    
     @return: str_out - A printable string.
+
+    @note: Unprintable characters may be replaced by '?'. 
     """
     
     str_out = ''
@@ -816,6 +818,8 @@ def uHrefOk(tag_href, exclude_internal):
     
     @param tag_href: B Soup object representing a tag with an "href" attribute
     @param exclude_internal: whether or not to allow internal references
+    
+    @return: boolean, whether or not reference can be included
     
     This function is used as part of a BeautifulSoup find_all() call to
     filter out tags that we will or wont try to make into footnotes.

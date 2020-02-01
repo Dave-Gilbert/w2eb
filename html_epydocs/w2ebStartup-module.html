@@ -1,0 +1,866 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>w2ebStartup</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        Module&nbsp;w2ebStartup
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="w2ebStartup-module.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== MODULE DESCRIPTION ==================== -->
+<h1 class="epydoc">Module w2ebStartup</h1><p class="nomargin-top"><span class="codelink"><a href="w2ebStartup-pysrc.html">source&nbsp;code</a></span></p>
+<hr />
+<div class="fields">      <p><strong>Author:</strong>
+        Dave Gilbert
+      </p>
+      <p><strong>Contact:</strong>
+        dave.wm.gilbert@gmail.com
+      </p>
+      <p><strong>License:</strong>
+        GPLv3
+      </p>
+      <p><strong>Requires:</strong>
+        Python 2.7, wget, Image Magick's convert, Beautiful Soup, Calibre
+      </p>
+      <p><strong>Since:</strong>
+        2019.04.10
+      </p>
+      <p><strong>Version:</strong>
+        0.3
+      </p>
+</div><!-- ==================== FUNCTIONS ==================== -->
+<a name="section-Functions"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Functions</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Functions"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebStartup-module.html#Startup" class="summary-sig-name">Startup</a>(<span class="summary-sig-arg">basedir</span>)</span><br />
+      Called for command line startup, sets the opts dict from the CLI.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebStartup-pysrc.html#Startup">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebStartup-module.html#StartupUsage" class="summary-sig-name">StartupUsage</a>(<span class="summary-sig-arg">err</span>)</span><br />
+      Print the usage message.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebStartup-pysrc.html#StartupUsage">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebStartup-module.html#StartupParseCLI" class="summary-sig-name">StartupParseCLI</a>(<span class="summary-sig-arg">op</span>)</span><br />
+      Establish defaults for CLI options, parse op list.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebStartup-pysrc.html#StartupParseCLI">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebStartup-module.html#StartupGuessBooknm" class="summary-sig-name">StartupGuessBooknm</a>(<span class="summary-sig-arg">booknm</span>,
+        <span class="summary-sig-arg">booknm_orig</span>,
+        <span class="summary-sig-arg">bodir</span>,
+        <span class="summary-sig-arg">logfile</span>,
+        <span class="summary-sig-arg">debug</span>)</span><br />
+      We try to guess an url based on a bookname.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebStartup-pysrc.html#StartupGuessBooknm">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebStartup-module.html#StartupGetOptions" class="summary-sig-name">StartupGetOptions</a>(<span class="summary-sig-arg">base_dir</span>)</span><br />
+      Get command line options from the user</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebStartup-pysrc.html#StartupGetOptions">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebStartup-module.html#StartupReduceProgress" class="summary-sig-name">StartupReduceProgress</a>(<span class="summary-sig-arg">opts</span>,
+        <span class="summary-sig-arg">ma</span>)</span><br />
+      print progress indicator for tag reduction</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebStartup-pysrc.html#StartupReduceProgress">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebStartup-module.html#StartupReduceMessyTags" class="summary-sig-name">StartupReduceMessyTags</a>(<span class="summary-sig-arg">opts</span>,
+        <span class="summary-sig-arg">bl</span>)</span><br />
+      Remove complex HTML that can't be rendered on a Kindle</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebStartup-pysrc.html#StartupReduceMessyTags">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebStartup-module.html#StartupTableToList" class="summary-sig-name">StartupTableToList</a>(<span class="summary-sig-arg">opts</span>,
+        <span class="summary-sig-arg">bl</span>,
+        <span class="summary-sig-arg">info_table</span>,
+        <span class="summary-sig-arg">new_info_list</span>)</span><br />
+      Convert a table to a list</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebStartup-pysrc.html#StartupTableToList">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebStartup-module.html#StartupReduceTableInfobox" class="summary-sig-name">StartupReduceTableInfobox</a>(<span class="summary-sig-arg">opts</span>,
+        <span class="summary-sig-arg">bl</span>)</span><br />
+      Rerender Wikipedia's summary table, keeping images.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebStartup-pysrc.html#StartupReduceTableInfobox">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebStartup-module.html#StartupReduceTableAll" class="summary-sig-name">StartupReduceTableAll</a>(<span class="summary-sig-arg">opts</span>,
+        <span class="summary-sig-arg">bl</span>)</span><br />
+      Convert all tables to bullet lists</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebStartup-pysrc.html#StartupReduceTableAll">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebStartup-module.html#StartupReduceTags" class="summary-sig-name">StartupReduceTags</a>(<span class="summary-sig-arg">opts</span>,
+        <span class="summary-sig-arg">bl</span>)</span><br />
+      Remove as many tags as possible</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebStartup-pysrc.html#StartupReduceTags">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES ==================== -->
+<a name="section-Variables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Variables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="TAG_FMSG"></a><span class="summary-name">TAG_FMSG</span> = <code title="'Fixing Tags:'"><code class="variable-quote">'</code><code class="variable-string">Fixing Tags:</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="G_our_print_version_file"></a><span class="summary-name">G_our_print_version_file</span> = <code title="''"><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="HMAX"></a><span class="summary-name">HMAX</span> = <code title="671">671</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="IMAGE_FIG"></a><span class="summary-name">IMAGE_FIG</span> = <code title="['.gif', '.GIF', '.png', '.PNG']"><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">.gif</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">.GIF</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">.png</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">.PNG</code><code class="variable-quote">'</code><code class="variable-group">]</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="IMAGE_PIC"></a><span class="summary-name">IMAGE_PIC</span> = <code title="['.jpg', '.JPG', 'jpeg', 'JPEG']"><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">.jpg</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">.JPG</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">jpeg</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">JPEG</code><code class="variable-quote">'</code><code class="variable-group">]</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="IMAGE_SVG"></a><span class="summary-name">IMAGE_SVG</span> = <code title="['.svg', '.SVG']"><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">.svg</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">.SVG</code><code class="variable-quote">'</code><code class="variable-group">]</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="IM_SCALEex"></a><span class="summary-name">IM_SCALEex</span> = <code title="25">25</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="IM_SCALEperc"></a><span class="summary-name">IM_SCALEperc</span> = <code title="'300%'"><code class="variable-quote">'</code><code class="variable-string">300%</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="IM_SCALEpx"></a><span class="summary-name">IM_SCALEpx</span> = <code title="3">3</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="MAX_SCALEpx"></a><span class="summary-name">MAX_SCALEpx</span> = <code title="4">4</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="MIN_IMAGEpxW"></a><span class="summary-name">MIN_IMAGEpxW</span> = <code title="580">580</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="SUFFIX_OT"></a><span class="summary-name">SUFFIX_OT</span> = <code title="['.ico', '.php', '.pdf', '.PDF']"><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">.ico</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">.php</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">.pdf</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">.PDF</code><code class="variable-quote">'</code><code class="variable-group">]</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="W2EBID"></a><span class="summary-name">W2EBID</span> = <code title="'w2eb_base_id'"><code class="variable-quote">'</code><code class="variable-string">w2eb_base_id</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="W2EBRI"></a><span class="summary-name">W2EBRI</span> = <code title="'w2eb_ret_'"><code class="variable-quote">'</code><code class="variable-string">w2eb_ret_</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="W2EB_BLM"></a><span class="summary-name">W2EB_BLM</span> = <code title="'W2EB_BACK_LINK_LIST_GOES_HERE'"><code class="variable-quote">'</code><code class="variable-string">W2EB_BACK_LINK_LIST_GOES_HERE</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="w2ebStartup-module.html#WGET_OPTS" class="summary-name">WGET_OPTS</a> = <code title="'  --timeout=10  --tries=2  --html-extension  --restrict-file-names=un\
+ix  --page-requisites  -k  --no-parent  --backups=0  --level=0  '"><code class="variable-quote">'</code><code class="variable-string">  --timeout=10  --tries=2  --html-extension  --re</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="WMAX"></a><span class="summary-name">WMAX</span> = <code title="580">580</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__package__"></a><span class="summary-name">__package__</span> = <code title="None">None</code>
+    </td>
+  </tr>
+</table>
+<!-- ==================== FUNCTION DETAILS ==================== -->
+<a name="section-FunctionDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Function Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-FunctionDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="Startup"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">Startup</span>(<span class="sig-arg">basedir</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebStartup-pysrc.html#Startup">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Called for command line startup, sets the opts dict from the CLI.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>basedir</code></strong> - The directory that all output is stored under</li>
+    </ul></dd>
+  </dl>
+<div class="fields">      <p><strong>Note:</strong>
+        Several fields in the opts structure are only used by recursive 
+        calls and are not specified by the command line interface. In 
+        particular the initiating call must leave the 'parent' field empty,
+        all others must define it.
+      </p>
+</div></td></tr></table>
+</div>
+<a name="StartupUsage"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">StartupUsage</span>(<span class="sig-arg">err</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebStartup-pysrc.html#StartupUsage">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Print the usage message. This is our basic documentation.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>err</code></strong> - empty string for usage, other for error</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="StartupParseCLI"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">StartupParseCLI</span>(<span class="sig-arg">op</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebStartup-pysrc.html#StartupParseCLI">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Establish defaults for CLI options, parse op list.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>op</code></strong> - options from call to getopt</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>A collection of booleans, strings, and integers.</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="StartupGuessBooknm"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">StartupGuessBooknm</span>(<span class="sig-arg">booknm</span>,
+        <span class="sig-arg">booknm_orig</span>,
+        <span class="sig-arg">bodir</span>,
+        <span class="sig-arg">logfile</span>,
+        <span class="sig-arg">debug</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebStartup-pysrc.html#StartupGuessBooknm">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>We try to guess an url based on a bookname.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>booknm</code></strong> - The preferred version which has had .title() applied</li>
+        <li><strong class="pname"><code>booknm_orig</code></strong> - The exact version supplied on the CLI - user is right sometimes</li>
+        <li><strong class="pname"><code>bodir</code></strong> - Book output dir, were processed book output files are written</li>
+        <li><strong class="pname"><code>logfile</code></strong> - output data for error log</li>
+        <li><strong class="pname"><code>debug</code></strong> - current debug level</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>url and booknm</dd>
+  </dl>
+<div class="fields">      <p><strong>Note:</strong>
+        most functions just take 'opts' as their first argument, however 
+        during startup the opts structure is not yet fully established.
+      </p>
+</div></td></tr></table>
+</div>
+<a name="StartupGetOptions"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">StartupGetOptions</span>(<span class="sig-arg">base_dir</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebStartup-pysrc.html#StartupGetOptions">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Get command line options from the user</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>base_dir</code></strong> - default root output directory</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>The global structure opts.</dd>
+  </dl>
+<div class="fields">      <p><strong>Note:</strong>
+        opts is passed by name as the first argument to many functions, 
+        which allows reference to global state of page generation. opts 
+        includes important variables like the output directory name, and 
+        the source url name.
+      </p>
+</div></td></tr></table>
+</div>
+<a name="StartupReduceProgress"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">StartupReduceProgress</span>(<span class="sig-arg">opts</span>,
+        <span class="sig-arg">ma</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebStartup-pysrc.html#StartupReduceProgress">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>print progress indicator for tag reduction</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>opts</code></strong> - dictionary of shared CLI parameters. See StartupGetOptions()</li>
+        <li><strong class="pname"><code>ma</code></strong> - two character string printed to screen to indicate progress</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="StartupReduceMessyTags"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">StartupReduceMessyTags</span>(<span class="sig-arg">opts</span>,
+        <span class="sig-arg">bl</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebStartup-pysrc.html#StartupReduceMessyTags">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Remove complex HTML that can't be rendered on a Kindle</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>opts</code></strong> - dictionary of common CLI parameters. See StartupGetOptions()</li>
+        <li><strong class="pname"><code>bl</code></strong> - Beautiful Soup representation of an HTML web page.</li>
+    </ul></dd>
+  </dl>
+<div class="fields">      <p><strong>Note:</strong>
+        Wikipedia pages include a lot of details that can't be easily 
+        rendered on a Kindle. Many of the tags are simple and always 
+        present. This fn gets rid of them while reporting progress.
+      </p>
+</div></td></tr></table>
+</div>
+<a name="StartupTableToList"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">StartupTableToList</span>(<span class="sig-arg">opts</span>,
+        <span class="sig-arg">bl</span>,
+        <span class="sig-arg">info_table</span>,
+        <span class="sig-arg">new_info_list</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebStartup-pysrc.html#StartupTableToList">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Convert a table to a list</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>opts</code></strong> - dictionary of common CLI parameters. See StartupGetOptions()</li>
+        <li><strong class="pname"><code>bl</code></strong> - Beautiful Soup representation of an HTML web page.</li>
+        <li><strong class="pname"><code>info_table</code></strong> - a soup representation of a table</li>
+        <li><strong class="pname"><code>new_info_list</code></strong> - the root tag of the new list representation</li>
+    </ul></dd>
+  </dl>
+<div class="fields">      <p><strong>Note:</strong>
+        Tables don't render very well on the Kindle, so we convert them to 
+        bullet point lists.
+      </p>
+</div></td></tr></table>
+</div>
+<a name="StartupReduceTableInfobox"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">StartupReduceTableInfobox</span>(<span class="sig-arg">opts</span>,
+        <span class="sig-arg">bl</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebStartup-pysrc.html#StartupReduceTableInfobox">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Rerender Wikipedia's summary table, keeping images.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>opts</code></strong> - dictionary of common CLI parameters. See StartupGetOptions()</li>
+        <li><strong class="pname"><code>bl</code></strong> - Beautiful Soup representation of an HTML web page.</li>
+    </ul></dd>
+  </dl>
+<div class="fields">      <strong>Notes:</strong>
+      <ul class="nomargin-top">
+        <li>
+        replace the table, which appears immediately after the title, with 
+        the first image we find in the table. We move the rest of the table
+        to after the first paragraph and we convert it into a bullet list, 
+        which renders a little bit more consistently on a kindle.
+        </li>
+        <li>
+        This function should try to preserve other elements from the 
+        opening table. TODO.
+        </li>
+      </ul>
+</div></td></tr></table>
+</div>
+<a name="StartupReduceTableAll"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">StartupReduceTableAll</span>(<span class="sig-arg">opts</span>,
+        <span class="sig-arg">bl</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebStartup-pysrc.html#StartupReduceTableAll">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Convert all tables to bullet lists</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>opts</code></strong> - dictionary of common CLI parameters. See StartupGetOptions()</li>
+        <li><strong class="pname"><code>bl</code></strong> - Beautiful Soup representation of an HTML web page.</li>
+    </ul></dd>
+  </dl>
+<div class="fields">      <p><strong>Note:</strong>
+        The kindle has problems rendering big tables. Simplify them.
+      </p>
+</div></td></tr></table>
+</div>
+<a name="StartupReduceTags"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">StartupReduceTags</span>(<span class="sig-arg">opts</span>,
+        <span class="sig-arg">bl</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebStartup-pysrc.html#StartupReduceTags">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Remove as many tags as possible</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>opts</code></strong> - dictionary of common CLI parameters. See StartupGetOptions()</li>
+        <li><strong class="pname"><code>bl</code></strong> - Beautiful Soup representation of an HTML web page.</li>
+    </ul></dd>
+  </dl>
+<div class="fields">      <p><strong>Note:</strong>
+        wikipedia recommends downloading portions of its database rather 
+        than scraping .html files. This function is effectively simplifying
+        the pages so they are managable, and that might have been avoided 
+        by just downloading text directly as suggested.
+        <p>Perhaps another version will do as suggested...</p>
+      </p>
+</div></td></tr></table>
+</div>
+<br />
+<!-- ==================== VARIABLES DETAILS ==================== -->
+<a name="section-VariablesDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-VariablesDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="WGET_OPTS"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">WGET_OPTS</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-quote">'</code><code class="variable-string">  --timeout=10  --tries=2  --html-extension  --restrict-file-names=un</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">ix  --page-requisites  -k  --no-parent  --backups=0  --level=0  </code><code class="variable-quote">'</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Sat Feb  1 10:27:19 2020
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

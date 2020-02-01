@@ -1,0 +1,1341 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>w2ebMain</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        Module&nbsp;w2ebMain
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="w2ebMain-module.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== MODULE DESCRIPTION ==================== -->
+<h1 class="epydoc">Module w2ebMain</h1><p class="nomargin-top"><span class="codelink"><a href="w2ebMain-pysrc.html">source&nbsp;code</a></span></p>
+<hr />
+<div class="fields">      <p><strong>Author:</strong>
+        Dave Gilbert
+      </p>
+      <p><strong>Contact:</strong>
+        dave.wm.gilbert@gmail.com
+      </p>
+      <p><strong>License:</strong>
+        GPLv3
+      </p>
+      <p><strong>Requires:</strong>
+        Python 2.7, wget, Image Magick's convert, Beautiful Soup, Calibre
+      </p>
+      <p><strong>Since:</strong>
+        2019.04.10
+      </p>
+      <p><strong>Version:</strong>
+        0.3
+      </p>
+</div><!-- ==================== FUNCTIONS ==================== -->
+<a name="section-Functions"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Functions</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Functions"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebMain-module.html#MainRecursiveCall" class="summary-sig-name">MainRecursiveCall</a>(<span class="summary-sig-arg">opts</span>,
+        <span class="summary-sig-arg">bl</span>,
+        <span class="summary-sig-arg">url</span>,
+        <span class="summary-sig-arg">footnote</span>,
+        <span class="summary-sig-arg">foot_title</span>,
+        <span class="summary-sig-arg">foot_dict_list</span>)</span><br />
+      Fetches footnotes and subarticles by calling main function</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebMain-pysrc.html#MainRecursiveCall">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebMain-module.html#MainGetCachedFootSect" class="summary-sig-name">MainGetCachedFootSect</a>(<span class="summary-sig-arg">opts</span>,
+        <span class="summary-sig-arg">foot_dict_list</span>,
+        <span class="summary-sig-arg">footnote</span>,
+        <span class="summary-sig-arg">outdir</span>,
+        <span class="summary-sig-arg">foot_title</span>,
+        <span class="summary-sig-arg">url</span>,
+        <span class="summary-sig-arg">sect_label_href_list</span>,
+        <span class="summary-sig-arg">sect_label_href_list_child</span>)</span><br />
+      Look for foot_title data in both memory and disk cache</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebMain-pysrc.html#MainGetCachedFootSect">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebMain-module.html#MainGetHref" class="summary-sig-name">MainGetHref</a>(<span class="summary-sig-arg">opts</span>,
+        <span class="summary-sig-arg">foot_dict_list</span>,
+        <span class="summary-sig-arg">anch</span>,
+        <span class="summary-sig-arg">footnote</span>,
+        <span class="summary-sig-arg">foot_title</span>,
+        <span class="summary-sig-arg">foot_dict</span>,
+        <span class="summary-sig-arg">outdir</span>,
+        <span class="summary-sig-arg">sect_dict</span>,
+        <span class="summary-sig-arg">url</span>)</span><br />
+      Return the href for footnotes and sections</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebMain-pysrc.html#MainGetHref">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebMain-module.html#MainGenBaseId" class="summary-sig-name">MainGenBaseId</a>(<span class="summary-sig-arg">opts</span>,
+        <span class="summary-sig-arg">url</span>)</span><br />
+      Given either an url or an html file compute the base_id used to 
+      locate pages</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebMain-pysrc.html#MainGenBaseId">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebMain-module.html#MainUpdateHTMLTag" class="summary-sig-name">MainUpdateHTMLTag</a>(<span class="summary-sig-arg">opts</span>,
+        <span class="summary-sig-arg">bl</span>,
+        <span class="summary-sig-arg">tag_href</span>,
+        <span class="summary-sig-arg">foot_dict</span>,
+        <span class="summary-sig-arg">href</span>)</span><br />
+      Modify footnote tag_href.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebMain-pysrc.html#MainUpdateHTMLTag">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebMain-module.html#MainFinalChecksRetPsym" class="summary-sig-name">MainFinalChecksRetPsym</a>(<span class="summary-sig-arg">opts</span>,
+        <span class="summary-sig-arg">foot_dict_list</span>,
+        <span class="summary-sig-arg">footnote</span>,
+        <span class="summary-sig-arg">foot_title</span>,
+        <span class="summary-sig-arg">cache_hit</span>,
+        <span class="summary-sig-arg">foot_dict</span>)</span><br />
+      Check that the necessary variables are being constructed correctly</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebMain-pysrc.html#MainFinalChecksRetPsym">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebMain-module.html#MainIsFootnote" class="summary-sig-name">MainIsFootnote</a>(<span class="summary-sig-arg">opts</span>,
+        <span class="summary-sig-arg">tag_href</span>,
+        <span class="summary-sig-arg">url</span>)</span><br />
+      Decide if href points to a footnote, or not.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebMain-pysrc.html#MainIsFootnote">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebMain-module.html#MainPickFootVsSect" class="summary-sig-name">MainPickFootVsSect</a>(<span class="summary-sig-arg">opts</span>,
+        <span class="summary-sig-arg">tag_href</span>)</span><br />
+      Decide whether the tag will be processed as a section or a footnote</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebMain-pysrc.html#MainPickFootVsSect">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebMain-module.html#MainUpdateMemoryCache" class="summary-sig-name">MainUpdateMemoryCache</a>(<span class="summary-sig-arg">opts</span>,
+        <span class="summary-sig-arg">url</span>,
+        <span class="summary-sig-arg">outdir</span>,
+        <span class="summary-sig-arg">footnote</span>,
+        <span class="summary-sig-arg">foot_dict</span>,
+        <span class="summary-sig-arg">foot_title</span>,
+        <span class="summary-sig-arg">foot_dict_list</span>,
+        <span class="summary-sig-arg">sect_label_href_list</span>,
+        <span class="summary-sig-arg">sect_label_href_list_child</span>,
+        <span class="summary-sig-arg">sect_label_href_list_child2</span>)</span><br />
+      Update the cached footnotes and sections kept in memory.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebMain-pysrc.html#MainUpdateMemoryCache">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebMain-module.html#MainGetFootSect" class="summary-sig-name">MainGetFootSect</a>(<span class="summary-sig-arg">opts</span>,
+        <span class="summary-sig-arg">bl</span>,
+        <span class="summary-sig-arg">tag_href</span>,
+        <span class="summary-sig-arg">foot_dict_list</span>,
+        <span class="summary-sig-arg">sect_label_href_list</span>,
+        <span class="summary-sig-arg">sect_label_href_list_child</span>)</span><br />
+      Based on an html tag and lists of cached url results resolve an url</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebMain-pysrc.html#MainGetFootSect">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebMain-module.html#MainCheckUrlReachable" class="summary-sig-name">MainCheckUrlReachable</a>(<span class="summary-sig-arg">opts</span>,
+        <span class="summary-sig-arg">bl</span>,
+        <span class="summary-sig-arg">ok_i_urls</span>,
+        <span class="summary-sig-arg">already_warned_url</span>,
+        <span class="summary-sig-arg">tag_href</span>,
+        <span class="summary-sig-arg">slink</span>,
+        <span class="summary-sig-arg">http404</span>)</span><br />
+      Use wget to test whether we can connect to an URL</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebMain-pysrc.html#MainCheckUrlReachable">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebMain-module.html#MainHandleErrs" class="summary-sig-name">MainHandleErrs</a>(<span class="summary-sig-arg">opts</span>,
+        <span class="summary-sig-arg">bl</span>,
+        <span class="summary-sig-arg">tag_href</span>,
+        <span class="summary-sig-arg">err</span>,
+        <span class="summary-sig-arg">ok_i_urls</span>,
+        <span class="summary-sig-arg">slink</span>,
+        <span class="summary-sig-arg">http404</span>,
+        <span class="summary-sig-arg">psym</span>,
+        <span class="summary-sig-arg">url_cache_hit</span>,
+        <span class="summary-sig-arg">already_warned_url</span>)</span><br />
+      Select a symbol to report progress and log any error messages that 
+      occur.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebMain-pysrc.html#MainHandleErrs">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebMain-module.html#MainLoadCache" class="summary-sig-name">MainLoadCache</a>(<span class="summary-sig-arg">opts</span>,
+        <span class="summary-sig-arg">bl</span>)</span><br />
+      Load Cache data from previous runs stored on our disk</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebMain-pysrc.html#MainLoadCache">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebMain-module.html#MainNotes" class="summary-sig-name">MainNotes</a>(<span class="summary-sig-arg">opts</span>,
+        <span class="summary-sig-arg">bl</span>)</span><br />
+      Entry point for collecting articles and footnotes.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebMain-pysrc.html#MainNotes">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebMain-module.html#MainWelcomeMsg" class="summary-sig-name">MainWelcomeMsg</a>(<span class="summary-sig-arg">opts</span>,
+        <span class="summary-sig-arg">st_time</span>)</span><br />
+      Print the welcom message for generating sections</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebMain-pysrc.html#MainWelcomeMsg">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebMain-module.html#MainSectionCreate" class="summary-sig-name">MainSectionCreate</a>(<span class="summary-sig-arg">opts</span>,
+        <span class="summary-sig-arg">st_time</span>,
+        <span class="summary-sig-arg">bl</span>,
+        <span class="summary-sig-arg">section_bname</span>)</span><br />
+      Returns:
+      (foot_dict_list: List of footnotes represented by dictionaries 
+      sect_label_href_list: List of sections by label and href)</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebMain-pysrc.html#MainSectionCreate">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="w2ebMain-module.html#Main" class="summary-sig-name">Main</a>(<span class="summary-sig-arg">opts</span>)</span><br />
+      Main entry point for ebook generation once command line options are 
+      generated</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="w2ebMain-pysrc.html#Main">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES ==================== -->
+<a name="section-Variables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Variables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="LINK_AVOID"></a><span class="summary-name">LINK_AVOID</span> = <code title="['Special:BookSources']"><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">Special:BookSources</code><code class="variable-quote">'</code><code class="variable-group">]</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="G_our_print_version_file"></a><span class="summary-name">G_our_print_version_file</span> = <code title="''"><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="HMAX"></a><span class="summary-name">HMAX</span> = <code title="671">671</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="IMAGE_FIG"></a><span class="summary-name">IMAGE_FIG</span> = <code title="['.gif', '.GIF', '.png', '.PNG']"><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">.gif</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">.GIF</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">.png</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">.PNG</code><code class="variable-quote">'</code><code class="variable-group">]</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="IMAGE_PIC"></a><span class="summary-name">IMAGE_PIC</span> = <code title="['.jpg', '.JPG', 'jpeg', 'JPEG']"><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">.jpg</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">.JPG</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">jpeg</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">JPEG</code><code class="variable-quote">'</code><code class="variable-group">]</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="IMAGE_SVG"></a><span class="summary-name">IMAGE_SVG</span> = <code title="['.svg', '.SVG']"><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">.svg</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">.SVG</code><code class="variable-quote">'</code><code class="variable-group">]</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="IM_SCALEex"></a><span class="summary-name">IM_SCALEex</span> = <code title="25">25</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="IM_SCALEperc"></a><span class="summary-name">IM_SCALEperc</span> = <code title="'300%'"><code class="variable-quote">'</code><code class="variable-string">300%</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="IM_SCALEpx"></a><span class="summary-name">IM_SCALEpx</span> = <code title="3">3</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="MAX_SCALEpx"></a><span class="summary-name">MAX_SCALEpx</span> = <code title="4">4</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="MIN_IMAGEpxW"></a><span class="summary-name">MIN_IMAGEpxW</span> = <code title="580">580</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="SUFFIX_OT"></a><span class="summary-name">SUFFIX_OT</span> = <code title="['.ico', '.php', '.pdf', '.PDF']"><code class="variable-group">[</code><code class="variable-quote">'</code><code class="variable-string">.ico</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">.php</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">.pdf</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">.PDF</code><code class="variable-quote">'</code><code class="variable-group">]</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="W2EBID"></a><span class="summary-name">W2EBID</span> = <code title="'w2eb_base_id'"><code class="variable-quote">'</code><code class="variable-string">w2eb_base_id</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="W2EBRI"></a><span class="summary-name">W2EBRI</span> = <code title="'w2eb_ret_'"><code class="variable-quote">'</code><code class="variable-string">w2eb_ret_</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="W2EB_BLM"></a><span class="summary-name">W2EB_BLM</span> = <code title="'W2EB_BACK_LINK_LIST_GOES_HERE'"><code class="variable-quote">'</code><code class="variable-string">W2EB_BACK_LINK_LIST_GOES_HERE</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="w2ebMain-module.html#WGET_OPTS" class="summary-name">WGET_OPTS</a> = <code title="'  --timeout=10  --tries=2  --html-extension  --restrict-file-names=un\
+ix  --page-requisites  -k  --no-parent  --backups=0  --level=0  '"><code class="variable-quote">'</code><code class="variable-string">  --timeout=10  --tries=2  --html-extension  --re</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="WMAX"></a><span class="summary-name">WMAX</span> = <code title="580">580</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__package__"></a><span class="summary-name">__package__</span> = <code title="None">None</code>
+    </td>
+  </tr>
+</table>
+<!-- ==================== FUNCTION DETAILS ==================== -->
+<a name="section-FunctionDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Function Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-FunctionDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="MainRecursiveCall"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">MainRecursiveCall</span>(<span class="sig-arg">opts</span>,
+        <span class="sig-arg">bl</span>,
+        <span class="sig-arg">url</span>,
+        <span class="sig-arg">footnote</span>,
+        <span class="sig-arg">foot_title</span>,
+        <span class="sig-arg">foot_dict_list</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebMain-pysrc.html#MainRecursiveCall">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Fetches footnotes and subarticles by calling main function</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>opts</code></strong> - Dictionary of common CLI parameters. See StartupGetOptions()</li>
+        <li><strong class="pname"><code>bl</code></strong> - Beautiful Soup representation of an HTML web page.</li>
+        <li><strong class="pname"><code>url</code></strong> - Url to download footnotes / new sections from</li>
+        <li><strong class="pname"><code>footnote</code></strong> - Boolean, whether or not to generate a footnote</li>
+        <li><strong class="pname"><code>foot_title</code></strong> - The name of the footnote</li>
+        <li><strong class="pname"><code>foot_dict_list</code></strong> - - a list of footnotes already processed</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>(err - any errors encountered as a string, foot_dict - footnote 
+          data stored in a dictionary)</dd>
+  </dl>
+<div class="fields">      <p><strong>Note:</strong>
+        Subsections are returned implicitly by collecting data in bodir. 
+        Notice that we make a new 'bodir' for this invocation that is the 
+        current bodir / basename(url)
+        <p>For footnotes, turning on the footnote flag causes us to write 
+        output in the current directories &quot;footnote&quot; directory. 
+        We also return the same data in a dictionary structure from 
+        main.</p>
+      </p>
+</div></td></tr></table>
+</div>
+<a name="MainGetCachedFootSect"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">MainGetCachedFootSect</span>(<span class="sig-arg">opts</span>,
+        <span class="sig-arg">foot_dict_list</span>,
+        <span class="sig-arg">footnote</span>,
+        <span class="sig-arg">outdir</span>,
+        <span class="sig-arg">foot_title</span>,
+        <span class="sig-arg">url</span>,
+        <span class="sig-arg">sect_label_href_list</span>,
+        <span class="sig-arg">sect_label_href_list_child</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebMain-pysrc.html#MainGetCachedFootSect">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Look for foot_title data in both memory and disk cache</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>opts</code></strong> - Dictionary of common CLI parameters. See StartupGetOptions()</li>
+        <li><strong class="pname"><code>foot_dict_list</code></strong> - List of footnotes represented by dictionaries</li>
+        <li><strong class="pname"><code>footnote</code></strong> - Boolean, whether or not to generate a footnote</li>
+        <li><strong class="pname"><code>outdir</code></strong> - The output directory that .html files are written to</li>
+        <li><strong class="pname"><code>foot_title</code></strong> - The name or string reference to a footnote</li>
+        <li><strong class="pname"><code>url</code></strong> - Url to download footnotes / new sections from</li>
+        <li><strong class="pname"><code>sect_label_href_list</code></strong> - List of sections by label and href</li>
+        <li><strong class="pname"><code>sect_label_href_list_child</code></strong> - List of sections found in the children</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>(cache_hit - whether we found foot_title or not, foot_dict - the 
+          information for footnotes)</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="MainGetHref"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">MainGetHref</span>(<span class="sig-arg">opts</span>,
+        <span class="sig-arg">foot_dict_list</span>,
+        <span class="sig-arg">anch</span>,
+        <span class="sig-arg">footnote</span>,
+        <span class="sig-arg">foot_title</span>,
+        <span class="sig-arg">foot_dict</span>,
+        <span class="sig-arg">outdir</span>,
+        <span class="sig-arg">sect_dict</span>,
+        <span class="sig-arg">url</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebMain-pysrc.html#MainGetHref">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Return the href for footnotes and sections</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>opts</code></strong> - Dictionary of common CLI parameters. See StartupGetOptions()</li>
+        <li><strong class="pname"><code>foot_dict_list</code></strong> - List of footnotes represented by dictionaries</li>
+        <li><strong class="pname"><code>anch</code></strong> - the html anchor for defining jumplinks in id=&lt;anch&gt;</li>
+        <li><strong class="pname"><code>footnote</code></strong> - Boolean, whether or not to generate a footnote</li>
+        <li><strong class="pname"><code>foot_title</code></strong> - The name or string reference to a footnote</li>
+        <li><strong class="pname"><code>foot_dict</code></strong> - Dictionary storing details for notes and footnotes</li>
+        <li><strong class="pname"><code>outdir</code></strong> - The output directory that .html files are written to</li>
+        <li><strong class="pname"><code>sect_dict</code></strong> - Dictionary of items describing a section</li>
+        <li><strong class="pname"><code>url</code></strong> - Url to download footnotes / new sections from</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>(href - the html field for href=</dd>
+  </dl>
+<div class="fields">      <p><strong>Note:</strong>
+        At this stage we have either found the reference as a footnote, or 
+        a full section. Whether it was in the cache or not doesn't matter 
+        at this stage. We should be able to complete the href.
+        <p>The special case for depth = 0 means that we definitely did not 
+        download new material. At depth = 0 we might have found a cached 
+        reference, but if not we return the URL as the href.</p>
+        <p>If we don't have an href by the end of this fn there is a 
+        bug.</p>
+      </p>
+</div></td></tr></table>
+</div>
+<a name="MainGenBaseId"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">MainGenBaseId</span>(<span class="sig-arg">opts</span>,
+        <span class="sig-arg">url</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebMain-pysrc.html#MainGenBaseId">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Given either an url or an html file compute the base_id used to locate
+  pages</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>opts</code></strong> - Dictionary of common CLI parameters. See StartupGetOptions()</li>
+        <li><strong class="pname"><code>url</code></strong> - Url to download footnotes / new sections from</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>A unique identifier based on the URL and our uniqe code W2EBID</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="MainUpdateHTMLTag"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">MainUpdateHTMLTag</span>(<span class="sig-arg">opts</span>,
+        <span class="sig-arg">bl</span>,
+        <span class="sig-arg">tag_href</span>,
+        <span class="sig-arg">foot_dict</span>,
+        <span class="sig-arg">href</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebMain-pysrc.html#MainUpdateHTMLTag">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Modify footnote tag_href. For Sections build up list of href 
+  details.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>opts</code></strong> - Dictionary of common CLI parameters. See StartupGetOptions()</li>
+        <li><strong class="pname"><code>bl</code></strong> - Beautiful Soup representation of an HTML web page.</li>
+        <li><strong class="pname"><code>tag_href</code></strong> - B Soup object representing a tag with an &quot;href&quot; 
+          attribute</li>
+        <li><strong class="pname"><code>foot_dict</code></strong> - Dictionary storing details for notes and footnotes</li>
+        <li><strong class="pname"><code>tag_href</code></strong> - B Soup object representing a tag with an &quot;href&quot; 
+          attribute</li>
+    </ul></dd>
+  </dl>
+<div class="fields">      <p><strong>Note:</strong>
+        We add the return anchor to our href tag for both sections and 
+        footnotes. For footnotes we create a number in parenthesis which we
+        append to the anchor.
+      </p>
+</div></td></tr></table>
+</div>
+<a name="MainFinalChecksRetPsym"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">MainFinalChecksRetPsym</span>(<span class="sig-arg">opts</span>,
+        <span class="sig-arg">foot_dict_list</span>,
+        <span class="sig-arg">footnote</span>,
+        <span class="sig-arg">foot_title</span>,
+        <span class="sig-arg">cache_hit</span>,
+        <span class="sig-arg">foot_dict</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebMain-pysrc.html#MainFinalChecksRetPsym">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Check that the necessary variables are being constructed correctly</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>opts</code></strong> - Dictionary of common CLI parameters. See StartupGetOptions()</li>
+        <li><strong class="pname"><code>foot_dict_list</code></strong> - List of footnotes represented by dictionaries</li>
+        <li><strong class="pname"><code>footnote</code></strong> - Boolean, whether or not to generate a footnote</li>
+        <li><strong class="pname"><code>foot_title</code></strong> - The name or string reference to a footnote</li>
+        <li><strong class="pname"><code>cache_hit</code></strong> - Whether the footnote was found in the disk cache</li>
+        <li><strong class="pname"><code>foot_dict</code></strong> - Dictionary storing details for notes and footnotes</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>a printable symbol to indicate the progress</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="MainIsFootnote"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">MainIsFootnote</span>(<span class="sig-arg">opts</span>,
+        <span class="sig-arg">tag_href</span>,
+        <span class="sig-arg">url</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebMain-pysrc.html#MainIsFootnote">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Decide if href points to a footnote, or not.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>opts</code></strong> - Dictionary of common CLI parameters. See StartupGetOptions()</li>
+        <li><strong class="pname"><code>tag_href</code></strong> - B Soup object representing a tag with an &quot;href&quot; 
+          attribute</li>
+        <li><strong class="pname"><code>url</code></strong> - Url to download footnotes / new sections from</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>True if its a footnote</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="MainPickFootVsSect"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">MainPickFootVsSect</span>(<span class="sig-arg">opts</span>,
+        <span class="sig-arg">tag_href</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebMain-pysrc.html#MainPickFootVsSect">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Decide whether the tag will be processed as a section or a 
+  footnote</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>opts</code></strong> - Dictionary of common CLI parameters. See StartupGetOptions()</li>
+        <li><strong class="pname"><code>tag_href</code></strong> - B Soup object representing a tag with an &quot;href&quot; 
+          attribute</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd><ul>
+            <li>
+              err: any detecte errors
+            </li>
+            <li>
+              url: the url with any associated '#' anch removed
+            </li>
+            <li>
+              anch: empty or the urls anchor
+            </li>
+            <li>
+              footnote: boolean, True if a footnote, false if a section
+            </li>
+            <li>
+              foot_title: The name of the footnote or section
+            </li>
+            <li>
+              id_anch: The base string for constructing anchors.)
+            </li>
+          </ul></dd>
+  </dl>
+<div class="fields">      <p><strong>Note:</strong>
+        id_anch has multiple functions. It is the base id for this tag, 
+        hence the location that footnote will link to bring us back to the 
+        text. It is also the id for the footnote with the suffix 
+        &quot;_foot&quot; appened to it. This provides us with unique 
+        bidirectional linkage.
+      </p>
+</div></td></tr></table>
+</div>
+<a name="MainUpdateMemoryCache"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">MainUpdateMemoryCache</span>(<span class="sig-arg">opts</span>,
+        <span class="sig-arg">url</span>,
+        <span class="sig-arg">outdir</span>,
+        <span class="sig-arg">footnote</span>,
+        <span class="sig-arg">foot_dict</span>,
+        <span class="sig-arg">foot_title</span>,
+        <span class="sig-arg">foot_dict_list</span>,
+        <span class="sig-arg">sect_label_href_list</span>,
+        <span class="sig-arg">sect_label_href_list_child</span>,
+        <span class="sig-arg">sect_label_href_list_child2</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebMain-pysrc.html#MainUpdateMemoryCache">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Update the cached footnotes and sections kept in memory.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>opts</code></strong> - Dictionary of common CLI parameters. See StartupGetOptions()</li>
+        <li><strong class="pname"><code>url</code></strong> - Url to download footnotes / new sections from</li>
+        <li><strong class="pname"><code>outdir</code></strong> - The output directory that .html files are written to</li>
+        <li><strong class="pname"><code>footnote</code></strong> - Boolean, whether or not to generate a footnote</li>
+        <li><strong class="pname"><code>foot_dict</code></strong> - Dictionary storing details for notes and footnotes</li>
+        <li><strong class="pname"><code>foot_title</code></strong> - The name or string reference to a footnote</li>
+        <li><strong class="pname"><code>foot_dict_list</code></strong> - List of footnotes represented by dictionaries</li>
+        <li><strong class="pname"><code>sect_label_href_list</code></strong> - List of sections by label and href</li>
+        <li><strong class="pname"><code>sect_label_href_list_child</code></strong> - List of sections found in the children</li>
+        <li><strong class="pname"><code>sect_label_href_list_child2</code></strong> - Newest partial list of sections found in the children</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>(foot_dict - structure describing a footnote sect_dict - 
+          structure describing a section)</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="MainGetFootSect"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">MainGetFootSect</span>(<span class="sig-arg">opts</span>,
+        <span class="sig-arg">bl</span>,
+        <span class="sig-arg">tag_href</span>,
+        <span class="sig-arg">foot_dict_list</span>,
+        <span class="sig-arg">sect_label_href_list</span>,
+        <span class="sig-arg">sect_label_href_list_child</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebMain-pysrc.html#MainGetFootSect">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Based on an html tag and lists of cached url results resolve an 
+  url</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>opts</code></strong> - Dictionary of common CLI parameters. See StartupGetOptions()</li>
+        <li><strong class="pname"><code>bl</code></strong> - Beautiful Soup representation of an HTML web page.</li>
+        <li><strong class="pname"><code>tag_href</code></strong> - B Soup object representing a tag with an &quot;href&quot; 
+          attribute</li>
+        <li><strong class="pname"><code>foot_dict_list</code></strong> - List of footnotes represented by dictionaries</li>
+        <li><strong class="pname"><code>sect_label_href_list</code></strong> - List of sections by label and href</li>
+        <li><strong class="pname"><code>sect_label_href_list_child</code></strong> - List of sections found in the children</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>(err - any descriptive errors footnote - whether the tag points 
+          to a footnote or a section cache_hit - whether the result had 
+          been previously seen psym - a symbol indicating what we found to 
+          send to stdout for progress)</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="MainCheckUrlReachable"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">MainCheckUrlReachable</span>(<span class="sig-arg">opts</span>,
+        <span class="sig-arg">bl</span>,
+        <span class="sig-arg">ok_i_urls</span>,
+        <span class="sig-arg">already_warned_url</span>,
+        <span class="sig-arg">tag_href</span>,
+        <span class="sig-arg">slink</span>,
+        <span class="sig-arg">http404</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebMain-pysrc.html#MainCheckUrlReachable">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Use wget to test whether we can connect to an URL</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>opts</code></strong> - Dictionary of common CLI parameters. See StartupGetOptions()</li>
+        <li><strong class="pname"><code>bl</code></strong> - Beautiful Soup representation of an HTML web page.</li>
+        <li><strong class="pname"><code>ok_i_urls</code></strong> - A list of already checked internet URLS</li>
+        <li><strong class="pname"><code>already_warned_url</code></strong> - A list of urls for which warnings were already issued</li>
+        <li><strong class="pname"><code>tag_href</code></strong> - B Soup object representing a tag with an &quot;href&quot; 
+          attribute</li>
+        <li><strong class="pname"><code>slink</code></strong> - A count of removed links</li>
+        <li><strong class="pname"><code>http404</code></strong> - A count of unreachable pages</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>(slink - removed link count, http404 - unreachable link count)</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="MainHandleErrs"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">MainHandleErrs</span>(<span class="sig-arg">opts</span>,
+        <span class="sig-arg">bl</span>,
+        <span class="sig-arg">tag_href</span>,
+        <span class="sig-arg">err</span>,
+        <span class="sig-arg">ok_i_urls</span>,
+        <span class="sig-arg">slink</span>,
+        <span class="sig-arg">http404</span>,
+        <span class="sig-arg">psym</span>,
+        <span class="sig-arg">url_cache_hit</span>,
+        <span class="sig-arg">already_warned_url</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebMain-pysrc.html#MainHandleErrs">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Select a symbol to report progress and log any error messages that 
+  occur.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>opts</code></strong> - Dictionary of common CLI parameters. See StartupGetOptions()</li>
+        <li><strong class="pname"><code>bl</code></strong> - Beautiful Soup representation of an HTML web page.</li>
+        <li><strong class="pname"><code>tag_href</code></strong> - B Soup object representing a tag with an &quot;href&quot; 
+          attribute</li>
+        <li><strong class="pname"><code>err</code></strong> - Cause of recent failure, code</li>
+        <li><strong class="pname"><code>ok_i_urls</code></strong> - A list of already checked internet URLS</li>
+        <li><strong class="pname"><code>slink</code></strong> - A count of removed links</li>
+        <li><strong class="pname"><code>http404</code></strong> - A count of unreachable pages</li>
+        <li><strong class="pname"><code>psym</code></strong> - Character to print to show progress</li>
+        <li><strong class="pname"><code>url_cache_hit</code></strong> - Boolean indicating that we have a cache hit</li>
+        <li><strong class="pname"><code>already_warned_url</code></strong> - A list of urls for which warnings were already issued</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>(slink - count of links removed due to similarity to parent or 
+          brevity http404 - failed internet accesses psym - progress 
+          symbol)</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="MainLoadCache"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">MainLoadCache</span>(<span class="sig-arg">opts</span>,
+        <span class="sig-arg">bl</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebMain-pysrc.html#MainLoadCache">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Load Cache data from previous runs stored on our disk</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>opts</code></strong> - Dictionary of common CLI parameters. See StartupGetOptions()</li>
+        <li><strong class="pname"><code>bl</code></strong> - Beautiful Soup representation of an HTML web page.</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>(ok_i_urls - a list of Internet addresses and whether they can be
+          reached, foot_dict_list - a list of footnotes already processed)</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="MainNotes"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">MainNotes</span>(<span class="sig-arg">opts</span>,
+        <span class="sig-arg">bl</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebMain-pysrc.html#MainNotes">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Entry point for collecting articles and footnotes.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>opts</code></strong> - Dictionary of common CLI parameters. See StartupGetOptions()</li>
+        <li><strong class="pname"><code>bl</code></strong> - Beautiful Soup representation of an HTML web page.</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>(sect_label_href_list: List of sections by label and href 
+          foot_dict_list: foot_dict_list: List of footnotes represented by 
+          dictionaries slink: A count of removed links http404: A count of 
+          unreachable pages)</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="MainWelcomeMsg"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">MainWelcomeMsg</span>(<span class="sig-arg">opts</span>,
+        <span class="sig-arg">st_time</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebMain-pysrc.html#MainWelcomeMsg">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Print the welcom message for generating sections</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>opts</code></strong> - Dictionary of common CLI parameters. See StartupGetOptions()</li>
+        <li><strong class="pname"><code>st_time</code></strong> - Start time</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="MainSectionCreate"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">MainSectionCreate</span>(<span class="sig-arg">opts</span>,
+        <span class="sig-arg">st_time</span>,
+        <span class="sig-arg">bl</span>,
+        <span class="sig-arg">section_bname</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebMain-pysrc.html#MainSectionCreate">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>opts</code></strong> - Dictionary of common CLI parameters. See StartupGetOptions()</li>
+        <li><strong class="pname"><code>st_time</code></strong> - Start time</li>
+        <li><strong class="pname"><code>bl</code></strong> - Beautiful Soup representation of an HTML web page.</li>
+        <li><strong class="pname"><code>section_bname</code></strong> - the basename of the URL, also the section name</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>(foot_dict_list: List of footnotes represented by dictionaries 
+          sect_label_href_list: List of sections by label and href)</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="Main"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">Main</span>(<span class="sig-arg">opts</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="w2ebMain-pysrc.html#Main">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Main entry point for ebook generation once command line options are 
+  generated</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>opts</code></strong> - Dictionary of common CLI parameters. See StartupGetOptions()</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd><ul>
+            <li>
+              err: message or code explaining failure
+            </li>
+            <li>
+              foot_dict_list: List of footnotes represented by dictionaries
+            </li>
+            <li>
+              sect_label_href_list:  List of sections by label and href)
+            </li>
+          </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== VARIABLES DETAILS ==================== -->
+<a name="section-VariablesDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-VariablesDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="WGET_OPTS"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">WGET_OPTS</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-quote">'</code><code class="variable-string">  --timeout=10  --tries=2  --html-extension  --restrict-file-names=un</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">ix  --page-requisites  -k  --no-parent  --backups=0  --level=0  </code><code class="variable-quote">'</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Sat Feb  1 10:27:19 2020
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>
