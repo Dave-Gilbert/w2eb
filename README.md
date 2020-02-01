@@ -296,6 +296,15 @@ reasonable Windows alternative to Image Magick's convert.
 
 At this time there is no GUI.
 
+## Documentation
+
+**W2eb** uses http://epydoc.sourceforge.net/ for documenting functions.
+Epydoc generates html documentation for python but also provides a well
+structured mechanisms for laying out comments. See the html directory
+for the epydoc output:
+
+https://github.com/Dave-Gilbert/w2eb/blob/master/html_epydocs/index.html:
+
 # Bugs
 
 Information is extracted from Wikipedia by crawling or scraping their
