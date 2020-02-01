@@ -303,7 +303,7 @@ Epydoc generates html documentation for python but also provides a well
 structured mechanisms for laying out comments. See the html directory
 for the epydoc output:
 
-https://github.com/Dave-Gilbert/w2eb/blob/master/html_epydocs/index.html:
+http://htmlpreview.github.io/?https://github.com/Dave-Gilbert/w2eb/blob/master/html_epydocs/module-tree.html
 
 # Bugs
 
