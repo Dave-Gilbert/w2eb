@@ -257,7 +257,7 @@ def StartupGetOptions(base_dir):
     """
     
     try:
-        op, args = getopt.getopt(sys.argv[1:], 'Eu:b:C:Kd:D:nNowbphPsS:')
+        op, args = getopt.getopt(sys.argv[1:], 'Eu:b:C:Kd:D:nNo:wbphPsS:')
     except:
         StartupUsage("Error: unrecognized command line options: " +
               " ".join(sys.argv[1:]));

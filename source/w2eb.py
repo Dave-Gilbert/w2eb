@@ -17,7 +17,7 @@ from w2ebStartup import Startup
 from w2ebMain import Main
 
 #
-# By default we put output in the current directory. Override this with '-b'
+# By default we put output in the current directory. Override this with '-o'
 #
 
 BASE_DIR = '.'
